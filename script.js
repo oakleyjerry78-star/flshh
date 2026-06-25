@@ -1,6 +1,6 @@
 const navToggle = document.querySelector(".nav-toggle");
 const navMenu = document.querySelector(".nav-menu");
-const menuLinks = document.querySelectorAll(".nav-menu a");
+const menuLinks = document.querySelectorAll(".nav-menu a, .mobile-dock a");
 const packagesSection = document.querySelector("#packages");
 const packagesTitle = document.querySelector("#packages-title");
 const packagesDescription = document.querySelector("#packages-description");
@@ -426,6 +426,11 @@ function setCheckoutOrder(networkName, card, options = {}) {
 
   if (paymentPanel) {
     paymentPanel.hidden = true;
+    paymentPanel.classList.remove("is-open");
+  }
+
+  if (checkoutSection) {
+    checkoutSection.classList.remove("payment-active");
   }
 
   if (checkoutMessage) {
@@ -483,6 +488,12 @@ function showPaymentStep() {
 
   if (paymentPanel) {
     paymentPanel.hidden = false;
+    paymentPanel.classList.remove("is-open");
+    requestAnimationFrame(() => paymentPanel.classList.add("is-open"));
+  }
+
+  if (checkoutSection) {
+    checkoutSection.classList.add("payment-active");
   }
 
   if (checkoutMessage) {
@@ -512,6 +523,12 @@ function initRevealEffects() {
     ".packages-heading",
     ".package-card",
     ".checkout-card",
+    ".guide-hero-inner",
+    ".guide-visual-card",
+    ".guide-card",
+    ".guide-step",
+    ".guide-warning",
+    ".guide-checklist",
   ];
   const revealItems = Array.from(document.querySelectorAll(revealSelectors.join(",")));
 
@@ -557,7 +574,9 @@ function initCardTilt() {
     return;
   }
 
-  const tiltCards = document.querySelectorAll(".network-card, .package-card, .checkout-card");
+  const tiltCards = document.querySelectorAll(
+    ".network-card, .package-card, .checkout-card, .guide-card, .guide-step, .guide-visual-card"
+  );
 
   tiltCards.forEach((card) => {
     if (card.dataset.tiltReady === "true") {
@@ -598,7 +617,7 @@ function initLuxurySpotlight() {
   }
 
   const spotlightItems = document.querySelectorAll(
-    ".hero-premium-panel, .network-card, .package-card, .checkout-card"
+    ".hero-premium-panel, .network-card, .package-card, .checkout-card, .guide-card, .guide-step, .guide-visual-card, .guide-warning, .guide-checklist"
   );
 
   spotlightItems.forEach((item) => {

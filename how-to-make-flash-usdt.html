@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Гайд по USDT — CryptoFlashUSDT</title>
+    <meta
+      name="description"
+      content="Безопасный гайд CryptoFlashUSDT: как подготовить USDT-операцию, выбрать сеть, проверить адрес, сохранить TXID и избежать ошибок."
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header" id="top">
+      <nav class="nav-shell" aria-label="Основная навигация">
+        <a class="brand" href="index.html" aria-label="CryptoFlashUSDT">
+          <span class="brand-mark">C</span>
+          <span class="brand-text">CryptoFlashUSDT</span>
+        </a>
+
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-menu">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span class="sr-only">Открыть меню</span>
+        </button>
+
+        <div class="nav-menu" id="nav-menu">
+          <a href="index.html#top">Главная</a>
+          <a href="index.html#networks">Сети</a>
+          <a href="products.html?network=TRC20">Пакеты</a>
+          <a class="is-active" href="how-to-make-flash-usdt.html">Гайд</a>
+          <a href="index.html#wallets">Кошельки</a>
+          <a href="faq.html">Вопросы</a>
+        </div>
+      </nav>
+      <div class="scroll-progress" aria-hidden="true"></div>
+    </header>
+
+    <nav class="mobile-dock" aria-label="Быстрая навигация">
+      <a href="index.html#top"><span class="dock-icon dock-home"></span><span>Главная</span></a>
+      <a href="index.html#networks"><span class="dock-icon dock-grid"></span><span>Сети</span></a>
+      <a href="products.html?network=TRC20"><span class="dock-icon dock-pack"></span><span>Пакеты</span></a>
+      <a class="is-active" href="how-to-make-flash-usdt.html"><span class="dock-icon dock-guide"></span><span>Гайд</span></a>
+    </nav>
+
+    <main>
+      <section class="guide-hero">
+        <div class="guide-hero-inner">
+          <nav class="breadcrumbs" aria-label="Хлебные крошки">
+            <a href="index.html">Главная</a>
+            <span>Гайд</span>
+          </nav>
+          <a class="back-link" href="index.html">← Назад</a>
+
+          <div class="guide-hero-grid">
+            <div class="guide-hero-copy">
+              <p class="eyebrow">Инструкция</p>
+              <h1>Как безопасно подготовить USDT-операцию</h1>
+              <p>
+                Разберите весь маршрут до перевода: сеть, адрес, комиссия, подтверждение и TXID.
+                Так вы снижаете риск ошибки и сохраняете понятный порядок действий для оплаты.
+              </p>
+              <div class="hero-actions">
+                <a class="button button-primary" href="index.html#networks">Выбрать сеть</a>
+                <a class="button button-secondary" href="#checklist">Открыть чек-лист</a>
+              </div>
+            </div>
+
+            <aside class="guide-visual-card" aria-label="Сводка безопасной операции">
+              <div class="guide-visual-top">
+                <span>USDT route</span>
+                <strong>Safe mode</strong>
+              </div>
+              <div class="guide-wallet-preview">
+                <span class="guide-coin">₮</span>
+                <div>
+                  <strong>Network check</strong>
+                  <p>TRC20 / ERC20 / BEP20 / BTC</p>
+                </div>
+              </div>
+              <div class="guide-terminal">
+                <span>01  сеть совпадает</span>
+                <span>02  адрес проверен</span>
+                <span>03  сумма подтверждена</span>
+                <span>04  TXID сохранен</span>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-dark guide-section">
+        <div class="guide-layout">
+          <aside class="guide-card guide-side">
+            <p class="eyebrow">Перед началом</p>
+            <h2>Что подготовить</h2>
+            <ul class="guide-list">
+              <li>Кошелек или биржу, где вы принимаете USDT.</li>
+              <li>Точную сеть: TRC20, ERC20, BEP20 или BTC.</li>
+              <li>Адрес получателя, скопированный без лишних символов.</li>
+              <li>Понимание комиссии и минимальных лимитов платформы.</li>
+              <li>Место, куда вы сохраните TXID или чек после оплаты.</li>
+            </ul>
+          </aside>
+
+          <div class="guide-main">
+            <article class="guide-step">
+              <span class="guide-step-number">01</span>
+              <div>
+                <h3>Выберите правильную сеть</h3>
+                <p>
+                  Сеть у отправителя и получателя должна совпадать. Если кошелек принимает USDT
+                  только TRC20, не отправляйте ERC20 или BEP20. Перед оплатой проверьте сеть в
+                  интерфейсе кошелька и в деталях заказа.
+                </p>
+              </div>
+            </article>
+
+            <article class="guide-step">
+              <span class="guide-step-number">02</span>
+              <div>
+                <h3>Проверьте адрес и актив</h3>
+                <p>
+                  Скопируйте адрес полностью и сверяйте первые и последние символы. Не вводите
+                  seed-фразу, приватный ключ или пароль на сторонних страницах. Для USDT используйте
+                  только официальный актив выбранной сети.
+                </p>
+              </div>
+            </article>
+
+            <article class="guide-step">
+              <span class="guide-step-number">03</span>
+              <div>
+                <h3>Сверьте сумму и комиссию</h3>
+                <p>
+                  До перевода убедитесь, что на кошельке хватает средств на комиссию. Для крупных
+                  операций лучше сначала сделать небольшую тестовую отправку, если правила вашей
+                  платформы это позволяют.
+                </p>
+              </div>
+            </article>
+
+            <article class="guide-step">
+              <span class="guide-step-number">04</span>
+              <div>
+                <h3>Сохраните TXID или чек</h3>
+                <p>
+                  После оплаты сохраните ID транзакции. В форме заказа можно прикрепить чек или
+                  указать TXID, чтобы операцию было проще проверить вручную.
+                </p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-panel guide-proof-section">
+        <div class="section-heading">
+          <p class="eyebrow">Визуальная проверка</p>
+          <h2>Как выглядит нормальный маршрут оплаты</h2>
+          <p>
+            Вместо сомнительных инструментов используйте проверяемые данные: сеть, адрес, сумму,
+            TXID и статус в обозревателе блокчейна.
+          </p>
+        </div>
+
+        <div class="guide-proof-grid">
+          <article class="guide-card">
+            <span class="guide-card-index">A</span>
+            <h3>Данные заказа</h3>
+            <p>Пакет, сеть и цена должны отображаться до оплаты, чтобы не было путаницы.</p>
+          </article>
+          <article class="guide-card">
+            <span class="guide-card-index">B</span>
+            <h3>Реквизиты</h3>
+            <p>Адрес оплаты показывается только для выбранной сети. Для других сетей нужен свой адрес.</p>
+          </article>
+          <article class="guide-card">
+            <span class="guide-card-index">C</span>
+            <h3>Подтверждение</h3>
+            <p>TXID или чек прикрепляется после перевода, затем заказ уходит на ручную проверку.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section section-dark guide-section">
+        <div class="guide-layout">
+          <aside class="guide-card guide-side guide-side-accent">
+            <p class="eyebrow">Свой токен</p>
+            <h2>Легальный выпуск монеты</h2>
+            <p>
+              Если вам нужен собственный токен под проект, его можно готовить только прозрачно:
+              с понятной сетью, названием, символом, правилами выпуска и проверкой в обозревателе.
+              Это не подмена USDT и не обещание “нарисовать” баланс в кошельке.
+            </p>
+          </aside>
+
+          <div class="guide-main">
+            <article class="guide-step">
+              <span class="guide-step-number">01</span>
+              <div>
+                <h3>Без приватных ключей</h3>
+                <p>
+                  Для консультации или подготовки маршрута запуска не нужны seed-фразы, приватные
+                  ключи, пароли от биржи или доступ к вашему кошельку.
+                </p>
+              </div>
+            </article>
+
+            <article class="guide-step">
+              <span class="guide-step-number">02</span>
+              <div>
+                <h3>Без сторонних скриптов</h3>
+                <p>
+                  Никакие непроверенные файлы запускать не нужно. Нормальный процесс строится на
+                  публичных данных сети, проверяемых адресах и понятном подтверждении операции.
+                </p>
+              </div>
+            </article>
+
+            <article class="guide-step">
+              <span class="guide-step-number">03</span>
+              <div>
+                <h3>Только проверяемый результат</h3>
+                <p>
+                  Любая монета или операция должна иметь понятные параметры, публичный адрес,
+                  историю в обозревателе и честное описание для пользователей.
+                </p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-dark guide-section" id="checklist">
+        <div class="guide-layout guide-layout-reverse">
+          <div class="guide-main">
+            <article class="guide-warning">
+              <p class="eyebrow">Важно</p>
+              <h2>Что не стоит делать</h2>
+              <p>
+                Не используйте сторонние инструменты, которые обещают мгновенно создать баланс или
+                показать “временные” средства в кошельке. Не подключайте кошелек к непроверенным
+                страницам и не отправляйте приватные данные.
+              </p>
+            </article>
+
+            <div class="guide-checklist">
+              <h3>Чек-лист перед переводом</h3>
+              <label><input type="checkbox" /> Сеть отправителя и получателя совпадает.</label>
+              <label><input type="checkbox" /> Адрес скопирован полностью и проверен.</label>
+              <label><input type="checkbox" /> Комиссия понятна и средств на нее хватает.</label>
+              <label><input type="checkbox" /> Сумма и пакет совпадают с заказом.</label>
+              <label><input type="checkbox" /> После оплаты будет сохранен TXID или чек.</label>
+            </div>
+          </div>
+
+          <aside class="guide-card guide-side guide-side-accent">
+            <p class="eyebrow">Следующий шаг</p>
+            <h2>Перейдите к сети и пакету</h2>
+            <p>
+              Выберите сеть, затем пакет. На странице оплаты укажите кошелек для получения и
+              добавьте TXID или чек после перевода.
+            </p>
+            <a class="button button-primary" href="index.html#networks">Выбрать сеть</a>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        <a class="brand" href="index.html" aria-label="CryptoFlashUSDT">
+          <span class="brand-mark">C</span>
+          <span class="brand-text">CryptoFlashUSDT</span>
+        </a>
+        <div class="footer-links">
+          <a href="index.html#networks">Сети</a>
+          <a href="products.html?network=TRC20">Пакеты</a>
+          <a href="faq.html">FAQ</a>
+        </div>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>

@@ -29,12 +29,20 @@
           <a href="index.html#top">Главная</a>
           <a href="index.html#networks">Сети</a>
           <a href="products.html?network=TRC20">Пакеты</a>
+          <a href="how-to-make-flash-usdt.html">Гайд</a>
           <a href="index.html#wallets">Кошельки</a>
           <a href="faq.html">Вопросы</a>
         </div>
       </nav>
       <div class="scroll-progress" aria-hidden="true"></div>
     </header>
+
+    <nav class="mobile-dock" aria-label="Быстрая навигация">
+      <a href="index.html#top"><span class="dock-icon dock-home"></span><span>Главная</span></a>
+      <a href="index.html#networks"><span class="dock-icon dock-grid"></span><span>Сети</span></a>
+      <a href="products.html?network=TRC20"><span class="dock-icon dock-pack"></span><span>Пакеты</span></a>
+      <a href="how-to-make-flash-usdt.html"><span class="dock-icon dock-guide"></span><span>Гайд</span></a>
+    </nav>
 
     <main>
       <section class="section section-panel checkout-section" id="checkout" data-network="TRC20">
@@ -56,6 +64,7 @@
 
         <div class="checkout-layout">
           <article class="checkout-card order-card">
+            <div class="checkout-card-glow" aria-hidden="true"></div>
             <h3>Сводка заказа</h3>
             <div class="order-ticket">
               <div>
@@ -96,9 +105,11 @@
               <span>Подтверждение</span>
               <span>Проверка</span>
             </div>
+            <div class="order-flow-line" aria-hidden="true"></div>
           </article>
 
           <article class="checkout-card wallet-card">
+            <div class="checkout-card-glow" aria-hidden="true"></div>
             <h3>Кошелек для получения</h3>
             <p id="wallet-helper">
               Укажите адрес кошелька TRC20, который будет связан с вашим заказом.
@@ -121,11 +132,13 @@
             <p class="checkout-message" id="checkout-message" role="status" aria-live="polite"></p>
 
             <div class="payment-panel" id="payment-panel" hidden>
-              <div>
+              <div class="payment-panel-head">
                 <p class="eyebrow">Криптооплата</p>
-              <h4>Реквизиты для оплаты</h4>
+                <h4>Реквизиты для оплаты</h4>
+                <span class="payment-live-dot" aria-hidden="true"></span>
               </div>
               <div class="payment-address-box">
+                <span class="payment-scan-line" aria-hidden="true"></span>
                 <span id="payment-network">TRC20</span>
                 <code id="payment-wallet">TPfsEVFB6z3hDqssdD6mjN46Ko6JXTXgiz</code>
                 <button class="copy-wallet" id="copy-wallet" type="button">Скопировать</button>
@@ -172,6 +185,7 @@
         <div class="footer-links">
           <a href="index.html#networks">Сети</a>
           <a href="products.html?network=TRC20">Пакеты</a>
+          <a href="how-to-make-flash-usdt.html">Гайд</a>
           <a href="faq.html">FAQ</a>
         </div>
       </div>

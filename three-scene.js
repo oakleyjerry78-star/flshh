@@ -47,19 +47,19 @@ function initHeroScene() {
   scene.add(group, orbitGroup);
 
   const coinMaterial = new THREE.MeshStandardMaterial({
-    color: 0x58e6a4,
-    emissive: 0x062619,
-    emissiveIntensity: 0.55,
-    metalness: 0.78,
-    roughness: 0.24,
+    color: 0x0f8f62,
+    emissive: 0x03150f,
+    emissiveIntensity: 0.2,
+    metalness: 0.94,
+    roughness: 0.18,
   });
 
   const rimMaterial = new THREE.MeshStandardMaterial({
-    color: 0xdfffee,
-    emissive: 0x1bbf7a,
-    emissiveIntensity: 0.42,
-    metalness: 0.72,
-    roughness: 0.26,
+    color: 0xbfffe0,
+    emissive: 0x0b4f37,
+    emissiveIntensity: 0.24,
+    metalness: 0.9,
+    roughness: 0.2,
   });
 
   const coin = new THREE.Mesh(new THREE.CylinderGeometry(1.14, 1.14, 0.18, 96), coinMaterial);
@@ -344,31 +344,110 @@ function createTokenTexture() {
   textureCanvas.width = size;
   textureCanvas.height = size;
 
-  const gradient = context.createRadialGradient(256, 220, 40, 256, 256, 250);
-  gradient.addColorStop(0, "#f4fff8");
-  gradient.addColorStop(0.42, "#bfffe0");
-  gradient.addColorStop(1, "#58e6a4");
+  const coinGradient = context.createRadialGradient(198, 136, 18, 256, 256, 236);
+  coinGradient.addColorStop(0, "#d7fff0");
+  coinGradient.addColorStop(0.22, "#55e1a2");
+  coinGradient.addColorStop(0.58, "#119265");
+  coinGradient.addColorStop(1, "#063c2b");
 
   context.clearRect(0, 0, size, size);
+
+  context.save();
+  context.shadowColor = "rgba(0, 0, 0, 0.34)";
+  context.shadowBlur = 22;
+  context.shadowOffsetY = 16;
+  context.beginPath();
+  context.arc(256, 256, 226, 0, Math.PI * 2);
+  context.fillStyle = "#062d20";
+  context.fill();
+  context.restore();
+
   context.beginPath();
   context.arc(256, 256, 222, 0, Math.PI * 2);
-  context.fillStyle = "rgba(3, 18, 12, 0.45)";
+  context.fillStyle = coinGradient;
   context.fill();
-  context.strokeStyle = "rgba(244, 255, 248, 0.22)";
-  context.lineWidth = 10;
+
+  context.lineWidth = 18;
+  context.strokeStyle = "rgba(244, 255, 248, 0.2)";
+  context.stroke();
+  context.lineWidth = 6;
+  context.strokeStyle = "rgba(3, 18, 12, 0.24)";
   context.stroke();
 
-  context.fillStyle = gradient;
-  context.textAlign = "center";
-  context.textBaseline = "middle";
-  context.font = "900 220px Inter, Arial, sans-serif";
-  context.fillText("₮", 256, 232);
+  context.save();
+  context.translate(256, 256);
+  context.lineCap = "round";
+  for (let index = 0; index < 96; index += 1) {
+    context.rotate((Math.PI * 2) / 96);
+    context.beginPath();
+    context.moveTo(0, -215);
+    context.lineTo(0, -205);
+    context.lineWidth = index % 2 === 0 ? 2.2 : 1.2;
+    context.strokeStyle = index % 2 === 0 ? "rgba(244,255,248,0.18)" : "rgba(3,18,12,0.22)";
+    context.stroke();
+  }
+  context.restore();
 
-  context.font = "900 56px Inter, Arial, sans-serif";
-  context.fillText("USDT", 256, 372);
+  context.save();
+  context.globalAlpha = 0.5;
+  const shineGradient = context.createLinearGradient(92, 72, 350, 330);
+  shineGradient.addColorStop(0, "rgba(255,255,255,0.82)");
+  shineGradient.addColorStop(0.22, "rgba(255,255,255,0.18)");
+  shineGradient.addColorStop(0.5, "rgba(255,255,255,0)");
+  context.beginPath();
+  context.arc(256, 256, 206, 0, Math.PI * 2);
+  context.fillStyle = shineGradient;
+  context.fill();
+  context.restore();
+
+  context.save();
+  context.fillStyle = "#fbfff9";
+  context.shadowColor = "rgba(0, 0, 0, 0.22)";
+  context.shadowBlur = 12;
+  context.shadowOffsetY = 5;
+
+  roundRect(context, 148, 144, 216, 42, 22);
+  context.fill();
+  roundRect(context, 232, 172, 48, 156, 24);
+  context.fill();
+
+  context.lineWidth = 21;
+  context.strokeStyle = "#fbfff9";
+  context.beginPath();
+  context.ellipse(256, 236, 132, 34, 0, 0, Math.PI * 2);
+  context.stroke();
+  context.restore();
+
+  context.save();
+  context.globalCompositeOperation = "source-atop";
+  context.strokeStyle = "rgba(4, 18, 13, 0.16)";
+  context.lineWidth = 2;
+  context.beginPath();
+  context.ellipse(256, 236, 106, 23, 0, 0, Math.PI * 2);
+  context.stroke();
+  context.restore();
+
+  context.save();
+  context.globalCompositeOperation = "source-atop";
+  context.fillStyle = "rgba(255, 255, 255, 0.18)";
+  context.beginPath();
+  context.arc(190, 138, 68, 0, Math.PI * 2);
+  context.fill();
+  context.restore();
 
   const texture = new THREE.CanvasTexture(textureCanvas);
   texture.colorSpace = THREE.SRGBColorSpace;
   texture.needsUpdate = true;
   return texture;
+}
+
+function roundRect(context, x, y, width, height, radius) {
+  const safeRadius = Math.min(radius, width / 2, height / 2);
+  context.beginPath();
+  context.moveTo(x + safeRadius, y);
+  context.arcTo(x + width, y, x + width, y + height, safeRadius);
+  context.arcTo(x + width, y + height, x, y + height, safeRadius);
+  context.arcTo(x, y + height, x, y, safeRadius);
+  context.arcTo(x, y, x + width, y, safeRadius);
+  context.closePath();
 }

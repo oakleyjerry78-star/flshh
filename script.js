@@ -26,6 +26,14 @@ const paymentAmount = document.querySelector("#payment-amount");
 const copyWallet = document.querySelector("#copy-wallet");
 const checkoutProductsLink = document.querySelector("#checkout-products-link");
 const checkoutBackLink = document.querySelector("#checkout-back-link");
+const orderId = document.querySelector("#order-id");
+const orderStatus = document.querySelector("#order-status");
+const orderProgressSteps = document.querySelectorAll(".order-progress span");
+const transactionId = document.querySelector("#transaction-id");
+const paymentReceipt = document.querySelector("#payment-receipt");
+const receiptFile = document.querySelector("#receipt-file");
+const submitProof = document.querySelector("#submit-proof");
+const proofMessage = document.querySelector("#proof-message");
 const trackedSections = Array.from(
   document.querySelectorAll("#top, #networks, #packages, #checkout, #wallets")
 );
@@ -245,6 +253,95 @@ let selectedOrder = {
   network: initialNetwork,
   package: networkPackages[initialNetwork].cards[initialPackageIndex],
 };
+let activeOrderKey = "";
+
+function getOrderStorageKey(networkName, card) {
+  const packageKey = card.name.replace(/[^a-z0-9]/gi, "").toUpperCase();
+  return `cryptoflashusdt-order-${networkName}-${packageKey}`;
+}
+
+function makeOrderId(networkName) {
+  const stamp = Date.now().toString(36).toUpperCase();
+  return `CFU-${networkName}-${stamp}`;
+}
+
+function readOrderRecord(key) {
+  try {
+    const record = localStorage.getItem(key);
+    return record ? JSON.parse(record) : null;
+  } catch (error) {
+    return null;
+  }
+}
+
+function saveOrderRecord(key, record) {
+  try {
+    localStorage.setItem(key, JSON.stringify(record));
+  } catch (error) {
+    return false;
+  }
+
+  return true;
+}
+
+function getOrCreateOrderRecord(networkName, card) {
+  const key = getOrderStorageKey(networkName, card);
+  const existingRecord = readOrderRecord(key);
+
+  if (existingRecord) {
+    activeOrderKey = key;
+    return existingRecord;
+  }
+
+  const record = {
+    id: makeOrderId(networkName),
+    network: networkName,
+    package: card.name,
+    price: card.price,
+    status: "Ожидает оплату",
+    txid: "",
+    receiptName: "",
+  };
+
+  activeOrderKey = key;
+  saveOrderRecord(key, record);
+  return record;
+}
+
+function updateOrderStatus(record) {
+  if (orderId) {
+    orderId.textContent = record.id;
+  }
+
+  if (orderStatus) {
+    orderStatus.textContent = record.status;
+    orderStatus.classList.toggle("is-review", record.status === "На проверке");
+  }
+
+  orderProgressSteps.forEach((step, index) => {
+    const activeSteps = record.status === "На проверке" ? 4 : 2;
+    step.classList.toggle("is-active", index < activeSteps);
+  });
+
+  if (transactionId) {
+    transactionId.value = record.txid || "";
+  }
+
+  if (receiptFile) {
+    receiptFile.textContent = record.receiptName || "Прикрепить чек или скрин оплаты";
+  }
+
+  if (proofMessage) {
+    proofMessage.textContent =
+      record.status === "На проверке"
+        ? "Подтверждение добавлено. Заказ ожидает ручной проверки."
+        : "";
+  }
+
+  if (paymentPanel && record.status === "На проверке") {
+    paymentPanel.hidden = false;
+  }
+}
 
 function renderPackages(networkName) {
   const currentNetwork = normalizeNetwork(networkName);
@@ -261,7 +358,7 @@ function renderPackages(networkName) {
   packageGrid.innerHTML = selected.cards
     .map(
       (card, index) => `
-        <article class="package-card">
+        <article class="package-card" data-network="${currentNetwork}" data-index="${index}">
           <div class="package-topline">
             <span class="package-network">${currentNetwork}</span>
             ${card.popular ? '<span class="popular-pill">★ Популярно</span>' : ""}
@@ -350,6 +447,8 @@ function setCheckoutOrder(networkName, card, options = {}) {
   if (checkoutBackLink) {
     checkoutBackLink.href = `products.html?network=${currentNetwork}`;
   }
+
+  updateOrderStatus(getOrCreateOrderRecord(currentNetwork, selectedCard));
 
   if (shouldScroll) {
     checkoutSection.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -497,14 +596,14 @@ if (checkoutSection) {
 
 if (packageGrid) {
   packageGrid.addEventListener("click", (event) => {
-    const button = event.target.closest(".package-button");
+    const packageCard = event.target.closest(".package-card[data-network]");
 
-    if (!button) {
+    if (!packageCard) {
       return;
     }
 
-    const networkName = button.dataset.network || "TRC20";
-    const index = Number(button.dataset.index || 0);
+    const networkName = packageCard.dataset.network || "TRC20";
+    const index = Number(packageCard.dataset.index || 0);
     const card = networkPackages[networkName]?.cards[index];
 
     if (card) {
@@ -520,6 +619,50 @@ if (packageGrid) {
 
 if (continuePayment) {
   continuePayment.addEventListener("click", showPaymentStep);
+}
+
+if (paymentReceipt && receiptFile) {
+  paymentReceipt.addEventListener("change", () => {
+    const file = paymentReceipt.files?.[0];
+    receiptFile.textContent = file ? file.name : "Прикрепить чек или скрин оплаты";
+  });
+}
+
+if (submitProof) {
+  submitProof.addEventListener("click", () => {
+    const txid = transactionId ? transactionId.value.trim() : "";
+    const file = paymentReceipt?.files?.[0];
+    const existingRecord = readOrderRecord(activeOrderKey);
+
+    if (!txid && !file) {
+      if (proofMessage) {
+        proofMessage.textContent = "Добавьте TXID или прикрепите чек оплаты.";
+      }
+      return;
+    }
+
+    const updatedRecord = {
+      ...(existingRecord || {
+        id: makeOrderId(selectedOrder.network),
+        network: selectedOrder.network,
+        package: selectedOrder.package.name,
+        price: selectedOrder.package.price,
+      }),
+      status: "На проверке",
+      txid,
+      receiptName: file?.name || existingRecord?.receiptName || "",
+    };
+
+    if (activeOrderKey) {
+      saveOrderRecord(activeOrderKey, updatedRecord);
+    }
+
+    updateOrderStatus(updatedRecord);
+
+    if (proofMessage) {
+      proofMessage.textContent = "Подтверждение добавлено. Заказ ожидает ручной проверки.";
+    }
+  });
 }
 
 if (copyWallet && paymentWallet) {

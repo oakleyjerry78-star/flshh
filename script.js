@@ -386,6 +386,63 @@ function showPaymentStep() {
   }
 }
 
+function initRevealEffects() {
+  const revealSelectors = [
+    ".hero .eyebrow",
+    ".hero h1",
+    ".hero-lead",
+    ".hero-actions",
+    ".trust-strip",
+    ".section-heading",
+    ".network-card",
+    ".feature-band",
+    ".step",
+    ".wallet-grid span",
+    ".wallet-compat-card",
+    ".faq-list details",
+    ".faq-more",
+    ".faq-cta",
+    ".page-hero-inner",
+    ".packages-heading",
+    ".package-card",
+    ".checkout-card",
+  ];
+  const revealItems = Array.from(document.querySelectorAll(revealSelectors.join(",")));
+
+  if (!revealItems.length) {
+    return;
+  }
+
+  revealItems.forEach((item, index) => {
+    item.classList.add("reveal");
+    item.style.setProperty("--reveal-delay", `${Math.min(index % 6, 5) * 70}ms`);
+  });
+
+  if (!("IntersectionObserver" in window)) {
+    revealItems.forEach((item) => item.classList.add("is-visible"));
+    return;
+  }
+
+  const revealObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) {
+          return;
+        }
+
+        entry.target.classList.add("is-visible");
+        revealObserver.unobserve(entry.target);
+      });
+    },
+    {
+      rootMargin: "0px 0px -56px 0px",
+      threshold: 0.14,
+    }
+  );
+
+  revealItems.forEach((item) => revealObserver.observe(item));
+}
+
 if (navToggle && navMenu) {
   navToggle.addEventListener("click", () => {
     const isOpen = navMenu.classList.toggle("is-open");
@@ -508,3 +565,5 @@ networkButtons.forEach((button) => {
     }
   });
 });
+
+requestAnimationFrame(initRevealEffects);

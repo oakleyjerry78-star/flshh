@@ -336,6 +336,10 @@ img {
   text-shadow: none;
 }
 
+.hero h1 span {
+  display: inline;
+}
+
 .hero-lead {
   max-width: 600px;
   margin: 22px 0 0;
@@ -1699,7 +1703,7 @@ details p {
   }
 
   .hero {
-    min-height: 620px;
+    min-height: auto;
   }
 
   .hero-overlay {
@@ -1710,13 +1714,31 @@ details p {
 
   .hero-inner {
     width: min(100% - 24px, var(--max));
-    padding-bottom: 48px;
+    padding-top: 116px;
+    padding-bottom: 54px;
   }
 
   .hero h1 {
-    font-size: clamp(2.05rem, 11vw, 3rem);
-    overflow-wrap: anywhere;
+    max-width: 100%;
+    font-size: clamp(2.15rem, 13vw, 3.35rem);
+    overflow-wrap: normal;
     word-break: normal;
+  }
+
+  .hero h1 span {
+    display: block;
+  }
+
+  .hero-lead {
+    font-size: 1rem;
+  }
+
+  .section-heading h1,
+  .section-heading h2,
+  .feature-band h2,
+  .faq-cta h2,
+  .cta-band h2 {
+    font-size: clamp(1.75rem, 9vw, 2.5rem);
   }
 
   .hero-actions,

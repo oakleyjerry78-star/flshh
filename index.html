@@ -33,22 +33,81 @@
           <a href="faq.html">Вопросы</a>
         </div>
       </nav>
+      <div class="scroll-progress" aria-hidden="true"></div>
     </header>
 
     <main>
       <section class="hero">
+        <div class="hero-3d" aria-hidden="true">
+          <canvas id="hero-3d-canvas"></canvas>
+          <div class="hero-orbit-fallback">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
         <div class="hero-overlay"></div>
         <div class="hero-inner">
-          <p class="eyebrow">USDT · TRC20 · ERC20 · BEP20</p>
-          <h1><span>CryptoFlash</span><span>USDT</span></h1>
-          <p class="hero-lead">
-            Премиальное сопровождение USDT-операций: выбор сети, проверка реквизитов,
-            понятные пакеты и аккуратный маршрут покупки.
-          </p>
-          <div class="hero-actions">
-            <a class="button button-primary" href="#networks">Выбрать сеть</a>
-            <a class="button button-secondary" href="products.html?network=TRC20">Смотреть пакеты</a>
+          <div class="hero-copy">
+            <p class="eyebrow">USDT · TRC20 · ERC20 · BEP20</p>
+            <h1><span>CryptoFlash</span><span>USDT</span></h1>
+            <p class="hero-lead">
+              Премиальное сопровождение USDT-операций: выбор сети, проверка реквизитов,
+              понятные пакеты и аккуратный маршрут покупки.
+            </p>
+            <div class="hero-actions">
+              <a class="button button-primary" href="#networks">Выбрать сеть</a>
+              <a class="button button-secondary" href="products.html?network=TRC20">Смотреть пакеты</a>
+            </div>
           </div>
+
+          <aside class="hero-premium-panel" aria-label="Маршрут заказа">
+            <div class="panel-topline">
+              <span>Маршрут заказа</span>
+              <strong>CFU</strong>
+            </div>
+            <div class="panel-orbit-mark">
+              <span>USDT</span>
+            </div>
+            <div class="panel-route">
+              <div>
+                <span>01</span>
+                <strong>Сеть выбрана</strong>
+                <small>TRC20 / ERC20 / BEP20 / BTC</small>
+              </div>
+              <div>
+                <span>02</span>
+                <strong>Пакет подтвержден</strong>
+                <small>Сводка FLASH-заказа</small>
+              </div>
+              <div>
+                <span>03</span>
+                <strong>Оплата и TXID</strong>
+                <small>Реквизиты и проверка</small>
+              </div>
+            </div>
+            <div class="panel-bottomline">
+              <span>Безопасная оплата</span>
+              <span>Ручная проверка</span>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="luxury-ribbon" aria-label="Маршрут заказа">
+        <div class="luxury-ribbon-track">
+          <span>Выбор сети</span>
+          <span>Пакет FLASH</span>
+          <span>Реквизиты</span>
+          <span>Криптооплата</span>
+          <span>TXID / чек</span>
+          <span>Проверка заказа</span>
+          <span>Выбор сети</span>
+          <span>Пакет FLASH</span>
+          <span>Реквизиты</span>
+          <span>Криптооплата</span>
+          <span>TXID / чек</span>
+          <span>Проверка заказа</span>
         </div>
       </section>
 
@@ -268,5 +327,10 @@
     </footer>
 
     <script src="script.js"></script>
+    <script type="module">
+      import("./three-scene.js").catch(() => {
+        document.body.classList.add("three-fallback");
+      });
+    </script>
   </body>
 </html>

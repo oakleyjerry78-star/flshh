@@ -34,6 +34,7 @@ const paymentReceipt = document.querySelector("#payment-receipt");
 const receiptFile = document.querySelector("#receipt-file");
 const submitProof = document.querySelector("#submit-proof");
 const proofMessage = document.querySelector("#proof-message");
+const scrollProgress = document.querySelector(".scroll-progress");
 const trackedSections = Array.from(
   document.querySelectorAll("#top, #networks, #packages, #checkout, #wallets")
 );
@@ -215,9 +216,9 @@ const networkIcons = {
 
 const paymentWallets = {
   TRC20: "TPfsEVFB6z3hDqssdD6mjN46Ko6JXTXgiz",
-  ERC20: "YOUR_ERC20_USDT_WALLET_ADDRESS",
-  BEP20: "YOUR_BEP20_USDT_WALLET_ADDRESS",
-  BTC: "YOUR_BTC_WALLET_ADDRESS",
+  ERC20: "",
+  BEP20: "",
+  BTC: "",
 };
 
 function normalizeNetwork(networkName) {
@@ -384,6 +385,9 @@ function renderPackages(networkName) {
   networkTabs.forEach((tab) => {
     tab.classList.toggle("is-active", tab.dataset.networkTab === currentNetwork);
   });
+
+  initCardTilt();
+  initLuxurySpotlight();
 }
 
 function setCheckoutOrder(networkName, card, options = {}) {
@@ -433,7 +437,13 @@ function setCheckoutOrder(networkName, card, options = {}) {
   }
 
   if (paymentWallet) {
-    paymentWallet.textContent = paymentWallets[currentNetwork] || paymentWallets.TRC20;
+    const walletAddress = paymentWallets[currentNetwork];
+    paymentWallet.textContent = walletAddress || "Адрес оплаты для этой сети будет добавлен отдельно.";
+  }
+
+  if (copyWallet) {
+    copyWallet.disabled = !paymentWallets[currentNetwork];
+    copyWallet.textContent = paymentWallets[currentNetwork] ? "Скопировать" : "Ожидает адрес";
   }
 
   if (paymentAmount) {
@@ -486,6 +496,8 @@ function initRevealEffects() {
     ".hero h1",
     ".hero-lead",
     ".hero-actions",
+    ".hero-premium-panel",
+    ".luxury-ribbon",
     ".trust-strip",
     ".section-heading",
     ".network-card",
@@ -537,6 +549,146 @@ function initRevealEffects() {
   revealItems.forEach((item) => revealObserver.observe(item));
 }
 
+function initCardTilt() {
+  const hasFinePointer = window.matchMedia("(pointer: fine)").matches;
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (!hasFinePointer || prefersReducedMotion) {
+    return;
+  }
+
+  const tiltCards = document.querySelectorAll(".network-card, .package-card, .checkout-card");
+
+  tiltCards.forEach((card) => {
+    if (card.dataset.tiltReady === "true") {
+      return;
+    }
+
+    card.dataset.tiltReady = "true";
+
+    card.addEventListener(
+      "pointermove",
+      (event) => {
+        const rect = card.getBoundingClientRect();
+        const x = (event.clientX - rect.left) / rect.width - 0.5;
+        const y = (event.clientY - rect.top) / rect.height - 0.5;
+
+        card.style.setProperty("--tilt-x", `${(-y * 7).toFixed(2)}deg`);
+        card.style.setProperty("--tilt-y", `${(x * 8).toFixed(2)}deg`);
+      },
+      { passive: true }
+    );
+
+    card.addEventListener(
+      "pointerleave",
+      () => {
+        card.style.setProperty("--tilt-x", "0deg");
+        card.style.setProperty("--tilt-y", "0deg");
+      },
+      { passive: true }
+    );
+  });
+}
+
+function initLuxurySpotlight() {
+  const hasFinePointer = window.matchMedia("(pointer: fine)").matches;
+
+  if (!hasFinePointer) {
+    return;
+  }
+
+  const spotlightItems = document.querySelectorAll(
+    ".hero-premium-panel, .network-card, .package-card, .checkout-card"
+  );
+
+  spotlightItems.forEach((item) => {
+    if (item.dataset.spotlightReady === "true") {
+      return;
+    }
+
+    item.dataset.spotlightReady = "true";
+
+    item.addEventListener(
+      "pointermove",
+      (event) => {
+        const rect = item.getBoundingClientRect();
+        const x = ((event.clientX - rect.left) / rect.width) * 100;
+        const y = ((event.clientY - rect.top) / rect.height) * 100;
+
+        item.style.setProperty("--mouse-x", `${x.toFixed(1)}%`);
+        item.style.setProperty("--mouse-y", `${y.toFixed(1)}%`);
+      },
+      { passive: true }
+    );
+
+    item.addEventListener(
+      "pointerleave",
+      () => {
+        item.style.setProperty("--mouse-x", "50%");
+        item.style.setProperty("--mouse-y", "50%");
+      },
+      { passive: true }
+    );
+  });
+}
+
+function updateScrollProgress() {
+  if (!scrollProgress) {
+    return;
+  }
+
+  const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+  const progress = maxScroll > 0 ? Math.min(100, Math.max(0, (window.scrollY / maxScroll) * 100)) : 0;
+  scrollProgress.style.setProperty("--scroll-progress", `${progress.toFixed(2)}%`);
+}
+
+function initMagneticControls() {
+  const hasFinePointer = window.matchMedia("(pointer: fine)").matches;
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (!hasFinePointer || prefersReducedMotion) {
+    return;
+  }
+
+  const controls = document.querySelectorAll(".button, .back-link, .network-tab");
+
+  controls.forEach((control) => {
+    if (control.dataset.magneticReady === "true") {
+      return;
+    }
+
+    control.dataset.magneticReady = "true";
+
+    control.addEventListener(
+      "pointermove",
+      (event) => {
+        const rect = control.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+        const magnetX = (x / rect.width - 0.5) * 8;
+        const magnetY = (y / rect.height - 0.5) * 8;
+
+        control.style.setProperty("--mouse-x", `${((x / rect.width) * 100).toFixed(1)}%`);
+        control.style.setProperty("--mouse-y", `${((y / rect.height) * 100).toFixed(1)}%`);
+        control.style.setProperty("--magnet-x", `${magnetX.toFixed(2)}px`);
+        control.style.setProperty("--magnet-y", `${magnetY.toFixed(2)}px`);
+      },
+      { passive: true }
+    );
+
+    control.addEventListener(
+      "pointerleave",
+      () => {
+        control.style.setProperty("--mouse-x", "50%");
+        control.style.setProperty("--mouse-y", "50%");
+        control.style.setProperty("--magnet-x", "0px");
+        control.style.setProperty("--magnet-y", "0px");
+      },
+      { passive: true }
+    );
+  });
+}
+
 if (navToggle && navMenu) {
   navToggle.addEventListener("click", () => {
     const isOpen = navMenu.classList.toggle("is-open");
@@ -583,9 +735,15 @@ function updateActiveNav() {
 
 window.addEventListener("scroll", updateActiveNav, { passive: true });
 window.addEventListener("load", updateActiveNav);
+window.addEventListener("scroll", updateScrollProgress, { passive: true });
+window.addEventListener("load", updateScrollProgress);
 updateActiveNav();
+updateScrollProgress();
 
 renderPackages(initialNetwork);
+initCardTilt();
+initLuxurySpotlight();
+initMagneticControls();
 
 if (checkoutSection) {
   setCheckoutOrder(initialNetwork, selectedOrder.package, {

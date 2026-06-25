@@ -26,7 +26,6 @@ const paymentAmount = document.querySelector("#payment-amount");
 const copyWallet = document.querySelector("#copy-wallet");
 const checkoutProductsLink = document.querySelector("#checkout-products-link");
 const checkoutBackLink = document.querySelector("#checkout-back-link");
-const checkoutNavCta = document.querySelector("#checkout-nav-cta");
 const trackedSections = Array.from(
   document.querySelectorAll("#top, #networks, #packages, #checkout, #wallets")
 );
@@ -350,10 +349,6 @@ function setCheckoutOrder(networkName, card, options = {}) {
 
   if (checkoutBackLink) {
     checkoutBackLink.href = `products.html?network=${currentNetwork}`;
-  }
-
-  if (checkoutNavCta) {
-    checkoutNavCta.href = `products.html?network=${currentNetwork}`;
   }
 
   if (shouldScroll) {

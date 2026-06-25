@@ -134,7 +134,7 @@ img {
   min-height: 78px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto 1fr;
   align-items: center;
   gap: 24px;
 }
@@ -168,7 +168,7 @@ img {
 }
 
 .nav-menu {
-  justify-self: center;
+  justify-self: end;
   display: flex;
   align-items: center;
   gap: 4px;

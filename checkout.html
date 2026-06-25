@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Оплата — CryptoFlashUSDT</title>
+    <meta
+      name="description"
+      content="Проверьте выбранный пакет CryptoFlashUSDT, укажите кошелек и перейдите к оплате в выбранной сети."
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-page="checkout">
+    <header class="site-header" id="top">
+      <nav class="nav-shell" aria-label="Основная навигация">
+        <a class="brand" href="index.html" aria-label="CryptoFlashUSDT">
+          <span class="brand-mark">C</span>
+          <span class="brand-text">CryptoFlashUSDT</span>
+        </a>
+
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-menu">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span class="sr-only">Открыть меню</span>
+        </button>
+
+        <div class="nav-menu" id="nav-menu">
+          <a href="index.html#top">Главная</a>
+          <a href="index.html#networks">Сети</a>
+          <a href="products.html?network=TRC20">Пакеты</a>
+          <a href="index.html#wallets">Кошельки</a>
+          <a href="faq.html">Вопросы</a>
+        </div>
+
+        <a class="nav-cta" id="checkout-nav-cta" href="products.html?network=TRC20">К пакетам</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="section section-panel checkout-section" id="checkout" data-network="TRC20">
+        <div class="section-heading">
+          <nav class="breadcrumbs" aria-label="Хлебные крошки">
+            <a href="index.html">Главная</a>
+            <a id="checkout-products-link" href="products.html?network=TRC20">Пакеты</a>
+            <span>Оплата</span>
+          </nav>
+
+          <a class="back-link" id="checkout-back-link" href="products.html?network=TRC20">← Назад к пакетам</a>
+          <p class="eyebrow">Оплата</p>
+          <h1>Детали кошелька</h1>
+          <p>
+            Введите адрес кошелька для выбранной сети, проверьте заказ и перейдите к оплате.
+          </p>
+        </div>
+
+        <div class="checkout-layout">
+          <article class="checkout-card order-card">
+            <h3>Сводка заказа</h3>
+            <div class="order-product">
+              <span class="order-icon" id="checkout-icon">₮</span>
+              <div>
+                <strong id="checkout-product">100K FLASH</strong>
+                <span id="checkout-network-label">TRC20 Network</span>
+              </div>
+            </div>
+
+            <dl class="order-lines">
+              <div>
+                <dt>Пакет</dt>
+                <dd id="checkout-package">100K FLASH</dd>
+              </div>
+              <div>
+                <dt>Сеть</dt>
+                <dd><span class="checkout-network-pill" id="checkout-network">TRC20</span></dd>
+              </div>
+              <div>
+                <dt>Цена</dt>
+                <dd class="checkout-price" id="checkout-price">$365.00</dd>
+              </div>
+            </dl>
+
+            <div class="checkout-safe">Проверьте сеть и адрес перед отправкой оплаты.</div>
+
+            <div class="checkout-badges">
+              <span>Адрес кошелька</span>
+              <span>Проверка сети</span>
+              <span>Подтверждение оплаты</span>
+              <span>Статус заказа</span>
+            </div>
+          </article>
+
+          <article class="checkout-card wallet-card">
+            <h3>Введите адрес кошелька</h3>
+            <p id="wallet-helper">
+              Укажите адрес кошелька TRC20, который будет связан с вашим заказом.
+            </p>
+
+            <label class="wallet-field" for="customer-wallet">
+              Ваш адрес кошелька
+              <input id="customer-wallet" type="text" autocomplete="off" placeholder="Введите адрес кошелька" />
+            </label>
+
+            <p class="wallet-note">
+              Убедитесь, что адрес относится к выбранной сети. Переводы в неверной сети могут быть
+              потеряны.
+            </p>
+
+            <button class="checkout-submit" id="continue-payment" type="button">
+              Продолжить к оплате
+            </button>
+
+            <p class="checkout-message" id="checkout-message" role="status" aria-live="polite"></p>
+
+            <div class="payment-panel" id="payment-panel" hidden>
+              <div>
+                <p class="eyebrow">Crypto payment</p>
+                <h4>Оплатите заказ на кошелек</h4>
+              </div>
+              <div class="payment-address-box">
+                <span id="payment-network">TRC20</span>
+                <code id="payment-wallet">YOUR_TRC20_USDT_WALLET_ADDRESS</code>
+                <button class="copy-wallet" id="copy-wallet" type="button">Скопировать</button>
+              </div>
+              <div class="payment-amount">
+                <span>Сумма к оплате</span>
+                <strong id="payment-amount">$365.00</strong>
+              </div>
+              <p>
+                Отправляйте оплату только в выбранной сети. Замените placeholder-адрес на ваш
+                реальный криптокошелек перед публикацией сайта.
+              </p>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        <a class="brand" href="index.html" aria-label="CryptoFlashUSDT">
+          <span class="brand-mark">C</span>
+          <span class="brand-text">CryptoFlashUSDT</span>
+        </a>
+        <p>© 2026 CryptoFlashUSDT. Информационный сайт крипто-сервиса.</p>
+        <div class="footer-links">
+          <a href="index.html#networks">Сети</a>
+          <a href="products.html?network=TRC20">Пакеты</a>
+          <a href="faq.html">FAQ</a>
+        </div>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>

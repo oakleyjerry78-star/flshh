@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Пакеты — CryptoFlashUSDT</title>
+    <meta
+      name="description"
+      content="Выберите сеть и пакет CryptoFlashUSDT для USDT-операций: TRC20, ERC20, BEP20 или BTC."
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-page="products">
+    <header class="site-header" id="top">
+      <nav class="nav-shell" aria-label="Основная навигация">
+        <a class="brand" href="index.html" aria-label="CryptoFlashUSDT">
+          <span class="brand-mark">C</span>
+          <span class="brand-text">CryptoFlashUSDT</span>
+        </a>
+
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-menu">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span class="sr-only">Открыть меню</span>
+        </button>
+
+        <div class="nav-menu" id="nav-menu">
+          <a href="index.html#top">Главная</a>
+          <a href="index.html#networks">Сети</a>
+          <a class="is-active" href="products.html?network=TRC20">Пакеты</a>
+          <a href="index.html#wallets">Кошельки</a>
+          <a href="faq.html">Вопросы</a>
+        </div>
+
+        <a class="nav-cta" href="index.html#networks">Сменить сеть</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="section section-panel packages-section" id="packages" data-network="TRC20">
+        <div class="packages-heading">
+          <nav class="breadcrumbs" aria-label="Хлебные крошки">
+            <a href="index.html">Главная</a>
+            <span>Пакеты</span>
+          </nav>
+
+          <a class="back-link" href="index.html#networks">← Назад к сетям</a>
+          <p class="eyebrow">Пакеты</p>
+          <h1 id="packages-title">TRC20 — пакеты сети</h1>
+          <p id="packages-description">
+            Выберите формат помощи для покупки, проверки или перевода криптовалюты в выбранной
+            сети. Каждый пакет построен вокруг понятного порядка действий и проверки реквизитов.
+          </p>
+
+          <div class="network-tabs" aria-label="Выбор сети">
+            <a class="network-tab" href="products.html?network=TRC20" data-network-tab="TRC20">TRC20</a>
+            <a class="network-tab" href="products.html?network=ERC20" data-network-tab="ERC20">ERC20</a>
+            <a class="network-tab" href="products.html?network=BEP20" data-network-tab="BEP20">BEP20</a>
+            <a class="network-tab" href="products.html?network=BTC" data-network-tab="BTC">BTC</a>
+          </div>
+        </div>
+
+        <div class="package-grid" id="package-grid"></div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        <a class="brand" href="index.html" aria-label="CryptoFlashUSDT">
+          <span class="brand-mark">C</span>
+          <span class="brand-text">CryptoFlashUSDT</span>
+        </a>
+        <p>© 2026 CryptoFlashUSDT. Информационный сайт крипто-сервиса.</p>
+        <div class="footer-links">
+          <a href="index.html#networks">Сети</a>
+          <a href="faq.html">FAQ</a>
+        </div>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>

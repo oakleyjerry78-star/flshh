@@ -10,12 +10,23 @@
     />
     <link rel="stylesheet" href="styles.css" />
   </head>
-  <body data-page="checkout">
+  <body class="cosmic-ui" data-page="checkout">
+    <div class="site-intro" aria-hidden="true">
+      <div class="intro-mesh"></div>
+      <div class="intro-content">
+        <div class="intro-emblem"><span>C</span></div>
+        <p class="intro-brand">CryptoFlashUSDT</p>
+        <div class="intro-status"><i></i><span>Защищенное соединение</span></div>
+        <div class="intro-progress"><span></span></div>
+        <div class="intro-meta"><span>CFU SYSTEM</span><span>NETWORK READY</span></div>
+      </div>
+    </div>
     <header class="site-header" id="top">
       <nav class="nav-shell" aria-label="Основная навигация">
         <a class="brand" href="index.html" aria-label="CryptoFlashUSDT">
           <span class="brand-mark">C</span>
           <span class="brand-text">CryptoFlashUSDT</span>
+          <span class="brand-status"><i></i>В сети</span>
         </a>
 
         <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-menu">
@@ -78,7 +89,7 @@
               <span class="order-icon" id="checkout-icon">₮</span>
               <div>
                 <strong id="checkout-product">100K FLASH</strong>
-                <span id="checkout-network-label">TRC20 Network</span>
+                <span id="checkout-network-label">TRC20 сеть</span>
               </div>
             </div>
 

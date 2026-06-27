@@ -34,7 +34,10 @@ const paymentReceipt = document.querySelector("#payment-receipt");
 const receiptFile = document.querySelector("#receipt-file");
 const submitProof = document.querySelector("#submit-proof");
 const proofMessage = document.querySelector("#proof-message");
+const siteIntro = document.querySelector(".site-intro");
 const scrollProgress = document.querySelector(".scroll-progress");
+let journeyStatus = null;
+let journeyStep = null;
 const trackedSections = Array.from(
   document.querySelectorAll("#top, #networks, #packages, #checkout, #wallets")
 );
@@ -256,6 +259,61 @@ let selectedOrder = {
 };
 let activeOrderKey = "";
 
+function initSiteIntro() {
+  if (!siteIntro) {
+    return;
+  }
+
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let introWasShown = false;
+
+  try {
+    introWasShown = sessionStorage.getItem("cryptoflashusdt-intro") === "shown";
+  } catch (error) {
+    introWasShown = false;
+  }
+
+  if (introWasShown || reducedMotion) {
+    siteIntro.classList.add("is-skip");
+    document.body.classList.add("intro-skip");
+    return;
+  }
+
+  document.body.classList.add("intro-playing");
+  let isFinished = false;
+
+  const finishIntro = () => {
+    if (isFinished) {
+      return;
+    }
+
+    isFinished = true;
+    siteIntro.classList.add("is-complete");
+    document.body.classList.add("intro-exiting");
+    document.body.classList.remove("intro-playing");
+
+    try {
+      sessionStorage.setItem("cryptoflashusdt-intro", "shown");
+    } catch (error) {
+      // Local file previews may not expose session storage.
+    }
+
+    window.setTimeout(() => {
+      siteIntro.remove();
+      document.body.classList.remove("intro-exiting");
+      document.body.classList.add("intro-finished");
+    }, 900);
+  };
+
+  if (document.readyState === "complete") {
+    window.setTimeout(finishIntro, 1450);
+  } else {
+    window.addEventListener("load", () => window.setTimeout(finishIntro, 1450), { once: true });
+  }
+
+  window.setTimeout(finishIntro, 3600);
+}
+
 function getOrderStorageKey(networkName, card) {
   const packageKey = card.name.replace(/[^a-z0-9]/gi, "").toUpperCase();
   return `cryptoflashusdt-order-${networkName}-${packageKey}`;
@@ -388,6 +446,7 @@ function renderPackages(networkName) {
 
   initCardTilt();
   initLuxurySpotlight();
+  window.__refreshKineticItems?.();
 }
 
 function setCheckoutOrder(networkName, card, options = {}) {
@@ -409,7 +468,7 @@ function setCheckoutOrder(networkName, card, options = {}) {
   checkoutPrice.textContent = selectedCard.price;
 
   if (checkoutNetworkLabel) {
-    checkoutNetworkLabel.textContent = `${currentNetwork} Network`;
+    checkoutNetworkLabel.textContent = `${currentNetwork} сеть`;
   }
 
   if (checkoutIcon) {
@@ -504,9 +563,12 @@ function showPaymentStep() {
 function initRevealEffects() {
   const revealSelectors = [
     ".hero .eyebrow",
+    ".hero-signal",
     ".hero h1",
     ".hero-lead",
     ".hero-actions",
+    ".hero-ledger",
+    ".hero-scroll-cue",
     ".hero-premium-panel",
     ".luxury-ribbon",
     ".trust-strip",
@@ -651,6 +713,404 @@ function initLuxurySpotlight() {
   });
 }
 
+function initScrollCosmos() {
+  if (document.querySelector(".scroll-cosmos")) {
+    return;
+  }
+
+  const canvas = document.createElement("canvas");
+  canvas.className = "scroll-cosmos";
+  canvas.setAttribute("aria-hidden", "true");
+  document.body.prepend(canvas);
+
+  const scrollFlare = document.createElement("div");
+  scrollFlare.className = "scroll-flare";
+  scrollFlare.setAttribute("aria-hidden", "true");
+  document.body.prepend(scrollFlare);
+
+  const context = canvas.getContext("2d", { alpha: true });
+  if (!context) {
+    canvas.remove();
+    return;
+  }
+
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const compactScreen = window.matchMedia("(max-width: 760px)");
+  const colors = [
+    [101, 243, 173],
+    [169, 148, 255],
+    [243, 201, 77],
+  ];
+  let width = 0;
+  let height = 0;
+  let pixelRatio = 1;
+  let nodes = [];
+  let targetScroll = window.scrollY;
+  let smoothScroll = targetScroll;
+  let scrollVelocity = 0;
+  let scrollEnergy = 0;
+  let lastFrame = 0;
+  let lastBurstFrame = -1000;
+  let bursts = [];
+  const scrollLayers = Array.from(
+    document.querySelectorAll(
+      ".hero-copy, .hero-premium-panel, .section-heading, .packages-heading, .page-hero-inner, .guide-hero-copy, .guide-visual-card, .feature-band, .faq-cta"
+    )
+  );
+  let kineticItems = [];
+
+  scrollLayers.forEach((layer) => layer.classList.add("scroll-layer"));
+
+  function refreshKineticItems() {
+    kineticItems = Array.from(
+      document.querySelectorAll(
+        ".network-card, .package-card, .wallet-compat-card, .step, .faq-list details, .guide-step, .guide-card, .checkout-card"
+      )
+    );
+    kineticItems.forEach((item, index) => {
+      item.classList.add("kinetic-item");
+      item.style.setProperty("--kinetic-direction", index % 2 === 0 ? "-1" : "1");
+    });
+  }
+
+  refreshKineticItems();
+  window.__refreshKineticItems = refreshKineticItems;
+
+  function buildNodes() {
+    const nodeCount = compactScreen.matches ? 38 : 72;
+    nodes = Array.from({ length: nodeCount }, (_, index) => ({
+      x: Math.random(),
+      y: Math.random(),
+      depth: 0.28 + Math.random() * 0.95,
+      drift: 0.24 + Math.random() * 0.68,
+      speed: 4 + Math.random() * 13,
+      phase: Math.random() * Math.PI * 2,
+      size: 0.55 + Math.random() * 1.25,
+      color: colors[index % colors.length],
+      drawX: 0,
+      drawY: 0,
+    }));
+  }
+
+  function resizeCosmos() {
+    width = window.innerWidth;
+    height = window.innerHeight;
+    pixelRatio = Math.min(window.devicePixelRatio || 1, 1.5);
+    canvas.width = Math.max(1, Math.floor(width * pixelRatio));
+    canvas.height = Math.max(1, Math.floor(height * pixelRatio));
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
+    context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    buildNodes();
+  }
+
+  function drawSignalPaths(time) {
+    for (let index = 0; index < 4; index += 1) {
+      const baseY = ((time * (8 + index * 2) + smoothScroll * (0.035 + index * 0.012)) %
+        (height + 180)) - 90;
+      const gradient = context.createLinearGradient(0, baseY, width, baseY + 34);
+      gradient.addColorStop(0, "rgba(101, 243, 173, 0)");
+      gradient.addColorStop(
+        0.48,
+        `rgba(${index % 2 ? "169, 148, 255" : "101, 243, 173"}, ${(
+          0.055 +
+          scrollEnergy * 0.11
+        ).toFixed(3)})`
+      );
+      gradient.addColorStop(1, "rgba(101, 243, 173, 0)");
+      context.beginPath();
+      context.moveTo(-40, baseY);
+      context.bezierCurveTo(
+        width * 0.28,
+        baseY - 52 + index * 11,
+        width * 0.72,
+        baseY + 54 - index * 8,
+        width + 40,
+        baseY + 8
+      );
+      context.strokeStyle = gradient;
+      context.lineWidth = 0.65 + scrollEnergy * 1.15;
+      context.stroke();
+    }
+  }
+
+  function updateScrollLayers() {
+    const strength = compactScreen.matches ? 8 : 15;
+
+    scrollLayers.forEach((layer) => {
+      const rect = layer.getBoundingClientRect();
+
+      if (rect.bottom < -120 || rect.top > height + 120) {
+        return;
+      }
+
+      const layerCenter = rect.top + rect.height / 2;
+      const distanceFromCenter = (layerCenter - height / 2) / Math.max(height, 1);
+      const shift = Math.max(-strength, Math.min(strength, distanceFromCenter * -strength));
+      layer.style.setProperty("--scroll-layer-shift", `${shift.toFixed(2)}px`);
+    });
+  }
+
+  function updateKineticItems() {
+    if (reducedMotion) {
+      return;
+    }
+
+    const sideDistance = compactScreen.matches ? 18 : 58;
+    const verticalDistance = compactScreen.matches ? 18 : 42;
+
+    kineticItems.forEach((item) => {
+      const rect = item.getBoundingClientRect();
+
+      if (rect.bottom < -160 || rect.top > height + 160) {
+        return;
+      }
+
+      const entering = Math.max(0, Math.min(1, (height - rect.top) / (height * 0.42)));
+      const exiting = Math.max(0, Math.min(1, rect.bottom / (height * 0.34)));
+      const settled = Math.min(entering, exiting);
+      const scatter = 1 - settled;
+      const direction = Number(item.style.getPropertyValue("--kinetic-direction")) || 1;
+      const movingDown = rect.top > height / 2;
+      const x = scatter * sideDistance * direction;
+      const y = scatter * verticalDistance * (movingDown ? 1 : -1);
+      const rotation = scatter * direction * (compactScreen.matches ? 0.7 : 1.8);
+      const scale = 0.965 + settled * 0.035;
+
+      item.style.setProperty("--kinetic-x", `${x.toFixed(2)}px`);
+      item.style.setProperty("--kinetic-y", `${y.toFixed(2)}px`);
+      item.style.setProperty("--kinetic-rotate", `${rotation.toFixed(2)}deg`);
+      item.style.setProperty("--kinetic-scale", scale.toFixed(3));
+    });
+  }
+
+  function spawnScrollBurst(delta) {
+    if (reducedMotion || Math.abs(delta) < 14 || lastFrame - lastBurstFrame < 190) {
+      return;
+    }
+
+    lastBurstFrame = lastFrame;
+    bursts.push({
+      born: lastFrame,
+      x: width * (0.18 + Math.random() * 0.64),
+      y: delta > 0 ? height * 0.72 : height * 0.28,
+      direction: delta > 0 ? 1 : -1,
+      hue: bursts.length % 2,
+    });
+    bursts = bursts.slice(-5);
+  }
+
+  function drawScrollBursts(timestamp) {
+    bursts = bursts.filter((burst) => {
+      const age = Math.max(0, (timestamp - burst.born) / 920);
+
+      if (age >= 1) {
+        return false;
+      }
+
+      const accent = burst.hue ? [169, 148, 255] : [101, 243, 173];
+      const alpha = (1 - age) * (0.16 + scrollEnergy * 0.2);
+      const radius = 18 + age * (compactScreen.matches ? 86 : 170);
+      context.beginPath();
+      context.arc(burst.x, burst.y, radius, 0, Math.PI * 2);
+      context.strokeStyle = `rgba(${accent.join(", ")}, ${alpha.toFixed(3)})`;
+      context.lineWidth = 0.8 + scrollEnergy * 1.4;
+      context.stroke();
+
+      for (let ray = 0; ray < 14; ray += 1) {
+        const angle = (Math.PI * 2 * ray) / 14 + burst.direction * age * 0.42;
+        const inner = radius * 0.44;
+        const outer = radius * (0.72 + (ray % 3) * 0.08);
+        context.beginPath();
+        context.moveTo(burst.x + Math.cos(angle) * inner, burst.y + Math.sin(angle) * inner);
+        context.lineTo(burst.x + Math.cos(angle) * outer, burst.y + Math.sin(angle) * outer);
+        context.strokeStyle = `rgba(${accent.join(", ")}, ${(alpha * 0.72).toFixed(3)})`;
+        context.lineWidth = 0.55;
+        context.stroke();
+      }
+
+      return true;
+    });
+  }
+
+  function drawCosmos(timestamp = 0) {
+    if (
+      document.body.classList.contains("intro-playing") ||
+      document.body.classList.contains("intro-exiting")
+    ) {
+      lastFrame = timestamp;
+      requestAnimationFrame(drawCosmos);
+      return;
+    }
+
+    if (timestamp - lastFrame < (compactScreen.matches ? 34 : 24)) {
+      requestAnimationFrame(drawCosmos);
+      return;
+    }
+
+    lastFrame = timestamp;
+    const time = timestamp * 0.001;
+    const scrollDifference = targetScroll - smoothScroll;
+    smoothScroll += scrollDifference * 0.085;
+    scrollVelocity = scrollVelocity * 0.86 + scrollDifference * 0.035;
+    const targetEnergy = Math.min(1, Math.abs(scrollVelocity) / 17);
+    scrollEnergy += (targetEnergy - scrollEnergy) * (targetEnergy > scrollEnergy ? 0.24 : 0.08);
+    document.documentElement.style.setProperty("--scroll-energy", scrollEnergy.toFixed(3));
+    document.documentElement.style.setProperty(
+      "--scroll-energy-scale",
+      (1 + scrollEnergy * 0.24).toFixed(3)
+    );
+    context.clearRect(0, 0, width, height);
+    context.save();
+    context.globalCompositeOperation = "lighter";
+    drawSignalPaths(time);
+
+    nodes.forEach((node) => {
+      const scrollTravel = smoothScroll * (0.045 + node.depth * 0.06);
+      const scatterDistance = scrollEnergy * node.depth * (compactScreen.matches ? 42 : 104);
+      node.drawX =
+        node.x * width +
+        Math.sin(time * node.drift + node.phase + smoothScroll * 0.00022) * 34 * node.depth +
+        Math.sin(node.phase + time * 2.2) * scatterDistance;
+      node.drawY =
+        ((node.y * height + scrollTravel + time * node.speed) % (height + 120)) -
+        60 +
+        Math.cos(node.phase + time * 1.7) * scatterDistance * 0.32;
+    });
+
+    const linkDistance = (compactScreen.matches ? 112 : 154) * (1 + scrollEnergy * 0.18);
+    for (let first = 0; first < nodes.length; first += 1) {
+      for (let second = first + 1; second < nodes.length; second += 1) {
+        const nodeA = nodes[first];
+        const nodeB = nodes[second];
+        const dx = nodeA.drawX - nodeB.drawX;
+        const dy = nodeA.drawY - nodeB.drawY;
+        const distance = Math.hypot(dx, dy);
+
+        if (distance >= linkDistance) {
+          continue;
+        }
+
+        const opacity = (1 - distance / linkDistance) * (0.13 + scrollEnergy * 0.13);
+        context.beginPath();
+        context.moveTo(nodeA.drawX, nodeA.drawY);
+        context.lineTo(nodeB.drawX, nodeB.drawY);
+        context.strokeStyle = `rgba(101, 243, 173, ${opacity.toFixed(3)})`;
+        context.lineWidth = 0.55;
+        context.stroke();
+      }
+    }
+
+    nodes.forEach((node, index) => {
+      const [red, green, blue] = node.color;
+      const pulse = index % 11 === 0 ? 0.45 + Math.sin(time * 2.1 + node.phase) * 0.25 : 0;
+
+      if (scrollEnergy > 0.025) {
+        const streakLength = scrollVelocity * node.depth * 2.4;
+        context.beginPath();
+        context.moveTo(node.drawX, node.drawY - streakLength);
+        context.lineTo(node.drawX, node.drawY);
+        context.strokeStyle = `rgba(${red}, ${green}, ${blue}, ${(scrollEnergy * 0.34).toFixed(3)})`;
+        context.lineWidth = Math.max(0.45, node.size * 0.7);
+        context.stroke();
+      }
+
+      context.beginPath();
+      context.arc(node.drawX, node.drawY, node.size + pulse, 0, Math.PI * 2);
+      context.fillStyle = `rgba(${red}, ${green}, ${blue}, ${0.32 + node.depth * 0.3})`;
+      context.fill();
+
+      if (index % 13 === 0) {
+        const ring = 5 + ((time * 9 + index * 2.7 + smoothScroll * 0.012) % 18);
+        context.beginPath();
+        context.arc(node.drawX, node.drawY, ring, 0, Math.PI * 2);
+        context.strokeStyle = `rgba(${red}, ${green}, ${blue}, ${Math.max(0, 0.12 - ring * 0.004)})`;
+        context.lineWidth = 0.7;
+        context.stroke();
+      }
+    });
+
+    drawScrollBursts(timestamp);
+
+    context.restore();
+    updateScrollLayers();
+    updateKineticItems();
+
+    if (!reducedMotion) {
+      requestAnimationFrame(drawCosmos);
+    }
+  }
+
+  window.addEventListener(
+    "scroll",
+    () => {
+      const nextScroll = window.scrollY;
+      const delta = nextScroll - targetScroll;
+      scrollVelocity += delta * 0.22;
+      targetScroll = nextScroll;
+      spawnScrollBurst(delta);
+    },
+    { passive: true }
+  );
+  window.addEventListener("resize", resizeCosmos, { passive: true });
+  resizeCosmos();
+  drawCosmos();
+}
+
+function initScrollJourney() {
+  if (!document.querySelector("main") || document.querySelector(".scroll-journey")) {
+    return;
+  }
+
+  const journey = document.createElement("div");
+  journey.className = "scroll-journey";
+  journey.setAttribute("aria-hidden", "true");
+  journey.innerHTML = `
+    <span class="journey-caption">Маршрут страницы</span>
+    <div class="journey-readout">
+      <small>Этап <b>01</b></small>
+      <strong>Инициализация</strong>
+    </div>
+    <div class="journey-rail">
+      <span class="journey-fill"></span>
+      <i style="--node: 0%"></i>
+      <i style="--node: 25%"></i>
+      <i style="--node: 50%"></i>
+      <i style="--node: 75%"></i>
+      <i style="--node: 100%"></i>
+      <span class="journey-token"><b>₮</b></span>
+    </div>
+  `;
+
+  document.body.append(journey);
+  journeyStatus = journey.querySelector(".journey-readout strong");
+  journeyStep = journey.querySelector(".journey-readout b");
+}
+
+function updateJourneyStatus(progress) {
+  if (!journeyStatus || !journeyStep) {
+    return;
+  }
+
+  const phases = [
+    { limit: 16, step: "01", label: "Инициализация" },
+    { limit: 36, step: "02", label: "Выбор сети" },
+    { limit: 58, step: "03", label: "Маршрут операции" },
+    { limit: 80, step: "04", label: "Проверка данных" },
+    { limit: 96, step: "05", label: "Подтверждение" },
+    { limit: 101, step: "06", label: "Маршрут завершен" },
+  ];
+  const phase = phases.find((item) => progress < item.limit) || phases[phases.length - 1];
+
+  if (journeyStatus.textContent !== phase.label) {
+    journeyStatus.textContent = phase.label;
+    journeyStatus.classList.remove("is-changing");
+    requestAnimationFrame(() => journeyStatus.classList.add("is-changing"));
+  }
+
+  journeyStep.textContent = phase.step;
+}
+
 function updateScrollProgress() {
   if (!scrollProgress) {
     return;
@@ -659,6 +1119,9 @@ function updateScrollProgress() {
   const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
   const progress = maxScroll > 0 ? Math.min(100, Math.max(0, (window.scrollY / maxScroll) * 100)) : 0;
   scrollProgress.style.setProperty("--scroll-progress", `${progress.toFixed(2)}%`);
+  document.documentElement.style.setProperty("--journey-progress", `${progress.toFixed(2)}%`);
+  document.documentElement.style.setProperty("--journey-rotation", `${(progress * 7.2).toFixed(1)}deg`);
+  updateJourneyStatus(progress);
 }
 
 function initMagneticControls() {
@@ -752,6 +1215,9 @@ function updateActiveNav() {
   });
 }
 
+initSiteIntro();
+initScrollCosmos();
+initScrollJourney();
 window.addEventListener("scroll", updateActiveNav, { passive: true });
 window.addEventListener("load", updateActiveNav);
 window.addEventListener("scroll", updateScrollProgress, { passive: true });

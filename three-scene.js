@@ -215,6 +215,66 @@ function initHeroScene() {
   );
   scene.add(particles);
 
+  const fieldGeometry = new THREE.BufferGeometry();
+  const fieldCount = 420;
+  const fieldPositions = new Float32Array(fieldCount * 3);
+
+  for (let index = 0; index < fieldCount; index += 1) {
+    const spread = 8 + Math.random() * 8;
+    fieldPositions[index * 3] = (Math.random() - 0.5) * spread;
+    fieldPositions[index * 3 + 1] = (Math.random() - 0.5) * 6.8;
+    fieldPositions[index * 3 + 2] = -1.8 - Math.random() * 5.6;
+  }
+
+  fieldGeometry.setAttribute("position", new THREE.BufferAttribute(fieldPositions, 3));
+  const field = new THREE.Points(
+    fieldGeometry,
+    new THREE.PointsMaterial({
+      color: 0xc9ffe2,
+      size: 0.026,
+      transparent: true,
+      opacity: 0.48,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+    })
+  );
+  scene.add(field);
+
+  const meshPositions = [];
+  const meshNodeCount = 54;
+  const meshNodes = Array.from({ length: meshNodeCount }, () => ({
+    x: (Math.random() - 0.5) * 8.4,
+    y: (Math.random() - 0.5) * 5.4,
+    z: -2.6 - Math.random() * 3.6,
+  }));
+
+  meshNodes.forEach((node, index) => {
+    const next = meshNodes[(index + 7) % meshNodeCount];
+    meshPositions.push(node.x, node.y, node.z, next.x, next.y, next.z);
+
+    if (index % 3 === 0) {
+      const cross = meshNodes[(index + 19) % meshNodeCount];
+      meshPositions.push(node.x, node.y, node.z, cross.x, cross.y, cross.z);
+    }
+  });
+
+  const fieldLinksGeometry = new THREE.BufferGeometry();
+  fieldLinksGeometry.setAttribute(
+    "position",
+    new THREE.Float32BufferAttribute(meshPositions, 3)
+  );
+  const fieldLinks = new THREE.LineSegments(
+    fieldLinksGeometry,
+    new THREE.LineBasicMaterial({
+      color: 0x65f3ad,
+      transparent: true,
+      opacity: 0.055,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+    })
+  );
+  scene.add(fieldLinks);
+
   function createNode(color, radius, speed, offset) {
     return {
       mesh: new THREE.Mesh(
@@ -263,6 +323,18 @@ function initHeroScene() {
   function render() {
     const time = clock.getElapsedTime();
 
+    if (
+      document.body.classList.contains("intro-playing") ||
+      document.body.classList.contains("intro-exiting")
+    ) {
+      renderer.clear();
+
+      if (!reducedMotion) {
+        requestAnimationFrame(render);
+      }
+      return;
+    }
+
     group.rotation.y = Math.sin(time * 0.42) * 0.28 + pointer.x * 0.18;
     group.rotation.x = Math.sin(time * 0.32) * 0.08 + pointer.y * 0.12;
     group.rotation.z = Math.sin(time * 0.28) * 0.04;
@@ -278,6 +350,10 @@ function initHeroScene() {
     haloRing.rotation.z = -time * 0.2;
     glassPlate.material.opacity = 0.045 + Math.sin(time * 1.35) * 0.014;
     particles.rotation.y = time * 0.05;
+    field.rotation.y = time * 0.008;
+    field.rotation.x = Math.sin(time * 0.08) * 0.016;
+    fieldLinks.rotation.y = -time * 0.006;
+    fieldLinks.material.opacity = 0.045 + Math.sin(time * 0.42) * 0.016;
 
     nodes.forEach((node) => {
       const orbitTime = time * node.speed + node.offset;

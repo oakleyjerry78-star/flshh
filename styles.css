@@ -4811,6 +4811,188 @@ body {
   }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .scroll-cosmos {
+    opacity: 0.34;
+  }
+}
+
+/* Refined Tether centerpiece */
+.cosmic-ui .panel-orbit-mark {
+  isolation: isolate;
+  overflow: visible;
+  background:
+    conic-gradient(from 40deg, transparent 0 18%, rgba(101, 243, 173, 0.34), transparent 46% 68%, rgba(169, 148, 255, 0.22), transparent),
+    rgba(0, 0, 0, 0.62);
+  box-shadow:
+    0 0 0 12px rgba(101, 243, 173, 0.018),
+    0 0 76px rgba(101, 243, 173, 0.15);
+}
+
+.cosmic-ui .panel-orbit-mark .tether-token {
+  animation: tetherPremiumFloat 7.6s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  will-change: transform;
+}
+
+.cosmic-ui .coin-edge {
+  background:
+    repeating-conic-gradient(from 2deg, #05271b 0deg 2deg, #149064 2deg 4deg, #063d2b 4deg 6deg),
+    #073e2c;
+  box-shadow:
+    0 24px 48px rgba(0, 0, 0, 0.52),
+    0 0 34px rgba(101, 243, 173, 0.22);
+}
+
+.cosmic-ui .coin-face {
+  background:
+    radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.78), transparent 13%),
+    linear-gradient(145deg, #8dffd4 0%, #20c785 38%, #0b8559 72%, #043d2b 100%);
+  box-shadow:
+    0 0 0 2px rgba(255, 255, 255, 0.2) inset,
+    0 0 0 9px rgba(0, 30, 20, 0.28) inset,
+    0 0 0 12px rgba(255, 255, 255, 0.07) inset,
+    0 0 48px rgba(101, 243, 173, 0.32);
+}
+
+.cosmic-ui .coin-shine {
+  background:
+    linear-gradient(112deg, transparent 12%, rgba(255, 255, 255, 0.56) 31%, transparent 48%),
+    radial-gradient(circle at 28% 18%, rgba(255, 255, 255, 0.36), transparent 17%);
+  background-size: 240% 100%, 100% 100%;
+  animation: tetherLightSweep 3.8s ease-in-out infinite;
+}
+
+.orbit-satellite {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 3;
+  width: 7px;
+  height: 7px;
+  margin: -3.5px;
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  border-radius: 50%;
+  background: #65f3ad;
+  box-shadow:
+    0 0 10px rgba(101, 243, 173, 0.82),
+    0 0 24px rgba(101, 243, 173, 0.42);
+  animation: tetherSatelliteOne 5.8s linear infinite;
+}
+
+.satellite-two {
+  width: 5px;
+  height: 5px;
+  margin: -2.5px;
+  background: #a994ff;
+  box-shadow: 0 0 12px rgba(169, 148, 255, 0.72);
+  animation-name: tetherSatelliteTwo;
+  animation-duration: 8.4s;
+  animation-direction: reverse;
+}
+
+.satellite-three {
+  width: 4px;
+  height: 4px;
+  margin: -2px;
+  background: #fff;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+  animation-name: tetherSatelliteThree;
+  animation-duration: 10.6s;
+}
+
+.three-ready #hero-3d-canvas {
+  opacity: 0.94;
+}
+
+@keyframes tetherPremiumFloat {
+  0%,
+  100% {
+    transform: translateY(2px) rotateX(8deg) rotateY(-14deg) rotateZ(-2deg);
+  }
+  28% {
+    transform: translateY(-7px) rotateX(3deg) rotateY(7deg) rotateZ(2deg);
+  }
+  58% {
+    transform: translateY(-2px) rotateX(-4deg) rotateY(16deg) rotateZ(4deg);
+  }
+  80% {
+    transform: translateY(-8px) rotateX(5deg) rotateY(-5deg) rotateZ(0deg);
+  }
+}
+
+@keyframes tetherLightSweep {
+  0%,
+  18% {
+    background-position: 160% 0, 0 0;
+  }
+  70%,
+  100% {
+    background-position: -90% 0, 0 0;
+  }
+}
+
+@keyframes tetherSatelliteOne {
+  from {
+    transform: rotate(0deg) translateX(102px) rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg) translateX(102px) rotate(-360deg);
+  }
+}
+
+@keyframes tetherSatelliteTwo {
+  from {
+    transform: rotate(60deg) translateX(126px) rotate(-60deg);
+  }
+  to {
+    transform: rotate(420deg) translateX(126px) rotate(-420deg);
+  }
+}
+
+@keyframes tetherSatelliteThree {
+  from {
+    transform: rotate(140deg) translateX(86px) rotate(-140deg);
+  }
+  to {
+    transform: rotate(500deg) translateX(86px) rotate(-500deg);
+  }
+}
+
+@media (max-width: 760px) {
+  .orbit-satellite {
+    width: 5px;
+    height: 5px;
+    margin: -2.5px;
+  }
+
+  @keyframes tetherSatelliteOne {
+    from {
+      transform: rotate(0deg) translateX(78px) rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg) translateX(78px) rotate(-360deg);
+    }
+  }
+
+  @keyframes tetherSatelliteTwo {
+    from {
+      transform: rotate(60deg) translateX(92px) rotate(-60deg);
+    }
+    to {
+      transform: rotate(420deg) translateX(92px) rotate(-420deg);
+    }
+  }
+
+  @keyframes tetherSatelliteThree {
+    from {
+      transform: rotate(140deg) translateX(66px) rotate(-140deg);
+    }
+    to {
+      transform: rotate(500deg) translateX(66px) rotate(-500deg);
+    }
+  }
+}
+
 @media (max-width: 390px) {
   .brand-text {
     max-width: 148px;
@@ -7251,5 +7433,91 @@ body {
     rotate: none;
     scale: 1;
     transition: none;
+  }
+}
+
+/* Deep black starfield */
+html,
+.cosmic-ui {
+  background: #000 !important;
+}
+
+.cosmic-ui::before,
+.cosmic-ui::after {
+  display: none !important;
+}
+
+.cosmic-ui .hero,
+.cosmic-ui .page-hero,
+.cosmic-ui .guide-hero,
+.cosmic-ui .footer {
+  background-color: transparent;
+}
+
+.cosmic-ui .hero-overlay {
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.94), rgba(0, 0, 0, 0.34) 56%, rgba(0, 0, 0, 0.76)),
+    transparent;
+}
+
+.cosmic-ui .site-header {
+  background: rgba(0, 0, 0, 0.76);
+}
+
+.scroll-cosmos {
+  opacity: 0.9;
+  filter: contrast(1.08);
+}
+
+.scroll-flare {
+  display: none;
+}
+
+.cosmic-ui .section,
+.cosmic-ui .network-select-section,
+.cosmic-ui .packages-section,
+.cosmic-ui .checkout-section,
+.cosmic-ui .faq-cta,
+.cosmic-ui .guide-section,
+.cosmic-ui .section:nth-of-type(even),
+.cosmic-ui .guide-section:nth-of-type(even) {
+  background-color: rgba(0, 0, 0, 0.28);
+  backdrop-filter: none;
+}
+
+.cosmic-ui .network-card,
+.cosmic-ui .package-card,
+.cosmic-ui .checkout-card,
+.cosmic-ui .wallet-compat-card,
+.cosmic-ui .guide-card,
+.cosmic-ui .guide-step,
+.cosmic-ui details {
+  background-color: rgba(3, 6, 5, 0.9);
+}
+
+.site-intro,
+.site-intro::before,
+.site-intro::after {
+  background-color: #000;
+}
+
+@media (max-width: 760px) {
+  .scroll-cosmos {
+    opacity: 0.78;
+  }
+
+  .cosmic-ui .section,
+  .cosmic-ui .network-select-section,
+  .cosmic-ui .packages-section,
+  .cosmic-ui .checkout-section,
+  .cosmic-ui .faq-cta,
+  .cosmic-ui .guide-section {
+    background-color: rgba(0, 0, 0, 0.36);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-cosmos {
+    opacity: 0.34;
   }
 }

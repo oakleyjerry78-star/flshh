@@ -737,10 +737,12 @@ function initScrollCosmos() {
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const compactScreen = window.matchMedia("(max-width: 760px)");
   const colors = [
-    [101, 243, 173],
-    [169, 148, 255],
-    [243, 201, 77],
+    [255, 255, 255],
+    [232, 238, 235],
+    [205, 214, 209],
+    [255, 255, 255],
   ];
+  const renderStarLines = false;
   let width = 0;
   let height = 0;
   let pixelRatio = 1;
@@ -752,6 +754,7 @@ function initScrollCosmos() {
   let lastFrame = 0;
   let lastBurstFrame = -1000;
   let bursts = [];
+  let shootingStars = [];
   const scrollLayers = Array.from(
     document.querySelectorAll(
       ".hero-copy, .hero-premium-panel, .section-heading, .packages-heading, .page-hero-inner, .guide-hero-copy, .guide-visual-card, .feature-band, .faq-cta"
@@ -777,7 +780,7 @@ function initScrollCosmos() {
   window.__refreshKineticItems = refreshKineticItems;
 
   function buildNodes() {
-    const nodeCount = compactScreen.matches ? 38 : 72;
+    const nodeCount = compactScreen.matches ? 90 : 180;
     nodes = Array.from({ length: nodeCount }, (_, index) => ({
       x: Math.random(),
       y: Math.random(),
@@ -786,6 +789,8 @@ function initScrollCosmos() {
       speed: 4 + Math.random() * 13,
       phase: Math.random() * Math.PI * 2,
       size: 0.55 + Math.random() * 1.25,
+      twinkle: 0.55 + Math.random() * 1.8,
+      bright: index % 9 === 0,
       color: colors[index % colors.length],
       drawX: 0,
       drawY: 0,
@@ -898,6 +903,20 @@ function initScrollCosmos() {
       hue: bursts.length % 2,
     });
     bursts = bursts.slice(-5);
+
+    const direction = delta > 0 ? -1 : 1;
+    const shootingCount = compactScreen.matches ? 1 : 2;
+    for (let index = 0; index < shootingCount; index += 1) {
+      shootingStars.push({
+        born: lastFrame,
+        x: width * (0.1 + Math.random() * 0.8),
+        y: direction < 0 ? height * (0.62 + Math.random() * 0.32) : height * (0.06 + Math.random() * 0.3),
+        velocityX: (Math.random() - 0.5) * (compactScreen.matches ? 90 : 180),
+        velocityY: direction * (170 + Math.random() * (compactScreen.matches ? 110 : 220)),
+        color: Math.random() > 0.72 ? [169, 148, 255] : [201, 255, 226],
+      });
+    }
+    shootingStars = shootingStars.slice(-8);
   }
 
   function drawScrollBursts(timestamp) {
@@ -933,6 +952,39 @@ function initScrollCosmos() {
     });
   }
 
+  function drawShootingStars(timestamp) {
+    shootingStars = shootingStars.filter((star) => {
+      const age = Math.max(0, (timestamp - star.born) / 1150);
+
+      if (age >= 1) {
+        return false;
+      }
+
+      const ease = age * (2 - age);
+      const x = star.x + star.velocityX * ease;
+      const y = star.y + star.velocityY * ease;
+      const tailScale = compactScreen.matches ? 0.17 : 0.23;
+      const tailX = x - star.velocityX * tailScale;
+      const tailY = y - star.velocityY * tailScale;
+      const [red, green, blue] = star.color;
+      const gradient = context.createLinearGradient(tailX, tailY, x, y);
+      gradient.addColorStop(0, `rgba(${red}, ${green}, ${blue}, 0)`);
+      gradient.addColorStop(1, `rgba(${red}, ${green}, ${blue}, ${(1 - age) * 0.72})`);
+      context.beginPath();
+      context.moveTo(tailX, tailY);
+      context.lineTo(x, y);
+      context.strokeStyle = gradient;
+      context.lineWidth = 0.8 + (1 - age) * 1.15;
+      context.stroke();
+      context.beginPath();
+      context.arc(x, y, 1.2 + (1 - age) * 0.8, 0, Math.PI * 2);
+      context.fillStyle = `rgba(${red}, ${green}, ${blue}, ${(1 - age) * 0.9})`;
+      context.fill();
+
+      return true;
+    });
+  }
+
   function drawCosmos(timestamp = 0) {
     if (
       document.body.classList.contains("intro-playing") ||
@@ -963,41 +1015,49 @@ function initScrollCosmos() {
     context.clearRect(0, 0, width, height);
     context.save();
     context.globalCompositeOperation = "lighter";
-    drawSignalPaths(time);
+
+    if (renderStarLines) {
+      drawSignalPaths(time);
+    }
 
     nodes.forEach((node) => {
-      const scrollTravel = smoothScroll * (0.045 + node.depth * 0.06);
+      const scrollTravel = smoothScroll * (0.09 + node.depth * 0.16);
       const scatterDistance = scrollEnergy * node.depth * (compactScreen.matches ? 42 : 104);
+      const warpDistance = scrollEnergy * node.depth * (compactScreen.matches ? 40 : 118);
       node.drawX =
         node.x * width +
         Math.sin(time * node.drift + node.phase + smoothScroll * 0.00022) * 34 * node.depth +
-        Math.sin(node.phase + time * 2.2) * scatterDistance;
+        Math.sin(node.phase + time * 2.2) * scatterDistance +
+        (node.x - 0.5) * warpDistance;
       node.drawY =
         ((node.y * height + scrollTravel + time * node.speed) % (height + 120)) -
         60 +
-        Math.cos(node.phase + time * 1.7) * scatterDistance * 0.32;
+        Math.cos(node.phase + time * 1.7) * scatterDistance * 0.32 +
+        (node.y - 0.5) * warpDistance * 0.36;
     });
 
-    const linkDistance = (compactScreen.matches ? 112 : 154) * (1 + scrollEnergy * 0.18);
-    for (let first = 0; first < nodes.length; first += 1) {
-      for (let second = first + 1; second < nodes.length; second += 1) {
-        const nodeA = nodes[first];
-        const nodeB = nodes[second];
-        const dx = nodeA.drawX - nodeB.drawX;
-        const dy = nodeA.drawY - nodeB.drawY;
-        const distance = Math.hypot(dx, dy);
+    if (renderStarLines) {
+      const linkDistance = (compactScreen.matches ? 112 : 154) * (1 + scrollEnergy * 0.18);
+      for (let first = 0; first < nodes.length; first += 1) {
+        for (let second = first + 1; second < nodes.length; second += 1) {
+          const nodeA = nodes[first];
+          const nodeB = nodes[second];
+          const dx = nodeA.drawX - nodeB.drawX;
+          const dy = nodeA.drawY - nodeB.drawY;
+          const distance = Math.hypot(dx, dy);
 
-        if (distance >= linkDistance) {
-          continue;
+          if (distance >= linkDistance) {
+            continue;
+          }
+
+          const opacity = (1 - distance / linkDistance) * (0.045 + scrollEnergy * 0.16);
+          context.beginPath();
+          context.moveTo(nodeA.drawX, nodeA.drawY);
+          context.lineTo(nodeB.drawX, nodeB.drawY);
+          context.strokeStyle = `rgba(255, 255, 255, ${opacity.toFixed(3)})`;
+          context.lineWidth = 0.55;
+          context.stroke();
         }
-
-        const opacity = (1 - distance / linkDistance) * (0.13 + scrollEnergy * 0.13);
-        context.beginPath();
-        context.moveTo(nodeA.drawX, nodeA.drawY);
-        context.lineTo(nodeB.drawX, nodeB.drawY);
-        context.strokeStyle = `rgba(101, 243, 173, ${opacity.toFixed(3)})`;
-        context.lineWidth = 0.55;
-        context.stroke();
       }
     }
 
@@ -1005,8 +1065,8 @@ function initScrollCosmos() {
       const [red, green, blue] = node.color;
       const pulse = index % 11 === 0 ? 0.45 + Math.sin(time * 2.1 + node.phase) * 0.25 : 0;
 
-      if (scrollEnergy > 0.025) {
-        const streakLength = scrollVelocity * node.depth * 2.4;
+      if (renderStarLines && scrollEnergy > 0.025) {
+        const streakLength = scrollVelocity * node.depth * 4.2;
         context.beginPath();
         context.moveTo(node.drawX, node.drawY - streakLength);
         context.lineTo(node.drawX, node.drawY);
@@ -1015,10 +1075,20 @@ function initScrollCosmos() {
         context.stroke();
       }
 
+      const twinkle = 0.72 + Math.sin(time * node.twinkle + node.phase) * 0.28;
+      const starAlpha = (0.28 + node.depth * 0.42) * twinkle;
       context.beginPath();
       context.arc(node.drawX, node.drawY, node.size + pulse, 0, Math.PI * 2);
-      context.fillStyle = `rgba(${red}, ${green}, ${blue}, ${0.32 + node.depth * 0.3})`;
+      context.fillStyle = `rgba(${red}, ${green}, ${blue}, ${starAlpha.toFixed(3)})`;
       context.fill();
+
+      if (node.bright) {
+        const glowRadius = node.size * 2.8 + scrollEnergy * 1.4;
+        context.beginPath();
+        context.arc(node.drawX, node.drawY, glowRadius, 0, Math.PI * 2);
+        context.fillStyle = `rgba(255, 255, 255, ${(starAlpha * 0.1).toFixed(3)})`;
+        context.fill();
+      }
 
       if (index % 13 === 0) {
         const ring = 5 + ((time * 9 + index * 2.7 + smoothScroll * 0.012) % 18);
@@ -1030,7 +1100,10 @@ function initScrollCosmos() {
       }
     });
 
-    drawScrollBursts(timestamp);
+    if (renderStarLines) {
+      drawScrollBursts(timestamp);
+      drawShootingStars(timestamp);
+    }
 
     context.restore();
     updateScrollLayers();
@@ -1048,7 +1121,9 @@ function initScrollCosmos() {
       const delta = nextScroll - targetScroll;
       scrollVelocity += delta * 0.22;
       targetScroll = nextScroll;
-      spawnScrollBurst(delta);
+      if (renderStarLines) {
+        spawnScrollBurst(delta);
+      }
     },
     { passive: true }
   );

@@ -44,6 +44,8 @@ function initHeroScene() {
 
   const group = new THREE.Group();
   const orbitGroup = new THREE.Group();
+  group.userData.baseY = 0;
+  group.userData.baseScale = 1;
   scene.add(group, orbitGroup);
 
   const coinMaterial = new THREE.MeshStandardMaterial({
@@ -304,18 +306,24 @@ function initHeroScene() {
 
     if (width < 720) {
       group.position.set(0.55, -0.78, 0);
+      group.userData.baseY = -0.78;
       orbitGroup.position.copy(group.position);
       group.scale.setScalar(0.68);
+      group.userData.baseScale = 0.68;
       orbitGroup.scale.setScalar(0.68);
     } else if (width < 1040) {
       group.position.set(1.62, -0.08, 0);
+      group.userData.baseY = -0.08;
       orbitGroup.position.copy(group.position);
       group.scale.setScalar(0.86);
+      group.userData.baseScale = 0.86;
       orbitGroup.scale.setScalar(0.86);
     } else {
       group.position.set(2.25, -0.05, 0);
+      group.userData.baseY = -0.05;
       orbitGroup.position.copy(group.position);
       group.scale.setScalar(1);
+      group.userData.baseScale = 1;
       orbitGroup.scale.setScalar(1);
     }
   }
@@ -335,9 +343,11 @@ function initHeroScene() {
       return;
     }
 
-    group.rotation.y = Math.sin(time * 0.42) * 0.28 + pointer.x * 0.18;
-    group.rotation.x = Math.sin(time * 0.32) * 0.08 + pointer.y * 0.12;
-    group.rotation.z = Math.sin(time * 0.28) * 0.04;
+    group.rotation.y = time * 0.36 + Math.sin(time * 0.42) * 0.1 + pointer.x * 0.18;
+    group.rotation.x = 0.11 + Math.sin(time * 0.32) * 0.07 + pointer.y * 0.1;
+    group.rotation.z = Math.sin(time * 0.28) * 0.035;
+    group.position.y = group.userData.baseY + Math.sin(time * 0.72) * 0.07;
+    group.scale.setScalar(group.userData.baseScale * (1 + Math.sin(time * 0.9) * 0.012));
     crystal.rotation.y = -time * 0.16;
     crystal.rotation.x = time * 0.08;
 
@@ -350,6 +360,8 @@ function initHeroScene() {
     haloRing.rotation.z = -time * 0.2;
     glassPlate.material.opacity = 0.045 + Math.sin(time * 1.35) * 0.014;
     particles.rotation.y = time * 0.05;
+    mintLight.intensity = 4.7 + Math.sin(time * 1.1) * 0.42;
+    keyLight.position.x = 3.2 + Math.sin(time * 0.44) * 0.7;
     field.rotation.y = time * 0.008;
     field.rotation.x = Math.sin(time * 0.08) * 0.016;
     fieldLinks.rotation.y = -time * 0.006;

@@ -36,12 +36,66 @@ const submitProof = document.querySelector("#submit-proof");
 const proofMessage = document.querySelector("#proof-message");
 const siteIntro = document.querySelector(".site-intro");
 const scrollProgress = document.querySelector(".scroll-progress");
+const networkAdvisor = document.querySelector(".network-advisor");
+const networkAdvisorTabs = document.querySelectorAll(".network-advisor-tab[data-advisor-network]");
+const advisorSymbol = document.querySelector("#advisor-symbol");
+const advisorChain = document.querySelector("#advisor-chain");
+const advisorTitle = document.querySelector("#advisor-title");
+const advisorDescription = document.querySelector("#advisor-description");
+const advisorSpeed = document.querySelector("#advisor-speed");
+const advisorFee = document.querySelector("#advisor-fee");
+const advisorAddress = document.querySelector("#advisor-address");
+const advisorAction = document.querySelector("#advisor-action");
+const advisorNote = document.querySelector("#advisor-note");
 let journeyStatus = null;
 let journeyStep = null;
 const trackedSections = Array.from(
   document.querySelectorAll("#top, #networks, #packages, #checkout, #wallets")
 );
 const pageParams = new URLSearchParams(window.location.search);
+
+const networkAdvisorData = {
+  TRC20: {
+    symbol: "₮",
+    chain: "TRON",
+    title: "USDT в сети TRC20",
+    description: "Практичный маршрут для регулярных переводов USDT через совместимые TRON-кошельки.",
+    speed: "Высокая",
+    fee: "Обычно ниже",
+    address: "Начинается с T",
+    note: "Перед переводом убедитесь, что отправитель и получатель используют одну сеть.",
+  },
+  ERC20: {
+    symbol: "◆",
+    chain: "ETHEREUM",
+    title: "USDT в сети ERC20",
+    description: "Маршрут для Ethereum-кошельков и сервисов, где важна совместимость со стандартом ERC20.",
+    speed: "Средняя",
+    fee: "Зависит от нагрузки",
+    address: "Формат 0x…",
+    note: "Проверьте комиссию Ethereum непосредственно перед отправкой транзакции.",
+  },
+  BEP20: {
+    symbol: "⬡",
+    chain: "BNB CHAIN",
+    title: "USDT в сети BEP20",
+    description: "Удобный маршрут для кошельков и платформ, поддерживающих BNB Smart Chain.",
+    speed: "Высокая",
+    fee: "Обычно ниже",
+    address: "Формат 0x…",
+    note: "Адрес может выглядеть как ERC20, поэтому обязательно сверяйте именно выбранную сеть.",
+  },
+  BTC: {
+    symbol: "₿",
+    chain: "BITCOIN",
+    title: "Отдельная оплата в BTC",
+    description: "Маршрут для расчетов в Bitcoin. BTC здесь является отдельным активом, а не сетью USDT.",
+    speed: "По подтверждениям",
+    fee: "Зависит от сети",
+    address: "bc1 / 1 / 3",
+    note: "Не отправляйте USDT на Bitcoin-адрес: актив и сеть должны совпадать.",
+  },
+};
 
 const packageFeatures = [
   "проверка сети и адреса",
@@ -264,11 +318,12 @@ function initSiteIntro() {
     return;
   }
 
+  const introStorageKey = "cryptoflashusdt-intro-v2";
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   let introWasShown = false;
 
   try {
-    introWasShown = sessionStorage.getItem("cryptoflashusdt-intro") === "shown";
+    introWasShown = sessionStorage.getItem(introStorageKey) === "shown";
   } catch (error) {
     introWasShown = false;
   }
@@ -288,12 +343,12 @@ function initSiteIntro() {
     }
 
     isFinished = true;
-    siteIntro.classList.add("is-complete");
     document.body.classList.add("intro-exiting");
     document.body.classList.remove("intro-playing");
+    requestAnimationFrame(() => siteIntro.classList.add("is-complete"));
 
     try {
-      sessionStorage.setItem("cryptoflashusdt-intro", "shown");
+      sessionStorage.setItem(introStorageKey, "shown");
     } catch (error) {
       // Local file previews may not expose session storage.
     }
@@ -302,16 +357,16 @@ function initSiteIntro() {
       siteIntro.remove();
       document.body.classList.remove("intro-exiting");
       document.body.classList.add("intro-finished");
-    }, 900);
+    }, 980);
   };
 
   if (document.readyState === "complete") {
-    window.setTimeout(finishIntro, 1450);
+    window.setTimeout(finishIntro, 2150);
   } else {
-    window.addEventListener("load", () => window.setTimeout(finishIntro, 1450), { once: true });
+    window.addEventListener("load", () => window.setTimeout(finishIntro, 2150), { once: true });
   }
 
-  window.setTimeout(finishIntro, 3600);
+  window.setTimeout(finishIntro, 4700);
 }
 
 function getOrderStorageKey(networkName, card) {
@@ -560,6 +615,52 @@ function showPaymentStep() {
   }
 }
 
+function updateNetworkAdvisor(networkName) {
+  const currentNetwork = normalizeNetwork(networkName);
+  const data = networkAdvisorData[currentNetwork];
+
+  if (!networkAdvisor || !data) {
+    return;
+  }
+
+  networkAdvisor.dataset.activeNetwork = currentNetwork;
+
+  if (advisorSymbol) advisorSymbol.textContent = data.symbol;
+  if (advisorChain) advisorChain.textContent = data.chain;
+  if (advisorTitle) advisorTitle.textContent = data.title;
+  if (advisorDescription) advisorDescription.textContent = data.description;
+  if (advisorSpeed) advisorSpeed.textContent = data.speed;
+  if (advisorFee) advisorFee.textContent = data.fee;
+  if (advisorAddress) advisorAddress.textContent = data.address;
+  if (advisorNote) advisorNote.textContent = data.note;
+
+  if (advisorAction) {
+    advisorAction.href = `products.html?network=${currentNetwork}`;
+    advisorAction.setAttribute("aria-label", `Открыть пакеты ${currentNetwork}`);
+  }
+
+  networkAdvisorTabs.forEach((tab) => {
+    const isActive = tab.dataset.advisorNetwork === currentNetwork;
+    tab.classList.toggle("is-active", isActive);
+    tab.setAttribute("aria-selected", String(isActive));
+  });
+
+  networkAdvisor.classList.remove("is-updating");
+  requestAnimationFrame(() => networkAdvisor.classList.add("is-updating"));
+}
+
+function initNetworkAdvisor() {
+  if (!networkAdvisor || !networkAdvisorTabs.length) {
+    return;
+  }
+
+  networkAdvisorTabs.forEach((tab) => {
+    tab.addEventListener("click", () => updateNetworkAdvisor(tab.dataset.advisorNetwork));
+  });
+
+  updateNetworkAdvisor(networkAdvisor.dataset.activeNetwork || "TRC20");
+}
+
 function initRevealEffects() {
   const revealSelectors = [
     ".hero .eyebrow",
@@ -573,6 +674,7 @@ function initRevealEffects() {
     ".luxury-ribbon",
     ".trust-strip",
     ".section-heading",
+    ".network-advisor",
     ".network-card",
     ".feature-band",
     ".step",
@@ -679,7 +781,7 @@ function initLuxurySpotlight() {
   }
 
   const spotlightItems = document.querySelectorAll(
-    ".hero-premium-panel, .network-card, .package-card, .checkout-card, .guide-card, .guide-step, .guide-visual-card, .guide-warning, .guide-checklist"
+    ".hero-premium-panel, .network-advisor, .network-card, .package-card, .checkout-card, .guide-card, .guide-step, .guide-visual-card, .guide-warning, .guide-checklist"
   );
 
   spotlightItems.forEach((item) => {
@@ -1207,7 +1309,9 @@ function initMagneticControls() {
     return;
   }
 
-  const controls = document.querySelectorAll(".button, .back-link, .network-tab");
+  const controls = document.querySelectorAll(
+    ".button, .back-link, .network-tab, .network-advisor-tab, .advisor-action"
+  );
 
   controls.forEach((control) => {
     if (control.dataset.magneticReady === "true") {
@@ -1244,6 +1348,56 @@ function initMagneticControls() {
       { passive: true }
     );
   });
+}
+
+function initMobileMotion() {
+  const mobileViewport = window.matchMedia("(max-width: 760px)");
+  const coarsePointer = window.matchMedia("(pointer: coarse)");
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  if (!mobileViewport.matches || reducedMotion.matches) {
+    return;
+  }
+
+  document.documentElement.classList.add("mobile-motion");
+
+  if (coarsePointer.matches) {
+    document.addEventListener(
+      "pointerdown",
+      (event) => {
+        const target = event.target.closest(
+          ".button, .network-card, .package-card, .network-advisor-tab, .advisor-action, .mobile-dock a, .checkout-submit, .proof-submit, .copy-wallet, summary"
+        );
+
+        if (!target) {
+          return;
+        }
+
+        const rect = target.getBoundingClientRect();
+        const ripple = document.createElement("span");
+        ripple.className = "touch-ripple";
+        ripple.style.left = `${event.clientX - rect.left}px`;
+        ripple.style.top = `${event.clientY - rect.top}px`;
+        target.classList.add("touch-feedback");
+        target.append(ripple);
+        ripple.addEventListener("animationend", () => ripple.remove(), { once: true });
+      },
+      { passive: true }
+    );
+  }
+
+  let scrollTimer = 0;
+  window.addEventListener(
+    "scroll",
+    () => {
+      document.body.classList.add("mobile-scrolling");
+      window.clearTimeout(scrollTimer);
+      scrollTimer = window.setTimeout(() => {
+        document.body.classList.remove("mobile-scrolling");
+      }, 140);
+    },
+    { passive: true }
+  );
 }
 
 if (navToggle && navMenu) {
@@ -1293,6 +1447,7 @@ function updateActiveNav() {
 initSiteIntro();
 initScrollCosmos();
 initScrollJourney();
+initNetworkAdvisor();
 window.addEventListener("scroll", updateActiveNav, { passive: true });
 window.addEventListener("load", updateActiveNav);
 window.addEventListener("scroll", updateScrollProgress, { passive: true });
@@ -1304,6 +1459,7 @@ renderPackages(initialNetwork);
 initCardTilt();
 initLuxurySpotlight();
 initMagneticControls();
+initMobileMotion();
 
 if (checkoutSection) {
   setCheckoutOrder(initialNetwork, selectedOrder.package, {

@@ -12,14 +12,29 @@
   </head>
   <body class="cosmic-ui" data-page="home">
     <div class="site-intro" aria-hidden="true">
-      <div class="intro-mesh"></div>
-      <div class="intro-content">
-        <div class="intro-emblem"><span>C</span></div>
-        <p class="intro-brand">CryptoFlashUSDT</p>
-        <div class="intro-status"><i></i><span>Защищенное соединение</span></div>
-        <div class="intro-progress"><span></span></div>
-        <div class="intro-meta"><span>CFU SYSTEM</span><span>NETWORK READY</span></div>
+      <div class="intro-space"><i></i><i></i><i></i></div>
+      <div class="intro-scanline"></div>
+      <div class="intro-stage">
+        <div class="intro-orbits">
+          <span class="intro-node intro-node-trc">TRC20</span>
+          <span class="intro-node intro-node-erc">ERC20</span>
+          <span class="intro-node intro-node-bep">BEP20</span>
+        </div>
+        <div class="intro-tether-coin">
+          <span class="intro-coin-edge"></span>
+          <span class="intro-coin-face">
+            <svg viewBox="0 0 120 120" aria-hidden="true">
+              <path d="M30 28h60c4.2 0 7.5 3.4 7.5 7.5S94.2 43 90 43H67.5v11.8c20.7 1.4 35.5 7.1 35.5 13.8 0 7.8-19.3 14.1-43 14.1S17 76.4 17 68.6c0-6.7 14.8-12.4 35.5-13.8V43H30c-4.2 0-7.5-3.4-7.5-7.5S25.8 28 30 28Zm30 34.9c-18.4 0-31.2 3.6-31.2 6.2 0 2.6 12.8 6.2 31.2 6.2s31.2-3.6 31.2-6.2c0-2.6-12.8-6.2-31.2-6.2Zm0 8.2c5.3 0 10.2-.3 14.5-.9V63c-4.4-.5-9.3-.8-14.5-.8s-10.1.3-14.5.8v7.2c4.3.6 9.2.9 14.5.9Z" />
+            </svg>
+            <i></i>
+          </span>
+        </div>
+        <div class="intro-lockup">
+          <small>USDT NETWORK INTERFACE</small>
+          <p><span>CryptoFlash</span><b>USDT</b></p>
+        </div>
       </div>
+      <div class="intro-coordinates"><span>TRON · ETHEREUM · BNB CHAIN</span><span>CFU / 2026</span></div>
     </div>
     <header class="site-header" id="top">
       <nav class="nav-shell" aria-label="Основная навигация">
@@ -163,43 +178,105 @@
           <p class="eyebrow">Сети</p>
           <h2>Купить USDT — выберите свою <span>сеть</span></h2>
           <p>
-            Выберите подходящую блокчейн-сеть для работы с USDT. Поддерживаются TRC20, ERC20,
-            BEP20 и BTC для гибкой совместимости с кошельками и биржами.
+            Выберите подходящую сеть для USDT: TRC20, ERC20 или BEP20. Оплата в BTC показана
+            отдельно, чтобы актив и сеть нельзя было перепутать.
           </p>
+        </div>
+
+        <div class="network-advisor" data-active-network="TRC20">
+          <div class="network-advisor-head">
+            <div>
+              <span class="advisor-kicker">Быстрый выбор</span>
+              <strong>Сравните маршрут до перехода к пакетам</strong>
+            </div>
+            <span class="advisor-state"><i></i> Данные сети</span>
+          </div>
+
+          <div class="network-advisor-tabs" role="tablist" aria-label="Сравнение сетей">
+            <button class="network-advisor-tab is-active" type="button" role="tab" aria-selected="true" data-advisor-network="TRC20">TRC20</button>
+            <button class="network-advisor-tab" type="button" role="tab" aria-selected="false" data-advisor-network="ERC20">ERC20</button>
+            <button class="network-advisor-tab" type="button" role="tab" aria-selected="false" data-advisor-network="BEP20">BEP20</button>
+            <button class="network-advisor-tab" type="button" role="tab" aria-selected="false" data-advisor-network="BTC">BTC</button>
+          </div>
+
+          <div class="network-advisor-display" aria-live="polite">
+            <div class="advisor-monogram" aria-hidden="true">
+              <span id="advisor-symbol">₮</span>
+              <small id="advisor-chain">TRON</small>
+            </div>
+            <div class="advisor-copy">
+              <span class="advisor-label">Выбрано</span>
+              <h3 id="advisor-title">USDT в сети TRC20</h3>
+              <p id="advisor-description">Практичный маршрут для регулярных переводов USDT через совместимые TRON-кошельки.</p>
+            </div>
+            <dl class="advisor-specs">
+              <div><dt>Скорость</dt><dd id="advisor-speed">Высокая</dd></div>
+              <div><dt>Комиссия</dt><dd id="advisor-fee">Обычно ниже</dd></div>
+              <div><dt>Адрес</dt><dd id="advisor-address">Начинается с T</dd></div>
+            </dl>
+            <a class="advisor-action" id="advisor-action" href="products.html?network=TRC20">
+              <span>Открыть пакеты</span><b aria-hidden="true">↗</b>
+            </a>
+          </div>
+          <p class="advisor-note" id="advisor-note">Перед переводом убедитесь, что отправитель и получатель используют одну сеть.</p>
         </div>
 
         <div class="network-grid">
           <article class="network-card accent-coral" data-network="TRC20">
-            <span class="network-icon">
-              <span class="chain-symbol">₮</span>
-            </span>
+            <div class="network-card-head">
+              <span class="network-icon"><span class="chain-symbol">₮</span></span>
+              <span class="network-card-code">TRON / 01</span>
+            </div>
             <h3>TRC20</h3>
             <p>Быстрые переводы USDT с низкой комиссией в сети TRON.</p>
-            <a class="network-button" href="products.html?network=TRC20" data-network="TRC20">Выбрать сеть</a>
+            <dl class="network-specs">
+              <div><dt>Скорость</dt><dd>Высокая</dd></div>
+              <div><dt>Стандарт</dt><dd>TRON</dd></div>
+            </dl>
+            <span class="network-card-cta">Открыть пакеты <i aria-hidden="true">↗</i></span>
+            <a class="network-button" href="products.html?network=TRC20" data-network="TRC20"><span class="sr-only">Открыть пакеты TRC20</span></a>
           </article>
           <article class="network-card accent-blue" data-network="ERC20">
-            <span class="network-icon">
-              <span class="chain-symbol">◆</span>
-            </span>
+            <div class="network-card-head">
+              <span class="network-icon"><span class="chain-symbol">◆</span></span>
+              <span class="network-card-code">ETHEREUM / 02</span>
+            </div>
             <h3>ERC20</h3>
             <p>Надежный вариант для Ethereum-кошельков и совместимых сервисов.</p>
-            <a class="network-button" href="products.html?network=ERC20" data-network="ERC20">Выбрать сеть</a>
+            <dl class="network-specs">
+              <div><dt>Совместимость</dt><dd>Широкая</dd></div>
+              <div><dt>Стандарт</dt><dd>Ethereum</dd></div>
+            </dl>
+            <span class="network-card-cta">Открыть пакеты <i aria-hidden="true">↗</i></span>
+            <a class="network-button" href="products.html?network=ERC20" data-network="ERC20"><span class="sr-only">Открыть пакеты ERC20</span></a>
           </article>
           <article class="network-card accent-gold" data-network="BEP20">
-            <span class="network-icon">
-              <span class="chain-symbol">⬡</span>
-            </span>
+            <div class="network-card-head">
+              <span class="network-icon"><span class="chain-symbol">⬡</span></span>
+              <span class="network-card-code">BNB CHAIN / 03</span>
+            </div>
             <h3>BEP20</h3>
             <p>Практичный вариант для операций через BNB Smart Chain.</p>
-            <a class="network-button" href="products.html?network=BEP20" data-network="BEP20">Выбрать сеть</a>
+            <dl class="network-specs">
+              <div><dt>Скорость</dt><dd>Высокая</dd></div>
+              <div><dt>Стандарт</dt><dd>BSC</dd></div>
+            </dl>
+            <span class="network-card-cta">Открыть пакеты <i aria-hidden="true">↗</i></span>
+            <a class="network-button" href="products.html?network=BEP20" data-network="BEP20"><span class="sr-only">Открыть пакеты BEP20</span></a>
           </article>
           <article class="network-card accent-orange" data-network="BTC">
-            <span class="network-icon">
-              <span class="chain-symbol">₿</span>
-            </span>
+            <div class="network-card-head">
+              <span class="network-icon"><span class="chain-symbol">₿</span></span>
+              <span class="network-card-code">BITCOIN / 04</span>
+            </div>
             <h3>BTC</h3>
-            <p>Оригинальная криптовалютная сеть для отдельных задач и проверок.</p>
-            <a class="network-button" href="products.html?network=BTC" data-network="BTC">Выбрать сеть</a>
+            <p>Отдельный маршрут оплаты в BTC. Это не сеть для перевода USDT.</p>
+            <dl class="network-specs">
+              <div><dt>Подтверждение</dt><dd>По блокам</dd></div>
+              <div><dt>Актив</dt><dd>BTC</dd></div>
+            </dl>
+            <span class="network-card-cta">Открыть пакеты <i aria-hidden="true">↗</i></span>
+            <a class="network-button" href="products.html?network=BTC" data-network="BTC"><span class="sr-only">Открыть пакеты BTC</span></a>
           </article>
         </div>
       </section>

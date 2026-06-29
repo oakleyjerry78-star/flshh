@@ -54,6 +54,7 @@ function initHeroScene() {
     emissiveIntensity: 0.2,
     metalness: 0.94,
     roughness: 0.18,
+    side: THREE.DoubleSide,
   });
 
   const rimMaterial = new THREE.MeshStandardMaterial({
@@ -62,9 +63,10 @@ function initHeroScene() {
     emissiveIntensity: 0.24,
     metalness: 0.9,
     roughness: 0.2,
+    side: THREE.DoubleSide,
   });
 
-  const coin = new THREE.Mesh(new THREE.CylinderGeometry(1.14, 1.14, 0.18, 96), coinMaterial);
+  const coin = new THREE.Mesh(new THREE.CylinderGeometry(1.14, 1.14, 0.3, 96), coinMaterial);
   coin.rotation.x = Math.PI / 2;
   group.add(coin);
 
@@ -73,23 +75,25 @@ function initHeroScene() {
     map: tokenTexture,
     transparent: true,
     opacity: 0.98,
+    side: THREE.DoubleSide,
   });
 
   const frontFace = new THREE.Mesh(new THREE.PlaneGeometry(1.72, 1.72), faceMaterial);
-  frontFace.position.z = 0.1;
+  frontFace.position.z = 0.158;
   group.add(frontFace);
 
   const backFace = frontFace.clone();
-  backFace.position.z = -0.1;
+  backFace.position.z = -0.158;
   backFace.rotation.y = Math.PI;
   group.add(backFace);
 
   const rim = new THREE.Mesh(new THREE.TorusGeometry(1.18, 0.028, 16, 140), rimMaterial);
-  rim.position.z = 0.115;
+  rim.position.z = 0.17;
   group.add(rim);
 
   const backRim = rim.clone();
-  backRim.position.z = -0.115;
+  backRim.position.z = -0.17;
+  backRim.rotation.y = Math.PI;
   group.add(backRim);
 
   const crystal = new THREE.Mesh(
@@ -343,9 +347,11 @@ function initHeroScene() {
       return;
     }
 
-    group.rotation.y = time * 0.36 + Math.sin(time * 0.42) * 0.1 + pointer.x * 0.18;
+    // Keep the branded faces visible while preserving a convincing 3D turn.
+    // A full, slow Y rotation left the coin edge-on long enough to look absent.
+    group.rotation.y = Math.sin(time * 0.48) * 0.66 + pointer.x * 0.16;
     group.rotation.x = 0.11 + Math.sin(time * 0.32) * 0.07 + pointer.y * 0.1;
-    group.rotation.z = Math.sin(time * 0.28) * 0.035;
+    group.rotation.z = time * 0.075 + Math.sin(time * 0.28) * 0.035;
     group.position.y = group.userData.baseY + Math.sin(time * 0.72) * 0.07;
     group.scale.setScalar(group.userData.baseScale * (1 + Math.sin(time * 0.9) * 0.012));
     crystal.rotation.y = -time * 0.16;

@@ -8977,6 +8977,25 @@ html,
   will-change: clip-path, opacity;
 }
 
+/* Deep-space canvas: crisp stars, no snowfall */
+.scroll-cosmos {
+  opacity: 0.78;
+  filter: none;
+  mix-blend-mode: screen;
+}
+
+@media (max-width: 760px) {
+  .scroll-cosmos {
+    opacity: 0.72;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-cosmos {
+    opacity: 0.5;
+  }
+}
+
 .site-intro.is-complete {
   visibility: hidden;
   opacity: 0;

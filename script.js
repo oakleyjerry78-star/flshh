@@ -849,6 +849,7 @@ function initScrollCosmos() {
   let height = 0;
   let pixelRatio = 1;
   let nodes = [];
+  let galaxyDust = [];
   let targetScroll = window.scrollY;
   let smoothScroll = targetScroll;
   let scrollVelocity = 0;
@@ -881,22 +882,44 @@ function initScrollCosmos() {
   refreshKineticItems();
   window.__refreshKineticItems = refreshKineticItems;
 
+  function resetNode(node, placeFar = true) {
+    node.worldX = (Math.random() - 0.5) * width * 1.45;
+    node.worldY = (Math.random() - 0.5) * height * 1.45;
+    node.z = placeFar ? 0.72 + Math.random() * 0.82 : 0.16 + Math.random() * 1.3;
+    node.phase = Math.random() * Math.PI * 2;
+    node.size = 0.32 + Math.random() * 0.72;
+    node.twinkle = 0.38 + Math.random() * 0.92;
+    node.drawX = width / 2;
+    node.drawY = height / 2;
+  }
+
   function buildNodes() {
-    const nodeCount = compactScreen.matches ? 90 : 180;
-    nodes = Array.from({ length: nodeCount }, (_, index) => ({
-      x: Math.random(),
-      y: Math.random(),
-      depth: 0.28 + Math.random() * 0.95,
-      drift: 0.24 + Math.random() * 0.68,
-      speed: 4 + Math.random() * 13,
-      phase: Math.random() * Math.PI * 2,
-      size: 0.55 + Math.random() * 1.25,
-      twinkle: 0.55 + Math.random() * 1.8,
-      bright: index % 9 === 0,
-      color: colors[index % colors.length],
-      drawX: 0,
-      drawY: 0,
-    }));
+    const nodeCount = compactScreen.matches ? 118 : 240;
+    nodes = Array.from({ length: nodeCount }, (_, index) => {
+      const node = {
+        bright: index % 17 === 0,
+        color: colors[index % colors.length],
+      };
+      resetNode(node, false);
+      return node;
+    });
+  }
+
+  function buildGalaxyDust() {
+    const dustCount = compactScreen.matches ? 110 : 260;
+    galaxyDust = Array.from({ length: dustCount }, (_, index) => {
+      const x = Math.random();
+      const scatter = (Math.random() + Math.random() + Math.random() - 1.5) * 0.22;
+      return {
+        x,
+        y: 0.2 + x * 0.48 + Math.sin(x * Math.PI * 2.4) * 0.045 + scatter,
+        size: 0.18 + Math.random() * 0.52,
+        alpha: 0.04 + Math.random() * 0.14,
+        phase: Math.random() * Math.PI * 2,
+        speed: 0.18 + Math.random() * 0.42,
+        bright: index % 31 === 0,
+      };
+    });
   }
 
   function resizeCosmos() {
@@ -909,6 +932,7 @@ function initScrollCosmos() {
     canvas.style.height = `${height}px`;
     context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
     buildNodes();
+    buildGalaxyDust();
   }
 
   function drawSignalPaths(time) {
@@ -1087,6 +1111,37 @@ function initScrollCosmos() {
     });
   }
 
+  function drawGalaxyDust(time) {
+    galaxyDust.forEach((dust) => {
+      const parallaxX = Math.sin(time * dust.speed + dust.phase) * 2.4;
+      const parallaxY = Math.cos(time * dust.speed * 0.72 + dust.phase) * 1.4;
+      const x = dust.x * width + parallaxX;
+      const y = dust.y * height + parallaxY;
+
+      if (y < -20 || y > height + 20) {
+        return;
+      }
+
+      const twinkle = 0.76 + Math.sin(time * dust.speed * 2 + dust.phase) * 0.24;
+      const alpha = dust.alpha * twinkle;
+      context.beginPath();
+      context.arc(x, y, dust.size, 0, Math.PI * 2);
+      context.fillStyle = `rgba(232, 241, 236, ${alpha.toFixed(3)})`;
+      context.fill();
+
+      if (dust.bright) {
+        context.beginPath();
+        context.moveTo(x - 3, y);
+        context.lineTo(x + 3, y);
+        context.moveTo(x, y - 3);
+        context.lineTo(x, y + 3);
+        context.strokeStyle = `rgba(255, 255, 255, ${(alpha * 0.6).toFixed(3)})`;
+        context.lineWidth = 0.45;
+        context.stroke();
+      }
+    });
+  }
+
   function drawCosmos(timestamp = 0) {
     if (
       document.body.classList.contains("intro-playing") ||
@@ -1122,20 +1177,37 @@ function initScrollCosmos() {
       drawSignalPaths(time);
     }
 
+    drawGalaxyDust(time);
+
+    const centerX = width * (0.5 + Math.sin(time * 0.11) * 0.008);
+    const centerY = height * (0.47 + Math.cos(time * 0.09) * 0.006);
+    const directionalVelocity = Math.max(-18, Math.min(18, scrollVelocity));
+    const idleFlight = reducedMotion ? 0 : 0.00008;
+    const scrollFlight = directionalVelocity * (compactScreen.matches ? 0.00042 : 0.00058);
+
     nodes.forEach((node) => {
-      const scrollTravel = smoothScroll * (0.09 + node.depth * 0.16);
-      const scatterDistance = scrollEnergy * node.depth * (compactScreen.matches ? 42 : 104);
-      const warpDistance = scrollEnergy * node.depth * (compactScreen.matches ? 40 : 118);
-      node.drawX =
-        node.x * width +
-        Math.sin(time * node.drift + node.phase + smoothScroll * 0.00022) * 34 * node.depth +
-        Math.sin(node.phase + time * 2.2) * scatterDistance +
-        (node.x - 0.5) * warpDistance;
-      node.drawY =
-        ((node.y * height + scrollTravel + time * node.speed) % (height + 120)) -
-        60 +
-        Math.cos(node.phase + time * 1.7) * scatterDistance * 0.32 +
-        (node.y - 0.5) * warpDistance * 0.36;
+      node.z -= idleFlight + scrollFlight;
+
+      if (node.z < 0.13) {
+        resetNode(node, true);
+      } else if (node.z > 1.72) {
+        resetNode(node, false);
+        node.z = 0.18;
+      }
+
+      const perspective = 0.94 / Math.max(node.z, 0.12);
+      node.drawX = centerX + node.worldX * perspective;
+      node.drawY = centerY + node.worldY * perspective;
+      node.visualDepth = Math.max(0, Math.min(1, (1.55 - node.z) / 1.42));
+
+      if (
+        node.drawX < -100 ||
+        node.drawX > width + 100 ||
+        node.drawY < -100 ||
+        node.drawY > height + 100
+      ) {
+        resetNode(node, true);
+      }
     });
 
     if (renderStarLines) {
@@ -1163,41 +1235,26 @@ function initScrollCosmos() {
       }
     }
 
-    nodes.forEach((node, index) => {
+    nodes.forEach((node) => {
       const [red, green, blue] = node.color;
-      const pulse = index % 11 === 0 ? 0.45 + Math.sin(time * 2.1 + node.phase) * 0.25 : 0;
-
-      if (renderStarLines && scrollEnergy > 0.025) {
-        const streakLength = scrollVelocity * node.depth * 4.2;
-        context.beginPath();
-        context.moveTo(node.drawX, node.drawY - streakLength);
-        context.lineTo(node.drawX, node.drawY);
-        context.strokeStyle = `rgba(${red}, ${green}, ${blue}, ${(scrollEnergy * 0.34).toFixed(3)})`;
-        context.lineWidth = Math.max(0.45, node.size * 0.7);
-        context.stroke();
-      }
-
-      const twinkle = 0.72 + Math.sin(time * node.twinkle + node.phase) * 0.28;
-      const starAlpha = (0.28 + node.depth * 0.42) * twinkle;
+      const depth = node.visualDepth || 0;
+      const twinkle = 0.82 + Math.sin(time * node.twinkle + node.phase) * 0.18;
+      const starAlpha = (0.18 + depth * 0.74) * twinkle;
+      const starSize = node.size * (0.72 + depth * 1.75);
       context.beginPath();
-      context.arc(node.drawX, node.drawY, node.size + pulse, 0, Math.PI * 2);
+      context.arc(node.drawX, node.drawY, starSize, 0, Math.PI * 2);
       context.fillStyle = `rgba(${red}, ${green}, ${blue}, ${starAlpha.toFixed(3)})`;
       context.fill();
 
-      if (node.bright) {
-        const glowRadius = node.size * 2.8 + scrollEnergy * 1.4;
+      if (node.bright && depth > 0.28) {
+        const ray = 2.4 + depth * 5.2;
         context.beginPath();
-        context.arc(node.drawX, node.drawY, glowRadius, 0, Math.PI * 2);
-        context.fillStyle = `rgba(255, 255, 255, ${(starAlpha * 0.1).toFixed(3)})`;
-        context.fill();
-      }
-
-      if (index % 13 === 0) {
-        const ring = 5 + ((time * 9 + index * 2.7 + smoothScroll * 0.012) % 18);
-        context.beginPath();
-        context.arc(node.drawX, node.drawY, ring, 0, Math.PI * 2);
-        context.strokeStyle = `rgba(${red}, ${green}, ${blue}, ${Math.max(0, 0.12 - ring * 0.004)})`;
-        context.lineWidth = 0.7;
+        context.moveTo(node.drawX - ray, node.drawY);
+        context.lineTo(node.drawX + ray, node.drawY);
+        context.moveTo(node.drawX, node.drawY - ray);
+        context.lineTo(node.drawX, node.drawY + ray);
+        context.strokeStyle = `rgba(255, 255, 255, ${(starAlpha * 0.42).toFixed(3)})`;
+        context.lineWidth = 0.5;
         context.stroke();
       }
     });

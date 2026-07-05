@@ -318,7 +318,30 @@ function initSiteIntro() {
     return;
   }
 
-  const introStorageKey = "cryptoflashusdt-intro-v2";
+  siteIntro.classList.add("intro-cosmos-v4");
+  siteIntro.innerHTML = `
+    <canvas class="intro-v4-stars" aria-hidden="true"></canvas>
+    <div class="intro-v4-aurora" aria-hidden="true"></div>
+    <div class="intro-v4-stage">
+      <div class="intro-v4-portal" aria-hidden="true">
+        <i></i><i></i><i></i><span></span>
+      </div>
+      <div class="intro-v4-core" aria-hidden="true"><span>C</span></div>
+      <div class="intro-v4-lockup">
+        <small>SECURE DIGITAL ASSET INTERFACE</small>
+        <p><span>CryptoFlash</span><b>USDT</b></p>
+        <em><i></i> SYSTEM ONLINE</em>
+      </div>
+    </div>
+    <div class="intro-v4-progress" aria-hidden="true">
+      <span>ИНИЦИАЛИЗАЦИЯ КОСМИЧЕСКОЙ СЕТИ</span>
+      <i><b></b></i>
+    </div>
+    <div class="intro-v4-meta" aria-hidden="true">
+      <span>TRON · ETHEREUM · BNB CHAIN</span><span>CFU / 2026</span>
+    </div>`;
+
+  const introStorageKey = "cryptoflashusdt-intro-v7";
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   let introWasShown = false;
 
@@ -329,6 +352,7 @@ function initSiteIntro() {
   }
 
   if (introWasShown || reducedMotion) {
+    siteIntro.replaceChildren();
     siteIntro.classList.add("is-skip");
     document.body.classList.add("intro-skip");
     return;
@@ -336,6 +360,93 @@ function initSiteIntro() {
 
   document.body.classList.add("intro-playing");
   let isFinished = false;
+  let introStarsBursting = false;
+  const introStarsCanvas = siteIntro.querySelector(".intro-v4-stars");
+  const introStarsContext = introStarsCanvas?.getContext("2d", { alpha: true });
+  const compactIntro = window.matchMedia("(max-width: 760px)").matches;
+  let introStars = [];
+  let introStarsWidth = 0;
+  let introStarsHeight = 0;
+  let introStarsLastFrame = 0;
+
+  const resizeIntroStars = () => {
+    if (!introStarsCanvas || !introStarsContext) {
+      return;
+    }
+
+    introStarsWidth = window.innerWidth;
+    introStarsHeight = window.innerHeight;
+    const ratio = Math.min(window.devicePixelRatio || 1, 1.5);
+    introStarsCanvas.width = Math.max(1, Math.floor(introStarsWidth * ratio));
+    introStarsCanvas.height = Math.max(1, Math.floor(introStarsHeight * ratio));
+    introStarsCanvas.style.width = `${introStarsWidth}px`;
+    introStarsCanvas.style.height = `${introStarsHeight}px`;
+    introStarsContext.setTransform(ratio, 0, 0, ratio, 0, 0);
+
+    const starCount = compactIntro ? 240 : 320;
+    introStars = Array.from({ length: starCount }, (_, index) => ({
+      x: Math.random() * introStarsWidth,
+      y: Math.random() * introStarsHeight,
+      size: index % 37 === 0 ? 1.8 + Math.random() * 0.8 : 0.35 + Math.random() * 1.05,
+      alpha: 0.25 + Math.random() * 0.75,
+      phase: Math.random() * Math.PI * 2,
+      speed: 0.7 + Math.random() * 1.7,
+      velocityX: 0,
+      velocityY: 0,
+    }));
+  };
+
+  const drawIntroStars = (timestamp = 0) => {
+    if (!introStarsContext || !introStarsCanvas?.isConnected) {
+      return;
+    }
+
+    if (timestamp - introStarsLastFrame < (compactIntro ? 32 : 24)) {
+      requestAnimationFrame(drawIntroStars);
+      return;
+    }
+
+    const deltaTime = Math.min(42, Math.max(1, timestamp - introStarsLastFrame));
+    introStarsLastFrame = timestamp;
+    introStarsContext.clearRect(0, 0, introStarsWidth, introStarsHeight);
+    introStarsContext.save();
+    introStarsContext.globalCompositeOperation = "lighter";
+
+    introStars.forEach((star, index) => {
+      if (introStarsBursting) {
+        star.x += star.velocityX * deltaTime;
+        star.y += star.velocityY * deltaTime;
+        star.alpha *= 0.972;
+      }
+
+      const twinkle = 0.68 + Math.sin(timestamp * 0.001 * star.speed + star.phase) * 0.32;
+      const alpha = Math.max(0, star.alpha * twinkle);
+      introStarsContext.beginPath();
+      introStarsContext.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+      introStarsContext.fillStyle = index % 13 === 0
+        ? `rgba(201, 255, 226, ${alpha.toFixed(3)})`
+        : `rgba(255, 255, 255, ${alpha.toFixed(3)})`;
+      introStarsContext.fill();
+
+      if (index % 37 === 0) {
+        introStarsContext.beginPath();
+        introStarsContext.moveTo(star.x - 4, star.y);
+        introStarsContext.lineTo(star.x + 4, star.y);
+        introStarsContext.moveTo(star.x, star.y - 4);
+        introStarsContext.lineTo(star.x, star.y + 4);
+        introStarsContext.strokeStyle = `rgba(255, 255, 255, ${(alpha * 0.45).toFixed(3)})`;
+        introStarsContext.lineWidth = 0.5;
+        introStarsContext.stroke();
+      }
+    });
+
+    introStarsContext.restore();
+    requestAnimationFrame(drawIntroStars);
+  };
+
+  resizeIntroStars();
+  drawIntroStars();
+  window.addEventListener("resize", resizeIntroStars, { passive: true });
 
   const finishIntro = () => {
     if (isFinished) {
@@ -343,6 +454,27 @@ function initSiteIntro() {
     }
 
     isFinished = true;
+    introStarsBursting = true;
+    introStars.forEach((star, index) => {
+      const dx = star.x - introStarsWidth / 2;
+      const dy = star.y - introStarsHeight / 2;
+      const distance = Math.hypot(dx, dy) || 1;
+      const speed = 0.12 + ((index * 29) % 100) / 420;
+      star.velocityX = (dx / distance) * speed;
+      star.velocityY = (dy / distance) * speed;
+    });
+
+    if (introStarsCanvas) {
+      introStarsCanvas.classList.add("intro-stars-handoff");
+      document.body.insertBefore(introStarsCanvas, siteIntro);
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => introStarsCanvas.classList.add("is-fading"));
+      });
+    }
+
+    if (typeof window.__triggerIntroStarBurst === "function") {
+      window.__triggerIntroStarBurst();
+    }
     document.body.classList.add("intro-exiting");
     document.body.classList.remove("intro-playing");
     requestAnimationFrame(() => siteIntro.classList.add("is-complete"));
@@ -354,6 +486,8 @@ function initSiteIntro() {
     }
 
     window.setTimeout(() => {
+      window.removeEventListener("resize", resizeIntroStars);
+      introStarsCanvas?.remove();
       siteIntro.remove();
       document.body.classList.remove("intro-exiting");
       document.body.classList.add("intro-finished");
@@ -361,9 +495,9 @@ function initSiteIntro() {
   };
 
   if (document.readyState === "complete") {
-    window.setTimeout(finishIntro, 2150);
+    window.setTimeout(finishIntro, 2650);
   } else {
-    window.addEventListener("load", () => window.setTimeout(finishIntro, 2150), { once: true });
+    window.addEventListener("load", () => window.setTimeout(finishIntro, 2650), { once: true });
   }
 
   window.setTimeout(finishIntro, 4700);
@@ -856,6 +990,8 @@ function initScrollCosmos() {
   let scrollEnergy = 0;
   let lastFrame = 0;
   let lastBurstFrame = -1000;
+  let lastScatterFrame = -1000;
+  let firstScatter = true;
   let bursts = [];
   let shootingStars = [];
   const scrollLayers = Array.from(
@@ -889,12 +1025,14 @@ function initScrollCosmos() {
     node.phase = Math.random() * Math.PI * 2;
     node.size = 0.32 + Math.random() * 0.72;
     node.twinkle = 0.38 + Math.random() * 0.92;
+    node.velocityX = 0;
+    node.velocityY = 0;
     node.drawX = width / 2;
     node.drawY = height / 2;
   }
 
   function buildNodes() {
-    const nodeCount = compactScreen.matches ? 118 : 240;
+    const nodeCount = compactScreen.matches ? 188 : 240;
     nodes = Array.from({ length: nodeCount }, (_, index) => {
       const node = {
         bright: index % 17 === 0,
@@ -906,7 +1044,7 @@ function initScrollCosmos() {
   }
 
   function buildGalaxyDust() {
-    const dustCount = compactScreen.matches ? 110 : 260;
+    const dustCount = compactScreen.matches ? 176 : 260;
     galaxyDust = Array.from({ length: dustCount }, (_, index) => {
       const x = Math.random();
       const scatter = (Math.random() + Math.random() + Math.random() - 1.5) * 0.22;
@@ -1045,6 +1183,40 @@ function initScrollCosmos() {
     shootingStars = shootingStars.slice(-8);
   }
 
+  function scatterStars(delta, timestamp) {
+    if (reducedMotion || Math.abs(delta) < 2 || timestamp - lastScatterFrame < 42) {
+      return;
+    }
+
+    lastScatterFrame = timestamp;
+    const centerX = width / 2;
+    const centerY = height * 0.48;
+    const inputStrength = Math.min(1, Math.abs(delta) / (compactScreen.matches ? 42 : 68));
+    const burstStrength = (firstScatter ? 2.25 : 0.72) * (0.45 + inputStrength * 0.9);
+    firstScatter = false;
+
+    nodes.forEach((node, index) => {
+      const dx = node.drawX - centerX;
+      const dy = node.drawY - centerY;
+      const baseAngle = Math.atan2(dy, dx);
+      const angle = baseAngle + Math.sin(node.phase + index * 0.73) * 0.34;
+      const depth = node.visualDepth || 0.3;
+      const variation = 0.62 + ((index * 37) % 100) / 92;
+      const speed = burstStrength * variation * (0.58 + depth * 1.42);
+
+      node.velocityX += Math.cos(angle) * speed;
+      node.velocityY += Math.sin(angle) * speed;
+    });
+  }
+
+  window.__triggerIntroStarBurst = () => {
+    firstScatter = true;
+    lastScatterFrame = -1000;
+    scrollEnergy = Math.max(scrollEnergy, 0.92);
+    scrollVelocity += compactScreen.matches ? 11 : 15;
+    scatterStars(compactScreen.matches ? 78 : 110, performance.now());
+  };
+
   function drawScrollBursts(timestamp) {
     bursts = bursts.filter((burst) => {
       const age = Math.max(0, (timestamp - burst.born) / 920);
@@ -1143,10 +1315,7 @@ function initScrollCosmos() {
   }
 
   function drawCosmos(timestamp = 0) {
-    if (
-      document.body.classList.contains("intro-playing") ||
-      document.body.classList.contains("intro-exiting")
-    ) {
+    if (document.body.classList.contains("intro-playing")) {
       lastFrame = timestamp;
       requestAnimationFrame(drawCosmos);
       return;
@@ -1187,6 +1356,15 @@ function initScrollCosmos() {
 
     nodes.forEach((node) => {
       node.z -= idleFlight + scrollFlight;
+      node.worldX += node.velocityX;
+      node.worldY += node.velocityY;
+      node.velocityX *= compactScreen.matches ? 0.9 : 0.92;
+      node.velocityY *= compactScreen.matches ? 0.9 : 0.92;
+
+      const radialDistance = Math.hypot(node.worldX, node.worldY) || 1;
+      const radialDrift = scrollEnergy * (0.08 + (node.visualDepth || 0.25) * 0.36);
+      node.worldX += (node.worldX / radialDistance) * radialDrift;
+      node.worldY += (node.worldY / radialDistance) * radialDrift;
 
       if (node.z < 0.13) {
         resetNode(node, true);
@@ -1280,6 +1458,7 @@ function initScrollCosmos() {
       const delta = nextScroll - targetScroll;
       scrollVelocity += delta * 0.22;
       targetScroll = nextScroll;
+      scatterStars(delta, performance.now());
       if (renderStarLines) {
         spawnScrollBurst(delta);
       }

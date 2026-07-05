@@ -334,13 +334,11 @@ function initHeroScene() {
 
   function render() {
     const time = clock.getElapsedTime();
+    const introPlaying = document.body.classList.contains("intro-playing");
 
-    if (
-      document.body.classList.contains("intro-playing") ||
-      document.body.classList.contains("intro-exiting")
-    ) {
-      renderer.clear();
-
+    // Render one frame beneath the opaque intro so the scene is ready when
+    // the reveal starts, then pause until the exit transition begins.
+    if (introPlaying && window.__crypto3dReady) {
       if (!reducedMotion) {
         requestAnimationFrame(render);
       }

@@ -25,6 +25,7 @@
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 96px;
+  scrollbar-gutter: stable;
 }
 
 body {
@@ -5191,6 +5192,698 @@ body {
   transition: opacity 0.8s ease;
 }
 
+/* The interface is pre-rendered behind the opaque intro. */
+.intro-playing .site-header,
+.intro-playing main,
+.intro-playing .mobile-dock,
+.intro-playing .footer,
+.intro-playing .scroll-journey {
+  opacity: 1 !important;
+  visibility: visible !important;
+  filter: none !important;
+  transform: none !important;
+}
+
+.intro-exiting .site-header,
+.intro-exiting main,
+.intro-exiting .mobile-dock,
+.intro-exiting .footer,
+.intro-exiting .scroll-journey {
+  opacity: 1 !important;
+  visibility: visible !important;
+  filter: none !important;
+  transform: none !important;
+  animation: none !important;
+}
+
+/* Opening sequence v4: deep-space interface launch */
+.site-intro > .intro-space,
+.site-intro > .intro-scanline,
+.site-intro > .intro-stage,
+.site-intro > .intro-coordinates {
+  visibility: hidden;
+}
+
+.site-intro.intro-cosmos-v4 {
+  isolation: isolate;
+  background: #000;
+  perspective: 1000px;
+}
+
+.site-intro.intro-cosmos-v4::before {
+  z-index: 0;
+  opacity: 1;
+  background:
+    radial-gradient(circle at 50% 48%, rgba(83, 230, 166, 0.13), transparent 20%),
+    radial-gradient(circle at 50% 48%, rgba(108, 132, 255, 0.055), transparent 42%),
+    rgba(0, 0, 0, 0.2);
+  animation: introV4Backdrop 1.2s ease-out both;
+}
+
+.site-intro.intro-cosmos-v4::after {
+  z-index: 0;
+  opacity: 0.16;
+  background-color: transparent;
+  background-image:
+    linear-gradient(rgba(216, 255, 235, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(216, 255, 235, 0.035) 1px, transparent 1px);
+  background-size: 84px 84px;
+  -webkit-mask-image: radial-gradient(circle at 50% 48%, #000 4%, transparent 64%);
+  mask-image: radial-gradient(circle at 50% 48%, #000 4%, transparent 64%);
+  animation: introV4Grid 2.8s cubic-bezier(0.2, 0.75, 0.2, 1) both;
+}
+
+.intro-cosmos-v4 .intro-v4-stars,
+.intro-cosmos-v4 .intro-v4-aurora,
+.intro-cosmos-v4 .intro-v4-stage,
+.intro-cosmos-v4 .intro-v4-progress,
+.intro-cosmos-v4 .intro-v4-meta {
+  position: absolute;
+}
+
+.intro-cosmos-v4 .intro-v4-stars {
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  transform: translateZ(0);
+}
+
+.intro-stars-handoff {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0.92;
+  mix-blend-mode: screen;
+  transition: opacity 0.92s cubic-bezier(0.2, 0.75, 0.2, 1);
+  will-change: opacity;
+}
+
+.intro-stars-handoff.is-fading {
+  opacity: 0;
+}
+
+.intro-cosmos-v4 .intro-v4-stars i {
+  position: absolute;
+  top: var(--star-top);
+  left: var(--star-left);
+  width: var(--star-size);
+  height: var(--star-size);
+  border-radius: 50%;
+  opacity: var(--star-alpha);
+  background: #fff;
+  box-shadow: 0 0 calc(var(--star-size) * 4) rgba(255, 255, 255, 0.72);
+  animation: introV4StarTwinkle var(--star-duration) ease-in-out var(--star-delay) infinite;
+  will-change: opacity, transform;
+}
+
+.intro-cosmos-v4 .intro-v4-stars i:nth-child(7n) {
+  background: #c9ffe2;
+  box-shadow: 0 0 10px rgba(101, 243, 173, 0.68);
+}
+
+.intro-cosmos-v4 .intro-v4-stars i:nth-child(11n) {
+  background: #dce4ff;
+  box-shadow: 0 0 10px rgba(127, 162, 255, 0.62);
+}
+
+.intro-cosmos-v4 .intro-v4-stars i:nth-child(29n) {
+  box-shadow:
+    -5px 0 7px -2px rgba(255, 255, 255, 0.55),
+    5px 0 7px -2px rgba(255, 255, 255, 0.55),
+    0 -5px 7px -2px rgba(255, 255, 255, 0.55),
+    0 5px 7px -2px rgba(255, 255, 255, 0.55);
+}
+
+.intro-cosmos-v4 .intro-v4-aurora {
+  top: 50%;
+  left: 50%;
+  z-index: 1;
+  width: min(90vw, 920px);
+  height: 1px;
+  opacity: 0;
+  background: linear-gradient(90deg, transparent, rgba(101, 243, 173, 0.62), #fff, rgba(127, 162, 255, 0.58), transparent);
+  box-shadow:
+    0 0 24px rgba(101, 243, 173, 0.26),
+    0 0 90px rgba(127, 162, 255, 0.14);
+  transform: translate(-50%, -50%) scaleX(0.1);
+  animation: introV4Aurora 1.35s cubic-bezier(0.16, 0.84, 0.24, 1) 0.22s both;
+}
+
+.intro-cosmos-v4 .intro-v4-stage {
+  top: 50%;
+  left: 50%;
+  z-index: 3;
+  width: min(88vw, 520px);
+  height: min(70vh, 520px);
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.8) translateZ(-160px);
+  animation: introV4StageIn 0.95s cubic-bezier(0.16, 0.86, 0.24, 1) 0.18s both;
+  transition:
+    opacity 0.5s ease,
+    filter 0.65s ease,
+    transform 0.82s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.intro-cosmos-v4 .intro-v4-portal {
+  --portal-radius: clamp(125px, 19vw, 195px);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: clamp(250px, 38vw, 390px);
+  aspect-ratio: 1;
+  border: 1px solid rgba(210, 255, 232, 0.17);
+  border-radius: 50%;
+  transform: translate(-50%, -57%);
+  box-shadow:
+    inset 0 0 44px rgba(101, 243, 173, 0.045),
+    0 0 70px rgba(101, 243, 173, 0.05);
+  animation: introV4PortalBreathe 2.4s ease-in-out infinite;
+}
+
+.intro-cosmos-v4 .intro-v4-portal::before,
+.intro-cosmos-v4 .intro-v4-portal::after,
+.intro-cosmos-v4 .intro-v4-portal > i,
+.intro-cosmos-v4 .intro-v4-portal > span {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+}
+
+.intro-cosmos-v4 .intro-v4-portal::before {
+  inset: 10%;
+  border: 1px dashed rgba(127, 162, 255, 0.27);
+  animation: introV4Orbit 9s linear infinite reverse;
+}
+
+.intro-cosmos-v4 .intro-v4-portal::after {
+  inset: 25%;
+  border: 1px solid rgba(101, 243, 173, 0.3);
+  box-shadow: 0 0 30px rgba(101, 243, 173, 0.08);
+}
+
+.intro-cosmos-v4 .intro-v4-portal > i {
+  inset: -7%;
+  border: 1px dashed rgba(101, 243, 173, 0.12);
+  animation: introV4Orbit 14s linear infinite;
+}
+
+.intro-cosmos-v4 .intro-v4-portal > i:nth-child(2) {
+  inset: 17%;
+  border-style: solid;
+  border-color: rgba(244, 255, 249, 0.12) transparent rgba(244, 255, 249, 0.12) transparent;
+  animation-duration: 5.5s;
+  animation-direction: reverse;
+}
+
+.intro-cosmos-v4 .intro-v4-portal > i:nth-child(3) {
+  inset: 35%;
+  border-color: rgba(101, 243, 173, 0.32) transparent transparent;
+  animation-duration: 3.8s;
+}
+
+.intro-cosmos-v4 .intro-v4-portal > span {
+  top: -3px;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  background: #fff;
+  box-shadow:
+    0 0 12px #fff,
+    0 0 26px rgba(101, 243, 173, 0.8);
+  transform: translateX(-50%);
+  transform-origin: 3px calc(var(--portal-radius) + 3px);
+  animation: introV4Satellite 4.8s linear infinite;
+}
+
+.intro-cosmos-v4 .intro-v4-core {
+  position: absolute;
+  top: 43%;
+  left: 50%;
+  z-index: 2;
+  width: 92px;
+  height: 92px;
+  display: grid;
+  place-items: center;
+  color: #dffff0;
+  opacity: 0;
+  border: 1px solid rgba(215, 255, 235, 0.44);
+  background: rgba(6, 39, 26, 0.72);
+  box-shadow:
+    inset 0 0 28px rgba(101, 243, 173, 0.18),
+    0 0 46px rgba(101, 243, 173, 0.18);
+  clip-path: polygon(25% 7%, 75% 7%, 98% 50%, 75% 93%, 25% 93%, 2% 50%);
+  transform: translate(-50%, -50%) scale(0.42) rotate(-20deg);
+  animation: introV4CoreIn 0.8s cubic-bezier(0.16, 0.86, 0.24, 1) 0.72s both;
+}
+
+.intro-cosmos-v4 .intro-v4-core::before,
+.intro-cosmos-v4 .intro-v4-core::after {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border: 1px solid rgba(101, 243, 173, 0.2);
+  clip-path: inherit;
+}
+
+.intro-cosmos-v4 .intro-v4-core::after {
+  inset: 17px;
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+.intro-cosmos-v4 .intro-v4-core span {
+  font-size: 2.15rem;
+  font-weight: 850;
+  line-height: 1;
+  text-shadow: 0 0 24px rgba(101, 243, 173, 0.7);
+}
+
+.intro-cosmos-v4 .intro-v4-lockup {
+  position: absolute;
+  top: calc(50% + 100px);
+  left: 50%;
+  width: min(92vw, 520px);
+  display: grid;
+  justify-items: center;
+  gap: 9px;
+  opacity: 0;
+  text-align: center;
+  transform: translateX(-50%) translateY(16px);
+  animation: introV4Lockup 0.72s cubic-bezier(0.2, 0.8, 0.2, 1) 1.08s both;
+}
+
+.intro-cosmos-v4 .intro-v4-lockup small,
+.intro-cosmos-v4 .intro-v4-progress span,
+.intro-cosmos-v4 .intro-v4-meta {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  letter-spacing: 0;
+}
+
+.intro-cosmos-v4 .intro-v4-lockup small {
+  color: #6f8d7d;
+  font-size: 0.58rem;
+  font-weight: 800;
+}
+
+.intro-cosmos-v4 .intro-v4-lockup p {
+  margin: 0;
+  color: #f2fff8;
+  font-size: clamp(1.45rem, 4vw, 2.05rem);
+  font-weight: 670;
+  line-height: 1;
+}
+
+.intro-cosmos-v4 .intro-v4-lockup p span,
+.intro-cosmos-v4 .intro-v4-lockup p b {
+  display: inline-block;
+}
+
+.intro-cosmos-v4 .intro-v4-lockup p b {
+  margin-left: 5px;
+  color: #65f3ad;
+  font-weight: 850;
+}
+
+.intro-cosmos-v4 .intro-v4-lockup em {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #9fb4a9;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.55rem;
+  font-style: normal;
+  font-weight: 800;
+}
+
+.intro-cosmos-v4 .intro-v4-lockup em i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #65f3ad;
+  box-shadow: 0 0 10px rgba(101, 243, 173, 0.8);
+  animation: introV4Status 1.15s ease-in-out infinite;
+}
+
+.intro-cosmos-v4 .intro-v4-progress {
+  right: 50%;
+  bottom: max(9vh, 58px);
+  z-index: 4;
+  width: min(72vw, 430px);
+  display: grid;
+  gap: 9px;
+  opacity: 0;
+  transform: translateX(50%);
+  animation: introV4ProgressIn 0.5s ease 1.42s both;
+}
+
+.intro-cosmos-v4 .intro-v4-progress span {
+  color: #527062;
+  font-size: 0.5rem;
+  font-weight: 800;
+  text-align: center;
+}
+
+.intro-cosmos-v4 .intro-v4-progress > i {
+  position: relative;
+  height: 1px;
+  overflow: hidden;
+  background: rgba(201, 255, 226, 0.1);
+}
+
+.intro-cosmos-v4 .intro-v4-progress > i b {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, #65f3ad, #d7ffeb, #7fa2ff);
+  box-shadow: 0 0 16px rgba(101, 243, 173, 0.54);
+  transform-origin: left;
+  animation: introV4Progress 1.15s cubic-bezier(0.2, 0.75, 0.2, 1) 1.45s both;
+}
+
+.intro-cosmos-v4 .intro-v4-meta {
+  right: 22px;
+  bottom: 18px;
+  left: 22px;
+  z-index: 4;
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  color: #30453a;
+  font-size: 0.48rem;
+  font-weight: 800;
+  opacity: 0;
+  animation: introV4Meta 0.5s ease 1.22s both;
+}
+
+.site-intro.intro-cosmos-v4.is-complete .intro-v4-stage {
+  opacity: 0;
+  filter: blur(10px);
+  transform: translate(-50%, -50%) scale(0.7) translateZ(-180px);
+}
+
+.site-intro.intro-cosmos-v4.is-complete .intro-v4-stars i {
+  animation: none;
+  opacity: 0;
+  transform: translate3d(var(--star-exit-x), var(--star-exit-y), 0) scale(2.4);
+  transition:
+    transform 0.82s cubic-bezier(0.12, 0.72, 0.18, 1),
+    opacity 0.58s ease;
+}
+
+.site-intro.intro-cosmos-v4.is-complete .intro-v4-aurora,
+.site-intro.intro-cosmos-v4.is-complete .intro-v4-progress,
+.site-intro.intro-cosmos-v4.is-complete .intro-v4-meta {
+  opacity: 0;
+  transition: opacity 0.28s ease;
+}
+
+.intro-playing .scroll-cosmos {
+  opacity: 0.88;
+}
+
+@keyframes introV4Backdrop {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes introV4Grid {
+  from { opacity: 0; transform: scale(1.12); }
+  to { opacity: 0.16; transform: scale(1); }
+}
+
+@keyframes introV4StarTwinkle {
+  0%, 100% { opacity: 0.16; transform: scale(0.62); }
+  50% { opacity: var(--star-alpha); transform: scale(1.34); }
+}
+
+@keyframes introV4Aurora {
+  0% { opacity: 0; transform: translate(-50%, -50%) scaleX(0.08); }
+  45% { opacity: 0.92; }
+  100% { opacity: 0.3; transform: translate(-50%, -50%) scaleX(1); }
+}
+
+@keyframes introV4StageIn {
+  from { opacity: 0; transform: translate(-50%, -50%) scale(0.8) translateZ(-160px); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1) translateZ(0); }
+}
+
+@keyframes introV4PortalBreathe {
+  0%, 100% { opacity: 0.72; scale: 0.985; }
+  50% { opacity: 1; scale: 1.015; }
+}
+
+@keyframes introV4Orbit {
+  to { rotate: 360deg; }
+}
+
+@keyframes introV4Satellite {
+  to { rotate: 360deg; }
+}
+
+@keyframes introV4CoreIn {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.42) rotate(-20deg); }
+  70% { opacity: 1; transform: translate(-50%, -50%) scale(1.08) rotate(3deg); }
+  100% { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(0); }
+}
+
+@keyframes introV4Lockup {
+  from { opacity: 0; filter: blur(8px); transform: translateX(-50%) translateY(16px); }
+  to { opacity: 1; filter: blur(0); transform: translateX(-50%) translateY(0); }
+}
+
+@keyframes introV4Status {
+  0%, 100% { opacity: 0.4; scale: 0.72; }
+  50% { opacity: 1; scale: 1.2; }
+}
+
+@keyframes introV4ProgressIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes introV4Progress {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+@keyframes introV4Meta {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (max-width: 760px) {
+  .site-intro.intro-cosmos-v4::after {
+    background-size: 58px 58px;
+  }
+
+  .intro-cosmos-v4 .intro-v4-stage {
+    width: min(94vw, 390px);
+    height: min(68vh, 460px);
+  }
+
+  .intro-cosmos-v4 .intro-v4-portal {
+    --portal-radius: min(38vw, 150px);
+    width: min(76vw, 300px);
+  }
+
+  .intro-cosmos-v4 .intro-v4-portal > span {
+    transform-origin: 3px calc(var(--portal-radius) + 3px);
+  }
+
+  .intro-cosmos-v4 .intro-v4-core {
+    width: 78px;
+    height: 78px;
+  }
+
+  .intro-cosmos-v4 .intro-v4-core span {
+    font-size: 1.8rem;
+  }
+
+  .intro-cosmos-v4 .intro-v4-lockup {
+    top: calc(50% + 86px);
+  }
+
+  .intro-cosmos-v4 .intro-v4-lockup small {
+    font-size: 0.5rem;
+  }
+
+  .intro-cosmos-v4 .intro-v4-lockup p {
+    font-size: clamp(1.2rem, 6.2vw, 1.6rem);
+  }
+
+  .intro-cosmos-v4 .intro-v4-progress {
+    bottom: max(11vh, 72px);
+    width: min(76vw, 330px);
+  }
+
+  .intro-cosmos-v4 .intro-v4-meta {
+    right: 14px;
+    bottom: max(14px, env(safe-area-inset-bottom));
+    left: 14px;
+    font-size: 0.42rem;
+  }
+
+  .intro-playing .scroll-cosmos {
+    opacity: 0.84;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-intro.intro-cosmos-v4 {
+    display: none;
+  }
+}
+
+/* Transaction route pulse */
+.cosmic-ui .hero-premium-panel .panel-route {
+  position: relative;
+  isolation: isolate;
+}
+
+.cosmic-ui .hero-premium-panel .panel-route::before {
+  content: "";
+  position: absolute;
+  top: 17px;
+  bottom: 17px;
+  left: 24px;
+  z-index: 0;
+  width: 1px;
+  background: rgba(101, 243, 173, 0.13);
+  box-shadow: 0 0 12px rgba(101, 243, 173, 0.08);
+}
+
+.cosmic-ui .hero-premium-panel .panel-route::after {
+  content: "";
+  position: absolute;
+  top: 17px;
+  left: 21px;
+  z-index: 3;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  opacity: 0;
+  background: #effff6;
+  box-shadow:
+    0 0 8px #fff,
+    0 0 18px rgba(101, 243, 173, 0.92),
+    0 0 34px rgba(101, 243, 173, 0.42);
+  animation: transactionRouteTravel 5.1s cubic-bezier(0.42, 0, 0.24, 1) infinite;
+  will-change: top, opacity, transform;
+}
+
+.cosmic-ui .hero-premium-panel .panel-route > div {
+  position: relative;
+  z-index: 1;
+}
+
+.cosmic-ui .hero-premium-panel .panel-route > div span {
+  animation: transactionRouteStep 5.1s ease-in-out infinite;
+}
+
+.cosmic-ui .hero-premium-panel .panel-route > div strong {
+  animation: transactionRouteLabel 5.1s ease-in-out infinite;
+}
+
+.cosmic-ui .hero-premium-panel .panel-route > div:nth-child(2) span,
+.cosmic-ui .hero-premium-panel .panel-route > div:nth-child(2) strong {
+  animation-delay: 1.7s;
+}
+
+.cosmic-ui .hero-premium-panel .panel-route > div:nth-child(3) span,
+.cosmic-ui .hero-premium-panel .panel-route > div:nth-child(3) strong {
+  animation-delay: 3.4s;
+}
+
+@keyframes transactionRouteTravel {
+  0% {
+    top: 17px;
+    opacity: 0;
+    transform: scale(0.55);
+  }
+  8% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  88% {
+    opacity: 1;
+    transform: scale(0.86);
+  }
+  100% {
+    top: calc(100% - 24px);
+    opacity: 0;
+    transform: scale(0.45);
+  }
+}
+
+@keyframes transactionRouteStep {
+  0%,
+  24%,
+  100% {
+    color: #021009;
+    filter: none;
+    box-shadow: none;
+  }
+  9%,
+  15% {
+    color: #eafff4;
+    filter: drop-shadow(0 0 8px rgba(101, 243, 173, 0.46));
+    box-shadow: 0 0 22px rgba(101, 243, 173, 0.14);
+  }
+}
+
+@keyframes transactionRouteLabel {
+  0%,
+  24%,
+  100% {
+    color: var(--text);
+    filter: none;
+  }
+  9%,
+  15% {
+    color: #eafff4;
+    filter: drop-shadow(0 0 8px rgba(101, 243, 173, 0.46));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cosmic-ui .hero-premium-panel .panel-route::after,
+  .cosmic-ui .hero-premium-panel .panel-route > div span,
+  .cosmic-ui .hero-premium-panel .panel-route > div strong {
+    animation: none;
+  }
+}
+
+/* Continuous starfield: visible on entry, disperses with scroll momentum. */
+.intro-playing .site-intro {
+  background: rgba(0, 0, 0, 0.38);
+}
+
+.intro-playing .site-intro::before {
+  background:
+    radial-gradient(circle at 50% 46%, rgba(83, 220, 164, 0.15), transparent 23%),
+    radial-gradient(circle at 50% 46%, rgba(127, 162, 255, 0.065), transparent 42%),
+    rgba(0, 0, 0, 0.18);
+}
+
+.intro-playing .site-intro::after {
+  background-color: transparent;
+}
+
+.intro-playing .scroll-cosmos {
+  opacity: 0.92;
+}
+
+@media (max-width: 760px) {
+  .intro-playing .scroll-cosmos {
+    opacity: 0.86;
+  }
+}
+
 @keyframes introV2Backdrop {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -8994,6 +9687,219 @@ html,
   .scroll-cosmos {
     opacity: 0.5;
   }
+}
+
+/* Premium control system */
+.cosmic-ui .button,
+.cosmic-ui .checkout-submit,
+.cosmic-ui .proof-submit,
+.cosmic-ui .copy-wallet,
+.cosmic-ui .package-button,
+.cosmic-ui .nav-cta {
+  position: relative;
+  min-height: 50px;
+  gap: 12px;
+  overflow: hidden;
+  padding: 0 20px;
+  border: 1px solid rgba(101, 243, 173, 0.34);
+  border-radius: 4px;
+  color: #a9ffd3;
+  background: rgba(5, 14, 10, 0.92);
+  background-image: none;
+  box-shadow:
+    inset 3px 0 0 rgba(101, 243, 173, 0.86),
+    inset 0 1px 0 rgba(255, 255, 255, 0.045),
+    0 12px 30px rgba(0, 0, 0, 0.22);
+  animation: none;
+  transition:
+    color 0.24s ease,
+    background-color 0.24s ease,
+    border-color 0.24s ease,
+    box-shadow 0.24s ease,
+    transform 0.18s ease;
+}
+
+.cosmic-ui .button::before,
+.cosmic-ui .checkout-submit::before,
+.cosmic-ui .proof-submit::before,
+.cosmic-ui .copy-wallet::before,
+.cosmic-ui .package-button::before,
+.cosmic-ui .nav-cta::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  background: linear-gradient(110deg, transparent 12%, rgba(255, 255, 255, 0.22) 48%, transparent 72%);
+  transform: translateX(-55%);
+  transition:
+    opacity 0.24s ease,
+    transform 0.42s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.cosmic-ui .button-primary,
+.cosmic-ui .checkout-submit,
+.cosmic-ui .proof-submit,
+.cosmic-ui .package-button,
+.cosmic-ui .nav-cta {
+  color: #a9ffd3;
+  background: rgba(5, 18, 12, 0.96);
+  background-image: none;
+}
+
+.cosmic-ui .button-secondary,
+.cosmic-ui .back-link,
+.cosmic-ui .network-tab {
+  min-height: 50px;
+  border: 1px solid rgba(220, 238, 228, 0.16);
+  border-radius: 4px;
+  color: #d8e9df;
+  background: rgba(255, 255, 255, 0.018);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.035),
+    0 10px 26px rgba(0, 0, 0, 0.16);
+}
+
+.cosmic-ui .button:hover,
+.cosmic-ui .checkout-submit:hover,
+.cosmic-ui .proof-submit:hover,
+.cosmic-ui .copy-wallet:not(:disabled):hover,
+.cosmic-ui .package-button:hover,
+.cosmic-ui .nav-cta:hover {
+  color: #021009;
+  border-color: #8dffca;
+  background-color: #65f3ad;
+  box-shadow:
+    inset 3px 0 0 rgba(255, 255, 255, 0.74),
+    0 14px 34px rgba(0, 0, 0, 0.28),
+    0 0 28px rgba(101, 243, 173, 0.2);
+  transform: translate3d(var(--magnet-x, 0px), calc(var(--magnet-y, 0px) - 2px), 0);
+}
+
+.cosmic-ui .button:hover::before,
+.cosmic-ui .checkout-submit:hover::before,
+.cosmic-ui .proof-submit:hover::before,
+.cosmic-ui .copy-wallet:not(:disabled):hover::before,
+.cosmic-ui .package-button:hover::before,
+.cosmic-ui .nav-cta:hover::before {
+  opacity: 1;
+  transform: translateX(55%);
+}
+
+.cosmic-ui .button:active,
+.cosmic-ui .checkout-submit:active,
+.cosmic-ui .proof-submit:active,
+.cosmic-ui .copy-wallet:not(:disabled):active,
+.cosmic-ui .package-button:active,
+.cosmic-ui .nav-cta:active {
+  transform: translate3d(var(--magnet-x, 0px), var(--magnet-y, 0px), 0) scale(0.985);
+  transition-duration: 0.08s;
+}
+
+.cosmic-ui .button:focus-visible,
+.cosmic-ui .checkout-submit:focus-visible,
+.cosmic-ui .proof-submit:focus-visible,
+.cosmic-ui .copy-wallet:focus-visible,
+.cosmic-ui .package-button:focus-visible,
+.cosmic-ui .nav-cta:focus-visible,
+.cosmic-ui .back-link:focus-visible,
+.cosmic-ui .network-tab:focus-visible {
+  outline: 2px solid #b9ffda;
+  outline-offset: 3px;
+}
+
+.cosmic-ui .copy-wallet:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+  color: #718077;
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: inset 3px 0 0 rgba(255, 255, 255, 0.1);
+}
+
+.cosmic-ui .advisor-action {
+  border: 1px solid var(--advisor-line);
+  color: var(--advisor-accent);
+  background: rgba(3, 10, 7, 0.86);
+  box-shadow: inset 3px 0 0 var(--advisor-accent);
+  transition:
+    color 0.22s ease,
+    background-color 0.22s ease,
+    box-shadow 0.22s ease,
+    transform 0.18s ease;
+}
+
+.cosmic-ui .advisor-action:hover {
+  color: #020906;
+  background: var(--advisor-accent);
+  box-shadow:
+    inset 3px 0 0 rgba(255, 255, 255, 0.7),
+    0 0 26px var(--advisor-line);
+  filter: none;
+}
+
+.cosmic-ui .nav-toggle {
+  width: 46px;
+  height: 46px;
+  border: 1px solid rgba(101, 243, 173, 0.24);
+  border-radius: 4px;
+  background: rgba(5, 14, 10, 0.92);
+  box-shadow:
+    inset 2px 0 0 rgba(101, 243, 173, 0.55),
+    0 10px 28px rgba(0, 0, 0, 0.2);
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    transform 0.18s ease;
+}
+
+.cosmic-ui .nav-toggle:hover,
+.cosmic-ui .nav-toggle[aria-expanded="true"] {
+  border-color: #65f3ad;
+  background: rgba(101, 243, 173, 0.1);
+  transform: translateY(-1px);
+}
+
+@media (max-width: 640px) {
+  .cosmic-ui .button,
+  .cosmic-ui .checkout-submit,
+  .cosmic-ui .proof-submit,
+  .cosmic-ui .copy-wallet,
+  .cosmic-ui .package-button,
+  .cosmic-ui .nav-cta {
+    min-height: 54px;
+    padding-right: 18px;
+    padding-left: 18px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cosmic-ui .button::before,
+  .cosmic-ui .checkout-submit::before,
+  .cosmic-ui .proof-submit::before,
+  .cosmic-ui .copy-wallet::before,
+  .cosmic-ui .package-button::before,
+  .cosmic-ui .nav-cta::before {
+    transition: none;
+  }
+}
+
+/* Keep the finished interface stable while the intro mask opens. */
+.intro-playing .site-header,
+.intro-playing main,
+.intro-playing .mobile-dock,
+.intro-playing .footer,
+.intro-playing .scroll-journey,
+.intro-exiting .site-header,
+.intro-exiting main,
+.intro-exiting .mobile-dock,
+.intro-exiting .footer,
+.intro-exiting .scroll-journey {
+  opacity: 1 !important;
+  visibility: visible !important;
+  filter: none !important;
+  transform: none !important;
+  animation: none !important;
 }
 
 .site-intro.is-complete {

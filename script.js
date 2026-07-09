@@ -318,30 +318,49 @@ function initSiteIntro() {
     return;
   }
 
-  siteIntro.classList.add("intro-cosmos-v4");
+  siteIntro.classList.remove("intro-cosmos-v4");
+  siteIntro.classList.add("intro-cosmos-v8");
   siteIntro.innerHTML = `
-    <canvas class="intro-v4-stars" aria-hidden="true"></canvas>
-    <div class="intro-v4-aurora" aria-hidden="true"></div>
-    <div class="intro-v4-stage">
-      <div class="intro-v4-portal" aria-hidden="true">
-        <i></i><i></i><i></i><span></span>
+    <canvas class="intro-v8-stars" aria-hidden="true"></canvas>
+    <div class="intro-v8-nebula" aria-hidden="true"></div>
+    <div class="intro-v8-horizon" aria-hidden="true"></div>
+    <div class="intro-v8-stage">
+      <div class="intro-v8-orbit-system" aria-hidden="true">
+        <span class="intro-v8-ring ring-outer"></span>
+        <span class="intro-v8-ring ring-mid"></span>
+        <span class="intro-v8-ring ring-inner"></span>
+        <i class="intro-v8-satellite satellite-trc">TRC20</i>
+        <i class="intro-v8-satellite satellite-erc">ERC20</i>
+        <i class="intro-v8-satellite satellite-bep">BEP20</i>
+        <i class="intro-v8-satellite satellite-btc">BTC</i>
       </div>
-      <div class="intro-v4-core" aria-hidden="true"><span>C</span></div>
-      <div class="intro-v4-lockup">
-        <small>SECURE DIGITAL ASSET INTERFACE</small>
+      <div class="intro-v8-coin" aria-hidden="true">
+        <span class="intro-v8-coin-shadow"></span>
+        <span class="intro-v8-coin-edge"></span>
+        <span class="intro-v8-coin-face">
+          <svg viewBox="0 0 120 120" aria-hidden="true">
+            <path d="M60 112c28.72 0 52-23.28 52-52S88.72 8 60 8 8 31.28 8 60s23.28 52 52 52Z" />
+            <path d="M30 29h60c4.24 0 7.68 3.44 7.68 7.68S94.24 44.36 90 44.36H67.72v10.78c20.78 1.38 35.74 7.16 35.74 14.02 0 7.96-19.46 14.42-43.46 14.42S16.54 77.12 16.54 69.16c0-6.86 14.96-12.64 35.74-14.02V44.36H30c-4.24 0-7.68-3.44-7.68-7.68S25.76 29 30 29Zm30 33.18c-18.64 0-31.7 3.82-31.7 6.62 0 2.78 13.06 6.6 31.7 6.6s31.7-3.82 31.7-6.6c0-2.8-13.06-6.62-31.7-6.62Zm0 8.74c5.26 0 10.16-.34 14.52-.94V62.7c-4.4-.52-9.3-.8-14.52-.8s-10.12.28-14.52.8v7.28c4.36.6 9.26.94 14.52.94Z" />
+          </svg>
+        </span>
+        <span class="intro-v8-coin-glass"></span>
+        <span class="intro-v8-coin-flare"></span>
+      </div>
+      <div class="intro-v8-lockup">
+        <small>SECURE USDT ROUTE</small>
         <p><span>CryptoFlash</span><b>USDT</b></p>
-        <em><i></i> SYSTEM ONLINE</em>
+        <em><i></i>NETWORKS SYNCHRONIZED</em>
       </div>
     </div>
-    <div class="intro-v4-progress" aria-hidden="true">
-      <span>ИНИЦИАЛИЗАЦИЯ КОСМИЧЕСКОЙ СЕТИ</span>
+    <div class="intro-v8-progress" aria-hidden="true">
+      <span>ИНИЦИАЛИЗАЦИЯ ЗАЩИЩЕННОГО МАРШРУТА</span>
       <i><b></b></i>
     </div>
-    <div class="intro-v4-meta" aria-hidden="true">
-      <span>TRON · ETHEREUM · BNB CHAIN</span><span>CFU / 2026</span>
+    <div class="intro-v8-meta" aria-hidden="true">
+      <span>TRON · ETHEREUM · BNB CHAIN · BITCOIN</span><span>CRYPTOFLASHUSDT / 2026</span>
     </div>`;
 
-  const introStorageKey = "cryptoflashusdt-intro-v7";
+  const introStorageKey = "cryptoflashusdt-intro-v8";
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   let introWasShown = false;
 
@@ -361,7 +380,7 @@ function initSiteIntro() {
   document.body.classList.add("intro-playing");
   let isFinished = false;
   let introStarsBursting = false;
-  const introStarsCanvas = siteIntro.querySelector(".intro-v4-stars");
+  const introStarsCanvas = siteIntro.querySelector(".intro-v8-stars");
   const introStarsContext = introStarsCanvas?.getContext("2d", { alpha: true });
   const compactIntro = window.matchMedia("(max-width: 760px)").matches;
   let introStars = [];
@@ -376,21 +395,23 @@ function initSiteIntro() {
 
     introStarsWidth = window.innerWidth;
     introStarsHeight = window.innerHeight;
-    const ratio = Math.min(window.devicePixelRatio || 1, 1.5);
+    const ratio = Math.min(window.devicePixelRatio || 1, compactIntro ? 1.2 : 1.5);
     introStarsCanvas.width = Math.max(1, Math.floor(introStarsWidth * ratio));
     introStarsCanvas.height = Math.max(1, Math.floor(introStarsHeight * ratio));
     introStarsCanvas.style.width = `${introStarsWidth}px`;
     introStarsCanvas.style.height = `${introStarsHeight}px`;
     introStarsContext.setTransform(ratio, 0, 0, ratio, 0, 0);
 
-    const starCount = compactIntro ? 240 : 320;
+    const starCount = compactIntro ? 380 : 540;
     introStars = Array.from({ length: starCount }, (_, index) => ({
       x: Math.random() * introStarsWidth,
       y: Math.random() * introStarsHeight,
-      size: index % 37 === 0 ? 1.8 + Math.random() * 0.8 : 0.35 + Math.random() * 1.05,
-      alpha: 0.25 + Math.random() * 0.75,
+      size: index % 41 === 0 ? 1.55 + Math.random() * 0.9 : 0.28 + Math.random() * 0.92,
+      alpha: 0.2 + Math.random() * 0.78,
       phase: Math.random() * Math.PI * 2,
-      speed: 0.7 + Math.random() * 1.7,
+      speed: 0.55 + Math.random() * 1.9,
+      drift: 0.004 + Math.random() * 0.018,
+      tint: index % 17 === 0 ? "mint" : index % 23 === 0 ? "blue" : "white",
       velocityX: 0,
       velocityY: 0,
     }));
@@ -401,7 +422,7 @@ function initSiteIntro() {
       return;
     }
 
-    if (timestamp - introStarsLastFrame < (compactIntro ? 32 : 24)) {
+    if (timestamp - introStarsLastFrame < (compactIntro ? 36 : 24)) {
       requestAnimationFrame(drawIntroStars);
       return;
     }
@@ -417,24 +438,39 @@ function initSiteIntro() {
         star.x += star.velocityX * deltaTime;
         star.y += star.velocityY * deltaTime;
         star.alpha *= 0.972;
+      } else {
+        star.x += Math.cos(star.phase + timestamp * 0.00018) * star.drift * deltaTime;
+        star.y += Math.sin(star.phase + timestamp * 0.00016) * star.drift * deltaTime;
+
+        if (
+          star.x < -12 ||
+          star.x > introStarsWidth + 12 ||
+          star.y < -12 ||
+          star.y > introStarsHeight + 12
+        ) {
+          star.x = Math.random() * introStarsWidth;
+          star.y = Math.random() * introStarsHeight;
+        }
       }
 
       const twinkle = 0.68 + Math.sin(timestamp * 0.001 * star.speed + star.phase) * 0.32;
       const alpha = Math.max(0, star.alpha * twinkle);
       introStarsContext.beginPath();
       introStarsContext.arc(star.x, star.y, star.size, 0, Math.PI * 2);
-      introStarsContext.fillStyle = index % 13 === 0
+      introStarsContext.fillStyle = star.tint === "mint"
         ? `rgba(201, 255, 226, ${alpha.toFixed(3)})`
-        : `rgba(255, 255, 255, ${alpha.toFixed(3)})`;
+        : star.tint === "blue"
+          ? `rgba(208, 224, 255, ${alpha.toFixed(3)})`
+          : `rgba(255, 255, 255, ${alpha.toFixed(3)})`;
       introStarsContext.fill();
 
-      if (index % 37 === 0) {
+      if (index % 41 === 0) {
         introStarsContext.beginPath();
-        introStarsContext.moveTo(star.x - 4, star.y);
-        introStarsContext.lineTo(star.x + 4, star.y);
-        introStarsContext.moveTo(star.x, star.y - 4);
-        introStarsContext.lineTo(star.x, star.y + 4);
-        introStarsContext.strokeStyle = `rgba(255, 255, 255, ${(alpha * 0.45).toFixed(3)})`;
+        introStarsContext.moveTo(star.x - 5, star.y);
+        introStarsContext.lineTo(star.x + 5, star.y);
+        introStarsContext.moveTo(star.x, star.y - 5);
+        introStarsContext.lineTo(star.x, star.y + 5);
+        introStarsContext.strokeStyle = `rgba(255, 255, 255, ${(alpha * 0.36).toFixed(3)})`;
         introStarsContext.lineWidth = 0.5;
         introStarsContext.stroke();
       }
@@ -459,13 +495,13 @@ function initSiteIntro() {
       const dx = star.x - introStarsWidth / 2;
       const dy = star.y - introStarsHeight / 2;
       const distance = Math.hypot(dx, dy) || 1;
-      const speed = 0.12 + ((index * 29) % 100) / 420;
+      const speed = 0.16 + ((index * 29) % 100) / 340;
       star.velocityX = (dx / distance) * speed;
       star.velocityY = (dy / distance) * speed;
     });
 
     if (introStarsCanvas) {
-      introStarsCanvas.classList.add("intro-stars-handoff");
+      introStarsCanvas.classList.add("intro-stars-handoff", "intro-v8-stars-handoff");
       document.body.insertBefore(introStarsCanvas, siteIntro);
       requestAnimationFrame(() => {
         requestAnimationFrame(() => introStarsCanvas.classList.add("is-fading"));
@@ -491,16 +527,16 @@ function initSiteIntro() {
       siteIntro.remove();
       document.body.classList.remove("intro-exiting");
       document.body.classList.add("intro-finished");
-    }, 980);
+    }, 1100);
   };
 
   if (document.readyState === "complete") {
-    window.setTimeout(finishIntro, 2650);
+    window.setTimeout(finishIntro, 3350);
   } else {
-    window.addEventListener("load", () => window.setTimeout(finishIntro, 2650), { once: true });
+    window.addEventListener("load", () => window.setTimeout(finishIntro, 3350), { once: true });
   }
 
-  window.setTimeout(finishIntro, 4700);
+  window.setTimeout(finishIntro, 5600);
 }
 
 function getOrderStorageKey(networkName, card) {
@@ -822,6 +858,7 @@ function initRevealEffects() {
     ".package-card",
     ".checkout-card",
     ".guide-hero-inner",
+    ".guide-video-shell",
     ".guide-visual-card",
     ".guide-card",
     ".guide-step",
@@ -837,6 +874,10 @@ function initRevealEffects() {
   revealItems.forEach((item, index) => {
     item.classList.add("reveal");
     item.style.setProperty("--reveal-delay", `${Math.min(index % 6, 5) * 70}ms`);
+  });
+
+  document.querySelectorAll(".network-grid .network-card").forEach((item, index) => {
+    item.style.setProperty("--network-reveal-delay", `${index * 95}ms`);
   });
 
   if (!("IntersectionObserver" in window)) {
@@ -873,7 +914,7 @@ function initCardTilt() {
   }
 
   const tiltCards = document.querySelectorAll(
-    ".network-card, .package-card, .checkout-card, .guide-card, .guide-step, .guide-visual-card"
+    ".network-card, .package-card, .checkout-card, .guide-video-shell, .guide-card, .guide-step, .guide-visual-card"
   );
 
   tiltCards.forEach((card) => {
@@ -915,7 +956,7 @@ function initLuxurySpotlight() {
   }
 
   const spotlightItems = document.querySelectorAll(
-    ".hero-premium-panel, .network-advisor, .network-card, .package-card, .checkout-card, .guide-card, .guide-step, .guide-visual-card, .guide-warning, .guide-checklist"
+    ".hero-premium-panel, .network-advisor, .network-card, .package-card, .checkout-card, .guide-video-shell, .guide-card, .guide-step, .guide-visual-card, .guide-warning, .guide-checklist"
   );
 
   spotlightItems.forEach((item) => {
@@ -991,12 +1032,13 @@ function initScrollCosmos() {
   let lastFrame = 0;
   let lastBurstFrame = -1000;
   let lastScatterFrame = -1000;
+  let lastDomMotionFrame = 0;
   let firstScatter = true;
   let bursts = [];
   let shootingStars = [];
   const scrollLayers = Array.from(
     document.querySelectorAll(
-      ".hero-copy, .hero-premium-panel, .section-heading, .packages-heading, .page-hero-inner, .guide-hero-copy, .guide-visual-card, .feature-band, .faq-cta"
+      ".hero-copy, .hero-premium-panel, .section-heading, .packages-heading, .page-hero-inner, .guide-hero-copy, .guide-video-shell, .guide-visual-card, .feature-band, .faq-cta"
     )
   );
   let kineticItems = [];
@@ -1004,10 +1046,12 @@ function initScrollCosmos() {
   scrollLayers.forEach((layer) => layer.classList.add("scroll-layer"));
 
   function refreshKineticItems() {
+    const kineticSelector = compactScreen.matches
+      ? ".package-card, .wallet-compat-card, .step, .faq-list details, .guide-step, .guide-card, .checkout-card"
+      : ".network-card, .package-card, .wallet-compat-card, .step, .faq-list details, .guide-step, .guide-card, .checkout-card";
+
     kineticItems = Array.from(
-      document.querySelectorAll(
-        ".network-card, .package-card, .wallet-compat-card, .step, .faq-list details, .guide-step, .guide-card, .checkout-card"
-      )
+      document.querySelectorAll(kineticSelector)
     );
     kineticItems.forEach((item, index) => {
       item.classList.add("kinetic-item");
@@ -1032,7 +1076,7 @@ function initScrollCosmos() {
   }
 
   function buildNodes() {
-    const nodeCount = compactScreen.matches ? 188 : 240;
+    const nodeCount = compactScreen.matches ? 210 : 240;
     nodes = Array.from({ length: nodeCount }, (_, index) => {
       const node = {
         bright: index % 17 === 0,
@@ -1044,7 +1088,7 @@ function initScrollCosmos() {
   }
 
   function buildGalaxyDust() {
-    const dustCount = compactScreen.matches ? 176 : 260;
+    const dustCount = compactScreen.matches ? 92 : 260;
     galaxyDust = Array.from({ length: dustCount }, (_, index) => {
       const x = Math.random();
       const scatter = (Math.random() + Math.random() + Math.random() - 1.5) * 0.22;
@@ -1063,7 +1107,7 @@ function initScrollCosmos() {
   function resizeCosmos() {
     width = window.innerWidth;
     height = window.innerHeight;
-    pixelRatio = Math.min(window.devicePixelRatio || 1, 1.5);
+    pixelRatio = Math.min(window.devicePixelRatio || 1, compactScreen.matches ? 1.15 : 1.5);
     canvas.width = Math.max(1, Math.floor(width * pixelRatio));
     canvas.height = Math.max(1, Math.floor(height * pixelRatio));
     canvas.style.width = `${width}px`;
@@ -1321,7 +1365,10 @@ function initScrollCosmos() {
       return;
     }
 
-    if (timestamp - lastFrame < (compactScreen.matches ? 34 : 24)) {
+    const mobileIsScrolling = compactScreen.matches && document.body.classList.contains("mobile-scrolling");
+    const frameGap = mobileIsScrolling ? 42 : compactScreen.matches ? 32 : 24;
+
+    if (timestamp - lastFrame < frameGap) {
       requestAnimationFrame(drawCosmos);
       return;
     }
@@ -1443,8 +1490,12 @@ function initScrollCosmos() {
     }
 
     context.restore();
-    updateScrollLayers();
-    updateKineticItems();
+    const domMotionGap = compactScreen.matches ? 96 : 44;
+    if (timestamp - lastDomMotionFrame > domMotionGap) {
+      lastDomMotionFrame = timestamp;
+      updateScrollLayers();
+      updateKineticItems();
+    }
 
     if (!reducedMotion) {
       requestAnimationFrame(drawCosmos);
@@ -1586,9 +1637,116 @@ function initMagneticControls() {
   });
 }
 
+const clickAnimationSelector = [
+  "button:not(:disabled)",
+  "a[href]",
+  "summary",
+  ".network-card[data-network]",
+  ".package-card[data-network]",
+  ".receipt-upload",
+  ".advisor-action",
+  ".mobile-dock a",
+].join(", ");
+
+function getClickAnimationTarget(event) {
+  if (!(event.target instanceof Element)) {
+    return null;
+  }
+
+  if (event.target.closest("input, textarea, select") && !event.target.closest(".receipt-upload")) {
+    return null;
+  }
+
+  const target = event.target.closest(clickAnimationSelector);
+
+  if (!target || !document.body.contains(target)) {
+    return null;
+  }
+
+  if (target.matches(".network-button")) {
+    return target.closest(".network-card") || target;
+  }
+
+  return target;
+}
+
+function animateClickSurface(target, clientX, clientY) {
+  if (!target || target.matches("button:disabled, [aria-disabled='true']")) {
+    return;
+  }
+
+  const rect = target.getBoundingClientRect();
+  const x = Number.isFinite(clientX) ? clientX - rect.left : rect.width / 2;
+  const y = Number.isFinite(clientY) ? clientY - rect.top : rect.height / 2;
+  const burst = document.createElement("i");
+
+  target.classList.add("interactive-click");
+  target.style.setProperty("--click-x", `${Math.max(0, Math.min(rect.width, x)).toFixed(1)}px`);
+  target.style.setProperty("--click-y", `${Math.max(0, Math.min(rect.height, y)).toFixed(1)}px`);
+  target.classList.remove("is-click-animating");
+
+  // Restart the press animation even when the user clicks the same control quickly.
+  void target.offsetWidth;
+
+  burst.className = "click-burst";
+  burst.setAttribute("aria-hidden", "true");
+  target.append(burst);
+  target.classList.add("is-click-animating");
+
+  const cleanup = () => {
+    burst.remove();
+    if (!target.querySelector(".click-burst")) {
+      target.classList.remove("is-click-animating");
+    }
+  };
+
+  burst.addEventListener("animationend", cleanup, { once: true });
+  window.setTimeout(cleanup, 900);
+}
+
+function initClickAnimations() {
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (prefersReducedMotion) {
+    return;
+  }
+
+  document.addEventListener(
+    "pointerdown",
+    (event) => {
+      if (event.button !== 0) {
+        return;
+      }
+
+      const target = getClickAnimationTarget(event);
+
+      if (!target) {
+        return;
+      }
+
+      animateClickSurface(target, event.clientX, event.clientY);
+    },
+    { passive: true }
+  );
+
+  document.addEventListener("keydown", (event) => {
+    if (event.repeat || (event.key !== "Enter" && event.key !== " ")) {
+      return;
+    }
+
+    const target = getClickAnimationTarget(event);
+
+    if (!target) {
+      return;
+    }
+
+    const rect = target.getBoundingClientRect();
+    animateClickSurface(target, rect.left + rect.width / 2, rect.top + rect.height / 2);
+  });
+}
+
 function initMobileMotion() {
   const mobileViewport = window.matchMedia("(max-width: 760px)");
-  const coarsePointer = window.matchMedia("(pointer: coarse)");
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
   if (!mobileViewport.matches || reducedMotion.matches) {
@@ -1596,31 +1754,6 @@ function initMobileMotion() {
   }
 
   document.documentElement.classList.add("mobile-motion");
-
-  if (coarsePointer.matches) {
-    document.addEventListener(
-      "pointerdown",
-      (event) => {
-        const target = event.target.closest(
-          ".button, .network-card, .package-card, .network-advisor-tab, .advisor-action, .mobile-dock a, .checkout-submit, .proof-submit, .copy-wallet, summary"
-        );
-
-        if (!target) {
-          return;
-        }
-
-        const rect = target.getBoundingClientRect();
-        const ripple = document.createElement("span");
-        ripple.className = "touch-ripple";
-        ripple.style.left = `${event.clientX - rect.left}px`;
-        ripple.style.top = `${event.clientY - rect.top}px`;
-        target.classList.add("touch-feedback");
-        target.append(ripple);
-        ripple.addEventListener("animationend", () => ripple.remove(), { once: true });
-      },
-      { passive: true }
-    );
-  }
 
   let scrollTimer = 0;
   window.addEventListener(
@@ -1695,6 +1828,7 @@ renderPackages(initialNetwork);
 initCardTilt();
 initLuxurySpotlight();
 initMagneticControls();
+initClickAnimations();
 initMobileMotion();
 
 if (checkoutSection) {

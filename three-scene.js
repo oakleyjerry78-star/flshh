@@ -21,6 +21,7 @@ function initHeroScene() {
     antialias: true,
     powerPreference: "high-performance",
   });
+  const mobileScene = window.matchMedia("(max-width: 760px)");
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(36, 1, 0.1, 80);
   const clock = new THREE.Clock();
@@ -28,7 +29,7 @@ function initHeroScene() {
 
   renderer.setClearColor(0x000000, 0);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, mobileScene.matches ? 1.15 : 1.8));
 
   camera.position.set(0, 0, 8.2);
 
@@ -197,7 +198,7 @@ function initHeroScene() {
   orbitGroup.add(haloRing);
 
   const particleGeometry = new THREE.BufferGeometry();
-  const particleCount = 68;
+  const particleCount = mobileScene.matches ? 38 : 68;
   const particlePositions = new Float32Array(particleCount * 3);
 
   for (let index = 0; index < particleCount; index += 1) {
@@ -222,7 +223,7 @@ function initHeroScene() {
   scene.add(particles);
 
   const fieldGeometry = new THREE.BufferGeometry();
-  const fieldCount = 420;
+  const fieldCount = mobileScene.matches ? 220 : 420;
   const fieldPositions = new Float32Array(fieldCount * 3);
 
   for (let index = 0; index < fieldCount; index += 1) {
@@ -247,7 +248,7 @@ function initHeroScene() {
   scene.add(field);
 
   const meshPositions = [];
-  const meshNodeCount = 54;
+  const meshNodeCount = mobileScene.matches ? 30 : 54;
   const meshNodes = Array.from({ length: meshNodeCount }, () => ({
     x: (Math.random() - 0.5) * 8.4,
     y: (Math.random() - 0.5) * 5.4,
@@ -284,7 +285,7 @@ function initHeroScene() {
   function createNode(color, radius, speed, offset) {
     return {
       mesh: new THREE.Mesh(
-        new THREE.SphereGeometry(0.08, 24, 24),
+        new THREE.SphereGeometry(0.08, mobileScene.matches ? 16 : 24, mobileScene.matches ? 12 : 24),
         nodeMaterial.clone()
       ),
       radius,
@@ -304,6 +305,7 @@ function initHeroScene() {
     const width = hero.clientWidth;
     const height = hero.clientHeight;
 
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, mobileScene.matches ? 1.15 : 1.8));
     renderer.setSize(width, height, false);
     camera.aspect = width / Math.max(height, 1);
     camera.updateProjectionMatrix();
@@ -332,6 +334,18 @@ function initHeroScene() {
     }
   }
 
+  let heroSceneVisible = true;
+
+  if ("IntersectionObserver" in window) {
+    const visibilityObserver = new IntersectionObserver(
+      ([entry]) => {
+        heroSceneVisible = entry.isIntersecting;
+      },
+      { rootMargin: "160px 0px" }
+    );
+    visibilityObserver.observe(hero);
+  }
+
   function render() {
     const time = clock.getElapsedTime();
     const introPlaying = document.body.classList.contains("intro-playing");
@@ -341,6 +355,13 @@ function initHeroScene() {
     if (introPlaying && window.__crypto3dReady) {
       if (!reducedMotion) {
         requestAnimationFrame(render);
+      }
+      return;
+    }
+
+    if (mobileScene.matches && !heroSceneVisible) {
+      if (!reducedMotion) {
+        window.setTimeout(() => requestAnimationFrame(render), 180);
       }
       return;
     }

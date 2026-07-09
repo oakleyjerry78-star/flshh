@@ -13947,3 +13947,115 @@ html,
     transform: translate3d(0, 0, 0) scale(1);
   }
 }
+
+/* Layout stability pass: keep reveal motion on large blocks, not on inner controls */
+.cosmic-ui .section-heading.reveal,
+.cosmic-ui .packages-heading.reveal,
+.cosmic-ui .page-hero-inner.reveal,
+.cosmic-ui .guide-hero-inner.reveal {
+  clip-path: none !important;
+}
+
+.cosmic-ui .brand.reveal,
+.cosmic-ui .brand-status.reveal,
+.cosmic-ui .nav-toggle.reveal,
+.cosmic-ui .nav-menu a.reveal,
+.cosmic-ui .mobile-dock a.reveal,
+.cosmic-ui .section-heading .eyebrow.reveal,
+.cosmic-ui .hero-premium-panel .panel-topline.reveal,
+.cosmic-ui .hero-premium-panel .panel-orbit-mark.reveal,
+.cosmic-ui .hero-premium-panel .panel-route div.reveal,
+.cosmic-ui .hero-premium-panel .panel-bottomline.reveal,
+.cosmic-ui .luxury-ribbon-track span.reveal,
+.cosmic-ui .network-advisor-head.reveal,
+.cosmic-ui .network-advisor-tabs.reveal,
+.cosmic-ui .network-advisor-tab.reveal,
+.cosmic-ui .network-advisor-display.reveal,
+.cosmic-ui .advisor-monogram.reveal,
+.cosmic-ui .advisor-copy.reveal,
+.cosmic-ui .advisor-specs dt.reveal,
+.cosmic-ui .advisor-specs dd.reveal,
+.cosmic-ui .advisor-action.reveal,
+.cosmic-ui .advisor-note.reveal,
+.cosmic-ui .network-card-head.reveal,
+.cosmic-ui .network-specs div.reveal,
+.cosmic-ui .network-card-cta.reveal,
+.cosmic-ui .feature-points span.reveal,
+.cosmic-ui .step span.reveal,
+.cosmic-ui .wallet-compat-card .compat-tags span.reveal,
+.cosmic-ui .faq-list summary.reveal,
+.cosmic-ui .network-tabs.reveal,
+.cosmic-ui .network-tab.reveal,
+.cosmic-ui .package-topline.reveal,
+.cosmic-ui .package-meta span.reveal,
+.cosmic-ui .package-card li.reveal,
+.cosmic-ui .package-button.reveal,
+.cosmic-ui .checkout-form.reveal,
+.cosmic-ui .checkout-summary.reveal,
+.cosmic-ui .order-ticket.reveal,
+.cosmic-ui .order-product.reveal,
+.cosmic-ui .order-row.reveal,
+.cosmic-ui .order-progress span.reveal,
+.cosmic-ui .wallet-field.reveal,
+.cosmic-ui .wallet-field input.reveal,
+.cosmic-ui .checkout-submit.reveal,
+.cosmic-ui .checkout-message.reveal,
+.cosmic-ui .payment-panel-head.reveal,
+.cosmic-ui .payment-address-box.reveal,
+.cosmic-ui .payment-amount.reveal,
+.cosmic-ui .payment-proof.reveal,
+.cosmic-ui .receipt-upload.reveal,
+.cosmic-ui .proof-submit.reveal,
+.cosmic-ui .proof-message.reveal,
+.cosmic-ui .guide-hero-copy.reveal,
+.cosmic-ui .guide-video-head.reveal,
+.cosmic-ui .guide-video-frame.reveal,
+.cosmic-ui .guide-video-footer.reveal,
+.cosmic-ui .guide-visual-top.reveal,
+.cosmic-ui .guide-wallet-preview.reveal,
+.cosmic-ui .guide-terminal.reveal,
+.cosmic-ui .guide-list li.reveal,
+.cosmic-ui .guide-step-number.reveal,
+.cosmic-ui .guide-checklist li.reveal,
+.cosmic-ui .footer-links a.reveal {
+  opacity: 1 !important;
+  filter: none !important;
+  transform: none !important;
+  transition-delay: 0ms !important;
+}
+
+.cosmic-ui #process .step.reveal,
+.cosmic-ui #wallets .wallet-compat-card.reveal,
+.cosmic-ui #faq .faq-list details.reveal {
+  opacity: 0;
+  filter: none !important;
+  transform: translate3d(0, 28px, 0) scale(0.99);
+  transition:
+    opacity 0.98s var(--smooth-appear),
+    transform 1.08s var(--smooth-appear),
+    border-color 0.32s ease,
+    box-shadow 0.32s ease,
+    background 0.32s ease;
+  transition-delay: var(--section-reveal-delay, 0ms);
+}
+
+.cosmic-ui #process .step.reveal.is-visible,
+.cosmic-ui #wallets .wallet-compat-card.reveal.is-visible,
+.cosmic-ui #faq .faq-list details.reveal.is-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+}
+
+@media (max-width: 760px) {
+  .cosmic-ui #process .step.reveal,
+  .cosmic-ui #wallets .wallet-compat-card.reveal,
+  .cosmic-ui #faq .faq-list details.reveal {
+    transform: translate3d(0, 18px, 0) scale(0.994);
+    transition:
+      opacity 0.76s var(--smooth-appear),
+      transform 0.84s var(--smooth-appear),
+      border-color 0.28s ease,
+      box-shadow 0.28s ease,
+      background 0.28s ease;
+  }
+}

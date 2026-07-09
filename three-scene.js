@@ -15,13 +15,19 @@ try {
 }
 
 function initHeroScene() {
+  const mobileScene = window.matchMedia("(max-width: 760px)");
+  const lowCoreScene =
+    (Number(navigator.hardwareConcurrency) > 0 && Number(navigator.hardwareConcurrency) <= 4) ||
+    (Number(navigator.deviceMemory) > 0 && Number(navigator.deviceMemory) <= 4);
+  const isSceneLite = () => mobileScene.matches || lowCoreScene;
+  const getPixelRatio = () =>
+    Math.min(window.devicePixelRatio || 1, mobileScene.matches ? 1 : lowCoreScene ? 1.2 : 1.5);
   const renderer = new THREE.WebGLRenderer({
     canvas,
     alpha: true,
-    antialias: true,
-    powerPreference: "high-performance",
+    antialias: !isSceneLite(),
+    powerPreference: isSceneLite() ? "low-power" : "high-performance",
   });
-  const mobileScene = window.matchMedia("(max-width: 760px)");
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(36, 1, 0.1, 80);
   const clock = new THREE.Clock();
@@ -29,7 +35,7 @@ function initHeroScene() {
 
   renderer.setClearColor(0x000000, 0);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, mobileScene.matches ? 1.15 : 1.8));
+  renderer.setPixelRatio(getPixelRatio());
 
   camera.position.set(0, 0, 8.2);
 
@@ -67,7 +73,12 @@ function initHeroScene() {
     side: THREE.DoubleSide,
   });
 
-  const coin = new THREE.Mesh(new THREE.CylinderGeometry(1.14, 1.14, 0.3, 96), coinMaterial);
+  const coinSegments = isSceneLite() ? 64 : 88;
+  const rimSegments = isSceneLite() ? 100 : 130;
+  const orbitSegments = isSceneLite() ? 120 : 168;
+  const scannerSegments = isSceneLite() ? 140 : 190;
+
+  const coin = new THREE.Mesh(new THREE.CylinderGeometry(1.14, 1.14, 0.3, coinSegments), coinMaterial);
   coin.rotation.x = Math.PI / 2;
   group.add(coin);
 
@@ -88,7 +99,7 @@ function initHeroScene() {
   backFace.rotation.y = Math.PI;
   group.add(backFace);
 
-  const rim = new THREE.Mesh(new THREE.TorusGeometry(1.18, 0.028, 16, 140), rimMaterial);
+  const rim = new THREE.Mesh(new THREE.TorusGeometry(1.18, 0.028, 12, rimSegments), rimMaterial);
   rim.position.z = 0.17;
   group.add(rim);
 
@@ -117,12 +128,12 @@ function initHeroScene() {
     blending: THREE.AdditiveBlending,
   });
 
-  const tiltedRingA = new THREE.Mesh(new THREE.TorusGeometry(1.95, 0.012, 12, 180), ringMaterial);
+  const tiltedRingA = new THREE.Mesh(new THREE.TorusGeometry(1.95, 0.012, 10, orbitSegments), ringMaterial);
   tiltedRingA.rotation.x = Math.PI * 0.58;
   tiltedRingA.rotation.y = Math.PI * 0.12;
   orbitGroup.add(tiltedRingA);
 
-  const tiltedRingB = new THREE.Mesh(new THREE.TorusGeometry(2.42, 0.01, 12, 180), ringMaterial.clone());
+  const tiltedRingB = new THREE.Mesh(new THREE.TorusGeometry(2.42, 0.01, 10, orbitSegments), ringMaterial.clone());
   tiltedRingB.material.opacity = 0.18;
   tiltedRingB.rotation.x = Math.PI * 0.28;
   tiltedRingB.rotation.y = -Math.PI * 0.22;
@@ -172,7 +183,7 @@ function initHeroScene() {
   orbitGroup.add(glassPlate);
 
   const scannerRing = new THREE.Mesh(
-    new THREE.TorusGeometry(2.88, 0.008, 10, 220),
+    new THREE.TorusGeometry(2.88, 0.008, 8, scannerSegments),
     new THREE.MeshBasicMaterial({
       color: 0xbfffe0,
       transparent: true,
@@ -185,7 +196,7 @@ function initHeroScene() {
   orbitGroup.add(scannerRing);
 
   const haloRing = new THREE.Mesh(
-    new THREE.TorusGeometry(3.22, 0.006, 10, 260),
+    new THREE.TorusGeometry(3.22, 0.006, 8, scannerSegments),
     new THREE.MeshBasicMaterial({
       color: 0x7fa2ff,
       transparent: true,
@@ -198,7 +209,7 @@ function initHeroScene() {
   orbitGroup.add(haloRing);
 
   const particleGeometry = new THREE.BufferGeometry();
-  const particleCount = mobileScene.matches ? 38 : 68;
+  const particleCount = mobileScene.matches ? 24 : lowCoreScene ? 42 : 58;
   const particlePositions = new Float32Array(particleCount * 3);
 
   for (let index = 0; index < particleCount; index += 1) {
@@ -223,7 +234,7 @@ function initHeroScene() {
   scene.add(particles);
 
   const fieldGeometry = new THREE.BufferGeometry();
-  const fieldCount = mobileScene.matches ? 220 : 420;
+  const fieldCount = mobileScene.matches ? 130 : lowCoreScene ? 260 : 340;
   const fieldPositions = new Float32Array(fieldCount * 3);
 
   for (let index = 0; index < fieldCount; index += 1) {
@@ -248,7 +259,7 @@ function initHeroScene() {
   scene.add(field);
 
   const meshPositions = [];
-  const meshNodeCount = mobileScene.matches ? 30 : 54;
+  const meshNodeCount = mobileScene.matches ? 18 : lowCoreScene ? 34 : 46;
   const meshNodes = Array.from({ length: meshNodeCount }, () => ({
     x: (Math.random() - 0.5) * 8.4,
     y: (Math.random() - 0.5) * 5.4,
@@ -283,9 +294,12 @@ function initHeroScene() {
   scene.add(fieldLinks);
 
   function createNode(color, radius, speed, offset) {
+    const widthSegments = mobileScene.matches ? 12 : lowCoreScene ? 16 : 20;
+    const heightSegments = mobileScene.matches ? 8 : lowCoreScene ? 12 : 16;
+
     return {
       mesh: new THREE.Mesh(
-        new THREE.SphereGeometry(0.08, mobileScene.matches ? 16 : 24, mobileScene.matches ? 12 : 24),
+        new THREE.SphereGeometry(0.08, widthSegments, heightSegments),
         nodeMaterial.clone()
       ),
       radius,
@@ -305,7 +319,7 @@ function initHeroScene() {
     const width = hero.clientWidth;
     const height = hero.clientHeight;
 
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, mobileScene.matches ? 1.15 : 1.8));
+    renderer.setPixelRatio(getPixelRatio());
     renderer.setSize(width, height, false);
     camera.aspect = width / Math.max(height, 1);
     camera.updateProjectionMatrix();
@@ -335,6 +349,7 @@ function initHeroScene() {
   }
 
   let heroSceneVisible = true;
+  let lastRenderFrame = 0;
 
   if ("IntersectionObserver" in window) {
     const visibilityObserver = new IntersectionObserver(
@@ -346,25 +361,35 @@ function initHeroScene() {
     visibilityObserver.observe(hero);
   }
 
-  function render() {
-    const time = clock.getElapsedTime();
+  function render(timestamp = 0) {
     const introPlaying = document.body.classList.contains("intro-playing");
 
     // Render one frame beneath the opaque intro so the scene is ready when
     // the reveal starts, then pause until the exit transition begins.
     if (introPlaying && window.__crypto3dReady) {
       if (!reducedMotion) {
+        window.setTimeout(() => requestAnimationFrame(render), isSceneLite() ? 100 : 58);
+      }
+      return;
+    }
+
+    if (document.hidden || !heroSceneVisible) {
+      if (!reducedMotion) {
+        window.setTimeout(() => requestAnimationFrame(render), document.hidden ? 360 : 180);
+      }
+      return;
+    }
+
+    const renderGap = mobileScene.matches ? 38 : lowCoreScene ? 30 : 20;
+    if (timestamp - lastRenderFrame < renderGap) {
+      if (!reducedMotion) {
         requestAnimationFrame(render);
       }
       return;
     }
 
-    if (mobileScene.matches && !heroSceneVisible) {
-      if (!reducedMotion) {
-        window.setTimeout(() => requestAnimationFrame(render), 180);
-      }
-      return;
-    }
+    lastRenderFrame = timestamp;
+    const time = clock.getElapsedTime();
 
     // Keep the branded faces visible while preserving a convincing 3D turn.
     // A full, slow Y rotation left the coin edge-on long enough to look absent.

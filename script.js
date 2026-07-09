@@ -53,6 +53,22 @@ const trackedSections = Array.from(
   document.querySelectorAll("#top, #networks, #packages, #checkout, #wallets")
 );
 const pageParams = new URLSearchParams(window.location.search);
+const compactViewport = window.matchMedia("(max-width: 760px)");
+const lowCoreDevice =
+  (Number(navigator.hardwareConcurrency) > 0 && Number(navigator.hardwareConcurrency) <= 4) ||
+  (Number(navigator.deviceMemory) > 0 && Number(navigator.deviceMemory) <= 4);
+
+function syncPerformanceMode() {
+  document.documentElement.classList.toggle(
+    "performance-lite",
+    compactViewport.matches || lowCoreDevice
+  );
+}
+
+syncPerformanceMode();
+if (compactViewport.addEventListener) {
+  compactViewport.addEventListener("change", syncPerformanceMode);
+}
 
 const networkAdvisorData = {
   TRC20: {
@@ -1013,6 +1029,7 @@ function initScrollCosmos() {
 
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const compactScreen = window.matchMedia("(max-width: 760px)");
+  const lowPowerCanvas = compactScreen.matches || lowCoreDevice;
   const colors = [
     [255, 255, 255],
     [232, 238, 235],
@@ -1033,6 +1050,8 @@ function initScrollCosmos() {
   let lastBurstFrame = -1000;
   let lastScatterFrame = -1000;
   let lastDomMotionFrame = 0;
+  let documentIsHidden = document.hidden;
+  let resizeFrame = 0;
   let firstScatter = true;
   let bursts = [];
   let shootingStars = [];
@@ -1076,7 +1095,7 @@ function initScrollCosmos() {
   }
 
   function buildNodes() {
-    const nodeCount = compactScreen.matches ? 210 : 240;
+    const nodeCount = compactScreen.matches ? 150 : lowPowerCanvas ? 190 : 230;
     nodes = Array.from({ length: nodeCount }, (_, index) => {
       const node = {
         bright: index % 17 === 0,
@@ -1088,7 +1107,7 @@ function initScrollCosmos() {
   }
 
   function buildGalaxyDust() {
-    const dustCount = compactScreen.matches ? 92 : 260;
+    const dustCount = compactScreen.matches ? 58 : lowPowerCanvas ? 150 : 220;
     galaxyDust = Array.from({ length: dustCount }, (_, index) => {
       const x = Math.random();
       const scatter = (Math.random() + Math.random() + Math.random() - 1.5) * 0.22;
@@ -1107,7 +1126,7 @@ function initScrollCosmos() {
   function resizeCosmos() {
     width = window.innerWidth;
     height = window.innerHeight;
-    pixelRatio = Math.min(window.devicePixelRatio || 1, compactScreen.matches ? 1.15 : 1.5);
+    pixelRatio = Math.min(window.devicePixelRatio || 1, compactScreen.matches ? 1 : lowPowerCanvas ? 1.2 : 1.35);
     canvas.width = Math.max(1, Math.floor(width * pixelRatio));
     canvas.height = Math.max(1, Math.floor(height * pixelRatio));
     canvas.style.width = `${width}px`;
@@ -1198,7 +1217,9 @@ function initScrollCosmos() {
   }
 
   function spawnScrollBurst(delta) {
-    if (reducedMotion || Math.abs(delta) < 14 || lastFrame - lastBurstFrame < 190) {
+    const burstGap = compactScreen.matches ? 290 : lowPowerCanvas ? 240 : 190;
+
+    if (reducedMotion || Math.abs(delta) < 14 || lastFrame - lastBurstFrame < burstGap) {
       return;
     }
 
@@ -1213,7 +1234,7 @@ function initScrollCosmos() {
     bursts = bursts.slice(-5);
 
     const direction = delta > 0 ? -1 : 1;
-    const shootingCount = compactScreen.matches ? 1 : 2;
+    const shootingCount = lowPowerCanvas ? 1 : 2;
     for (let index = 0; index < shootingCount; index += 1) {
       shootingStars.push({
         born: lastFrame,
@@ -1228,7 +1249,9 @@ function initScrollCosmos() {
   }
 
   function scatterStars(delta, timestamp) {
-    if (reducedMotion || Math.abs(delta) < 2 || timestamp - lastScatterFrame < 42) {
+    const scatterGap = compactScreen.matches ? 64 : lowPowerCanvas ? 52 : 42;
+
+    if (reducedMotion || Math.abs(delta) < 2 || timestamp - lastScatterFrame < scatterGap) {
       return;
     }
 
@@ -1239,7 +1262,9 @@ function initScrollCosmos() {
     const burstStrength = (firstScatter ? 2.25 : 0.72) * (0.45 + inputStrength * 0.9);
     firstScatter = false;
 
-    nodes.forEach((node, index) => {
+    const nodeStep = compactScreen.matches ? 2 : 1;
+    for (let index = 0; index < nodes.length; index += nodeStep) {
+      const node = nodes[index];
       const dx = node.drawX - centerX;
       const dy = node.drawY - centerY;
       const baseAngle = Math.atan2(dy, dx);
@@ -1250,7 +1275,7 @@ function initScrollCosmos() {
 
       node.velocityX += Math.cos(angle) * speed;
       node.velocityY += Math.sin(angle) * speed;
-    });
+    }
   }
 
   window.__triggerIntroStarBurst = () => {
@@ -1278,8 +1303,9 @@ function initScrollCosmos() {
       context.lineWidth = 0.8 + scrollEnergy * 1.4;
       context.stroke();
 
-      for (let ray = 0; ray < 14; ray += 1) {
-        const angle = (Math.PI * 2 * ray) / 14 + burst.direction * age * 0.42;
+      const rayCount = compactScreen.matches ? 8 : 12;
+      for (let ray = 0; ray < rayCount; ray += 1) {
+        const angle = (Math.PI * 2 * ray) / rayCount + burst.direction * age * 0.42;
         const inner = radius * 0.44;
         const outer = radius * (0.72 + (ray % 3) * 0.08);
         context.beginPath();
@@ -1361,12 +1387,22 @@ function initScrollCosmos() {
   function drawCosmos(timestamp = 0) {
     if (document.body.classList.contains("intro-playing")) {
       lastFrame = timestamp;
-      requestAnimationFrame(drawCosmos);
+      if (!reducedMotion) {
+        window.setTimeout(() => requestAnimationFrame(drawCosmos), compactScreen.matches ? 80 : 48);
+      }
+      return;
+    }
+
+    if (documentIsHidden) {
+      lastFrame = timestamp;
+      if (!reducedMotion) {
+        window.setTimeout(() => requestAnimationFrame(drawCosmos), 320);
+      }
       return;
     }
 
     const mobileIsScrolling = compactScreen.matches && document.body.classList.contains("mobile-scrolling");
-    const frameGap = mobileIsScrolling ? 42 : compactScreen.matches ? 32 : 24;
+    const frameGap = mobileIsScrolling ? 40 : compactScreen.matches ? 34 : lowPowerCanvas ? 30 : 24;
 
     if (timestamp - lastFrame < frameGap) {
       requestAnimationFrame(drawCosmos);
@@ -1437,8 +1473,12 @@ function initScrollCosmos() {
 
     if (renderStarLines) {
       const linkDistance = (compactScreen.matches ? 112 : 154) * (1 + scrollEnergy * 0.18);
-      for (let first = 0; first < nodes.length; first += 1) {
-        for (let second = first + 1; second < nodes.length; second += 1) {
+      const linkStep = compactScreen.matches ? 4 : lowPowerCanvas ? 3 : 2;
+      const maxLinks = compactScreen.matches ? 20 : lowPowerCanvas ? 46 : 84;
+      let linkCount = 0;
+
+      for (let first = 0; first < nodes.length && linkCount < maxLinks; first += linkStep) {
+        for (let second = first + linkStep; second < nodes.length && linkCount < maxLinks; second += linkStep) {
           const nodeA = nodes[first];
           const nodeB = nodes[second];
           const dx = nodeA.drawX - nodeB.drawX;
@@ -1456,6 +1496,7 @@ function initScrollCosmos() {
           context.strokeStyle = `rgba(255, 255, 255, ${opacity.toFixed(3)})`;
           context.lineWidth = 0.55;
           context.stroke();
+          linkCount += 1;
         }
       }
     }
@@ -1490,7 +1531,7 @@ function initScrollCosmos() {
     }
 
     context.restore();
-    const domMotionGap = compactScreen.matches ? 96 : 44;
+    const domMotionGap = compactScreen.matches ? 140 : lowPowerCanvas ? 92 : 56;
     if (timestamp - lastDomMotionFrame > domMotionGap) {
       lastDomMotionFrame = timestamp;
       updateScrollLayers();
@@ -1509,14 +1550,29 @@ function initScrollCosmos() {
       const delta = nextScroll - targetScroll;
       scrollVelocity += delta * 0.22;
       targetScroll = nextScroll;
-      scatterStars(delta, performance.now());
+      if (!documentIsHidden) {
+        scatterStars(delta, performance.now());
+      }
       if (renderStarLines) {
         spawnScrollBurst(delta);
       }
     },
     { passive: true }
   );
-  window.addEventListener("resize", resizeCosmos, { passive: true });
+  document.addEventListener("visibilitychange", () => {
+    documentIsHidden = document.hidden;
+    if (!documentIsHidden) {
+      lastFrame = 0;
+    }
+  });
+  window.addEventListener(
+    "resize",
+    () => {
+      cancelAnimationFrame(resizeFrame);
+      resizeFrame = requestAnimationFrame(resizeCosmos);
+    },
+    { passive: true }
+  );
   resizeCosmos();
   drawCosmos();
 }

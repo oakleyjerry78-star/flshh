@@ -12296,3 +12296,147 @@ html,
     transform: translate3d(0, 0, 0) scale(1);
   }
 }
+
+/* Smooth performance pass */
+.cosmic-ui .network-select-section,
+.cosmic-ui .packages-section,
+.cosmic-ui .checkout-section,
+.cosmic-ui .wallet-compat-section,
+.cosmic-ui .guide-video-section,
+.cosmic-ui .guide-content,
+.cosmic-ui .faq-section {
+  content-visibility: auto;
+  contain-intrinsic-size: 820px;
+}
+
+.cosmic-ui .network-card,
+.cosmic-ui .package-card,
+.cosmic-ui .checkout-card,
+.cosmic-ui .wallet-compat-card,
+.cosmic-ui .guide-card,
+.cosmic-ui .guide-step,
+.cosmic-ui .faq-list details {
+  backface-visibility: hidden;
+  contain: layout paint;
+}
+
+.performance-lite .scroll-cosmos {
+  opacity: 0.52;
+}
+
+.performance-lite .scroll-flare {
+  opacity: 0.16;
+  filter: none;
+}
+
+.performance-lite .cosmic-ui .site-header,
+.performance-lite .cosmic-ui .nav-menu,
+.performance-lite .cosmic-ui .mobile-dock,
+.performance-lite .cosmic-ui .checkout-card,
+.performance-lite .cosmic-ui .guide-video-shell {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+.performance-lite .cosmic-ui .network-card.reveal,
+.performance-lite .cosmic-ui .package-card.reveal,
+.performance-lite .cosmic-ui .wallet-compat-card.reveal,
+.performance-lite .cosmic-ui .checkout-card.reveal,
+.performance-lite .cosmic-ui .guide-card.reveal,
+.performance-lite .cosmic-ui .guide-step.reveal,
+.performance-lite .cosmic-ui .guide-video-shell.reveal,
+.performance-lite .cosmic-ui .faq-list details.reveal {
+  filter: none !important;
+}
+
+.performance-lite .cosmic-ui .button-primary,
+.performance-lite .cosmic-ui .checkout-submit,
+.performance-lite .cosmic-ui .proof-submit,
+.performance-lite .cosmic-ui .package-button,
+.performance-lite .cosmic-ui .advisor-action {
+  animation-duration: 12s;
+}
+
+@media (max-width: 760px) {
+  .cosmic-ui .network-select-section,
+  .cosmic-ui .packages-section,
+  .cosmic-ui .checkout-section,
+  .cosmic-ui .wallet-compat-section,
+  .cosmic-ui .guide-video-section,
+  .cosmic-ui .guide-content,
+  .cosmic-ui .faq-section {
+    contain-intrinsic-size: 980px;
+  }
+
+  .cosmic-ui .network-card,
+  .cosmic-ui .package-card,
+  .cosmic-ui .checkout-card,
+  .cosmic-ui .wallet-compat-card,
+  .cosmic-ui .guide-card,
+  .cosmic-ui .guide-step,
+  .cosmic-ui .faq-list details {
+    will-change: transform, opacity;
+  }
+
+  .cosmic-ui .network-card.is-visible,
+  .cosmic-ui .package-card.is-visible,
+  .cosmic-ui .checkout-card.is-visible,
+  .cosmic-ui .wallet-compat-card.is-visible,
+  .cosmic-ui .guide-card.is-visible,
+  .cosmic-ui .guide-step.is-visible,
+  .cosmic-ui .faq-list details.is-visible {
+    will-change: auto;
+  }
+
+  .cosmic-ui .hero h1,
+  .cosmic-ui .page-hero h1,
+  .cosmic-ui .guide-hero h1 {
+    text-wrap: balance;
+  }
+}
+
+@media (min-width: 761px) and (prefers-reduced-motion: no-preference) {
+  .cosmic-ui .hero-signal.reveal,
+  .cosmic-ui .hero .eyebrow.reveal,
+  .cosmic-ui .hero h1.reveal,
+  .cosmic-ui .hero-lead.reveal,
+  .cosmic-ui .hero-actions.reveal,
+  .cosmic-ui .hero-ledger.reveal,
+  .cosmic-ui .hero-premium-panel.reveal,
+  .cosmic-ui .section-heading.reveal,
+  .cosmic-ui .packages-heading.reveal,
+  .cosmic-ui .page-hero-inner.reveal,
+  .cosmic-ui .guide-hero-inner.reveal,
+  .cosmic-ui .network-card.reveal,
+  .cosmic-ui .package-card.reveal,
+  .cosmic-ui .wallet-compat-card.reveal,
+  .cosmic-ui .checkout-card.reveal,
+  .cosmic-ui .guide-card.reveal,
+  .cosmic-ui .guide-step.reveal,
+  .cosmic-ui .guide-video-shell.reveal,
+  .cosmic-ui .faq-list details.reveal {
+    filter: blur(6px);
+  }
+
+  .cosmic-ui .hero-signal.reveal.is-visible,
+  .cosmic-ui .hero .eyebrow.reveal.is-visible,
+  .cosmic-ui .hero h1.reveal.is-visible,
+  .cosmic-ui .hero-lead.reveal.is-visible,
+  .cosmic-ui .hero-actions.reveal.is-visible,
+  .cosmic-ui .hero-ledger.reveal.is-visible,
+  .cosmic-ui .hero-premium-panel.reveal.is-visible,
+  .cosmic-ui .section-heading.reveal.is-visible,
+  .cosmic-ui .packages-heading.reveal.is-visible,
+  .cosmic-ui .page-hero-inner.reveal.is-visible,
+  .cosmic-ui .guide-hero-inner.reveal.is-visible,
+  .cosmic-ui .network-card.reveal.is-visible,
+  .cosmic-ui .package-card.reveal.is-visible,
+  .cosmic-ui .wallet-compat-card.reveal.is-visible,
+  .cosmic-ui .checkout-card.reveal.is-visible,
+  .cosmic-ui .guide-card.reveal.is-visible,
+  .cosmic-ui .guide-step.reveal.is-visible,
+  .cosmic-ui .guide-video-shell.reveal.is-visible,
+  .cosmic-ui .faq-list details.reveal.is-visible {
+    filter: blur(0);
+  }
+}

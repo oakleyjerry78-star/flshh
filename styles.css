@@ -13828,6 +13828,7 @@ html,
     opacity 1.06s var(--smooth-appear),
     transform 1.18s var(--smooth-appear),
     clip-path 1.18s var(--smooth-appear);
+  transition-delay: var(--section-reveal-delay, var(--network-reveal-delay, var(--reveal-delay, 0ms)));
 }
 
 .cosmic-ui .reveal.is-visible {
@@ -13857,6 +13858,60 @@ html,
       opacity 0.78s var(--smooth-appear),
       transform 0.9s var(--smooth-appear),
       clip-path 0.9s var(--smooth-appear);
+    transition-delay: var(--section-reveal-delay, var(--network-reveal-delay, var(--reveal-delay, 0ms)));
+  }
+}
+
+/* Smooth cascade for process, wallets, and FAQ sections */
+.cosmic-ui #process .section-heading.reveal,
+.cosmic-ui #wallets .section-heading.reveal,
+.cosmic-ui #faq .section-heading.reveal {
+  opacity: 0;
+  transform: translate3d(0, 24px, 0) scale(0.99);
+  transition:
+    opacity 1.08s var(--smooth-appear),
+    transform 1.22s var(--smooth-appear);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.cosmic-ui #process .step.reveal,
+.cosmic-ui #wallets .wallet-compat-card.reveal,
+.cosmic-ui #faq .faq-list details.reveal {
+  opacity: 0;
+  filter: none !important;
+  transform: translate3d(0, 42px, 0) scale(0.982);
+  transition:
+    opacity 1.12s var(--smooth-appear),
+    transform 1.28s var(--smooth-appear),
+    border-color 0.38s ease,
+    box-shadow 0.38s ease,
+    background 0.38s ease;
+  transition-delay: var(--section-reveal-delay, var(--reveal-delay, 0ms));
+}
+
+.cosmic-ui #process .step.reveal.is-visible,
+.cosmic-ui #wallets .wallet-compat-card.reveal.is-visible,
+.cosmic-ui #faq .faq-list details.reveal.is-visible,
+.cosmic-ui #process .section-heading.reveal.is-visible,
+.cosmic-ui #wallets .section-heading.reveal.is-visible,
+.cosmic-ui #faq .section-heading.reveal.is-visible {
+  opacity: 1;
+  filter: none !important;
+  transform: translate3d(0, 0, 0) scale(1);
+}
+
+@media (max-width: 760px) {
+  .cosmic-ui #process .step.reveal,
+  .cosmic-ui #wallets .wallet-compat-card.reveal,
+  .cosmic-ui #faq .faq-list details.reveal {
+    transform: translate3d(0, 30px, 0) scale(0.986);
+    transition:
+      opacity 0.92s var(--smooth-appear),
+      transform 1.02s var(--smooth-appear),
+      border-color 0.32s ease,
+      box-shadow 0.32s ease,
+      background 0.32s ease;
+    transition-delay: var(--section-reveal-delay, var(--reveal-delay, 0ms));
   }
 }
 

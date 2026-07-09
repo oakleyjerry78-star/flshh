@@ -983,6 +983,18 @@ function initRevealEffects() {
     item.style.setProperty("--network-reveal-delay", `${index * 118}ms`);
   });
 
+  document.querySelectorAll("#process .step").forEach((item, index) => {
+    item.style.setProperty("--section-reveal-delay", `${index * 155}ms`);
+  });
+
+  document.querySelectorAll("#wallets .wallet-compat-card").forEach((item, index) => {
+    item.style.setProperty("--section-reveal-delay", `${index * 92}ms`);
+  });
+
+  document.querySelectorAll("#faq .faq-list details").forEach((item, index) => {
+    item.style.setProperty("--section-reveal-delay", `${index * 118}ms`);
+  });
+
   if (!("IntersectionObserver" in window)) {
     revealItems.forEach((item) => item.classList.add("is-visible"));
     return;
@@ -1007,7 +1019,9 @@ function initRevealEffects() {
     );
   }
 
-  pendingRevealItems.forEach((item) => revealObserver.observe(item));
+  requestAnimationFrame(() => {
+    pendingRevealItems.forEach((item) => revealObserver.observe(item));
+  });
 }
 
 function queueRevealRefresh() {

@@ -12440,3 +12440,1273 @@ html,
     filter: blur(0);
   }
 }
+
+/* Main hero animation polish */
+.cosmic-ui .hero-3d::before {
+  background:
+    linear-gradient(90deg, rgba(2, 5, 4, 0.94) 0%, rgba(2, 5, 4, 0.62) 28%, rgba(2, 5, 4, 0.12) 52%, rgba(2, 5, 4, 0.62) 100%),
+    linear-gradient(180deg, rgba(2, 5, 4, 0.2), transparent 44%, rgba(2, 5, 4, 0.52));
+}
+
+.cosmic-ui .hero-3d::after {
+  content: "";
+  position: absolute;
+  inset: 5% -8% 0 28%;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 58% 42%, rgba(180, 255, 219, 0.18), transparent 26%),
+    radial-gradient(circle at 72% 58%, rgba(127, 162, 255, 0.12), transparent 30%),
+    conic-gradient(from 120deg at 62% 50%, transparent 0deg, rgba(101, 243, 173, 0.12) 58deg, transparent 116deg, rgba(255, 215, 118, 0.08) 180deg, transparent 250deg, rgba(127, 162, 255, 0.1) 312deg, transparent 360deg);
+  opacity: 0.72;
+  transform: translate3d(0, 0, 0) scale(1);
+  mix-blend-mode: screen;
+  animation: heroAuraBreath 9.5s ease-in-out infinite;
+}
+
+.cosmic-ui #hero-3d-canvas {
+  filter: saturate(1.06) contrast(1.12);
+}
+
+.cosmic-ui.three-ready #hero-3d-canvas {
+  opacity: 0.96;
+}
+
+.performance-lite .cosmic-ui .hero-3d::after {
+  opacity: 0.48;
+  animation-duration: 14s;
+}
+
+@media (max-width: 760px) {
+  .cosmic-ui .hero-3d::before {
+    background:
+      linear-gradient(180deg, rgba(2, 5, 4, 0.42), rgba(2, 5, 4, 0.12) 34%, rgba(2, 5, 4, 0.74) 78%),
+      linear-gradient(90deg, rgba(2, 5, 4, 0.92), rgba(2, 5, 4, 0.28) 50%, rgba(2, 5, 4, 0.74));
+  }
+
+  .cosmic-ui .hero-3d::after {
+    inset: 6% -16% 8% -10%;
+    opacity: 0.5;
+    animation-duration: 12s;
+  }
+
+  .cosmic-ui.three-ready #hero-3d-canvas,
+  .three-ready #hero-3d-canvas {
+    opacity: 0.84;
+  }
+}
+
+@keyframes heroAuraBreath {
+  0%,
+  100% {
+    opacity: 0.54;
+    transform: translate3d(0, 0, 0) scale(0.98) rotate(0deg);
+  }
+  50% {
+    opacity: 0.82;
+    transform: translate3d(1.8%, -1.2%, 0) scale(1.035) rotate(3deg);
+  }
+}
+
+/* Final hero headline scale */
+.cosmic-ui .hero h1 {
+  max-width: 11ch;
+  font-size: clamp(3.05rem, 5.15vw, 4.95rem);
+  line-height: 0.94;
+}
+
+@media (max-width: 760px) {
+  .cosmic-ui .hero h1 {
+    max-width: 10ch;
+    font-size: clamp(2.05rem, 10.4vw, 3rem);
+    line-height: 0.96;
+  }
+}
+
+@media (max-width: 430px) {
+  .cosmic-ui .hero h1 {
+    font-size: clamp(1.9rem, 10vw, 2.62rem);
+  }
+}
+
+/* Premium private-desk redesign */
+.cosmic-ui {
+  --lux-bg: #020604;
+  --lux-surface: rgba(4, 14, 10, 0.78);
+  --lux-surface-strong: rgba(8, 22, 16, 0.9);
+  --lux-line: rgba(199, 255, 228, 0.12);
+  --lux-line-strong: rgba(199, 255, 228, 0.24);
+  --lux-text: #f2fff7;
+  --lux-muted: rgba(214, 238, 225, 0.72);
+  --lux-soft: rgba(101, 243, 173, 0.11);
+  --lux-glow: rgba(101, 243, 173, 0.24);
+  --accent: #65f3ad;
+  --accent-soft: rgba(101, 243, 173, 0.15);
+  --accent-line: rgba(101, 243, 173, 0.36);
+}
+
+.cosmic-ui .hero {
+  background:
+    radial-gradient(circle at 76% 34%, rgba(101, 243, 173, 0.12), transparent 28%),
+    radial-gradient(circle at 12% 14%, rgba(127, 162, 255, 0.08), transparent 24%),
+    linear-gradient(180deg, #020604 0%, #010302 100%);
+}
+
+.cosmic-ui .hero-copy {
+  position: relative;
+}
+
+.cosmic-ui .hero-copy::before {
+  content: "";
+  position: absolute;
+  inset: -42px -24px -34px -28px;
+  z-index: -1;
+  border: 1px solid rgba(199, 255, 228, 0.06);
+  border-radius: 34px;
+  background:
+    radial-gradient(circle at var(--mouse-x, 12%) var(--mouse-y, 20%), rgba(101, 243, 173, 0.1), transparent 30%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.006));
+  opacity: 0.74;
+  pointer-events: none;
+}
+
+.cosmic-ui .hero-signal {
+  border-color: rgba(101, 243, 173, 0.28);
+  color: rgba(231, 255, 242, 0.82);
+  box-shadow:
+    0 0 0 1px rgba(101, 243, 173, 0.05) inset,
+    0 12px 38px rgba(0, 0, 0, 0.22);
+}
+
+.cosmic-ui .hero-signal span {
+  box-shadow:
+    0 0 0 4px rgba(101, 243, 173, 0.12),
+    0 0 24px rgba(101, 243, 173, 0.36);
+}
+
+.cosmic-ui .hero-ledger {
+  border-color: rgba(199, 255, 228, 0.13);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.012)),
+    rgba(3, 11, 8, 0.78);
+  box-shadow:
+    0 22px 70px rgba(0, 0, 0, 0.36),
+    0 0 0 1px rgba(101, 243, 173, 0.045) inset;
+}
+
+.cosmic-ui .hero-premium-panel {
+  border-color: rgba(199, 255, 228, 0.16);
+  background:
+    radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 18%), rgba(101, 243, 173, 0.16), transparent 33%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.014)),
+    rgba(2, 9, 6, 0.82);
+  box-shadow:
+    0 34px 120px rgba(0, 0, 0, 0.48),
+    0 0 0 1px rgba(255, 255, 255, 0.035) inset,
+    0 0 56px rgba(101, 243, 173, 0.08);
+}
+
+.cosmic-ui .hero-premium-panel::before {
+  opacity: 0.8;
+}
+
+.cosmic-ui .hero-premium-panel::after {
+  background:
+    linear-gradient(90deg, transparent, rgba(222, 255, 237, 0.24), transparent);
+  animation-duration: 6.4s;
+}
+
+.cosmic-ui .luxury-ribbon {
+  border-block: 1px solid rgba(199, 255, 228, 0.09);
+  background:
+    linear-gradient(90deg, rgba(101, 243, 173, 0.03), rgba(127, 162, 255, 0.04), rgba(243, 201, 77, 0.03)),
+    rgba(1, 5, 3, 0.92);
+}
+
+.cosmic-ui .luxury-ribbon-track span {
+  color: rgba(236, 255, 244, 0.78);
+}
+
+.cosmic-ui .network-select-section,
+.cosmic-ui .packages-section,
+.cosmic-ui .checkout-section,
+.cosmic-ui .wallet-compat-section {
+  position: relative;
+  overflow: hidden;
+}
+
+.cosmic-ui .network-select-section::before,
+.cosmic-ui .packages-section::before,
+.cosmic-ui .checkout-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(rgba(199, 255, 228, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(199, 255, 228, 0.025) 1px, transparent 1px),
+    radial-gradient(circle at 78% 22%, rgba(101, 243, 173, 0.1), transparent 30%);
+  background-size: 64px 64px, 64px 64px, auto;
+  opacity: 0.42;
+}
+
+.cosmic-ui .network-select-section > *,
+.cosmic-ui .packages-section > *,
+.cosmic-ui .checkout-section > *,
+.cosmic-ui .wallet-compat-section > * {
+  position: relative;
+  z-index: 1;
+}
+
+.cosmic-ui .section-heading,
+.cosmic-ui .packages-heading {
+  max-width: 920px;
+}
+
+.cosmic-ui .section-heading h2,
+.cosmic-ui .packages-heading h1,
+.cosmic-ui .checkout-section h1 {
+  letter-spacing: 0;
+  text-wrap: balance;
+}
+
+.cosmic-ui .network-advisor {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(199, 255, 228, 0.13);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at var(--mouse-x, 18%) var(--mouse-y, 12%), var(--accent-soft), transparent 34%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.066), rgba(255, 255, 255, 0.012)),
+    rgba(4, 14, 10, 0.84);
+  box-shadow:
+    0 30px 98px rgba(0, 0, 0, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  transform: perspective(1000px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease,
+    transform 0.3s ease;
+}
+
+.cosmic-ui .network-advisor::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.11), transparent),
+    radial-gradient(circle at 22% 22%, rgba(101, 243, 173, 0.12), transparent 26%);
+  opacity: 0.55;
+}
+
+.cosmic-ui .network-advisor:hover {
+  border-color: rgba(199, 255, 228, 0.28);
+  box-shadow:
+    0 36px 120px rgba(0, 0, 0, 0.5),
+    0 0 48px var(--accent-soft),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.cosmic-ui .network-advisor-tabs {
+  position: relative;
+  padding: 6px;
+  border: 1px solid rgba(199, 255, 228, 0.11);
+  border-radius: 18px;
+  background: rgba(1, 5, 3, 0.42);
+}
+
+.cosmic-ui .network-advisor-tab,
+.cosmic-ui .network-tab {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid transparent;
+  background:
+    radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.1), transparent 28%),
+    rgba(255, 255, 255, 0.018);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
+}
+
+.cosmic-ui .network-advisor-tab.is-active,
+.cosmic-ui .network-tab.is-active {
+  color: #03120b;
+  background:
+    linear-gradient(135deg, #effff7, #65f3ad 52%, #bfffe0);
+  box-shadow:
+    0 14px 32px rgba(101, 243, 173, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.46);
+}
+
+.cosmic-ui .network-advisor-display {
+  border: 1px solid rgba(199, 255, 228, 0.1);
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 8% 20%, rgba(101, 243, 173, 0.09), transparent 24%),
+    rgba(1, 7, 5, 0.42);
+}
+
+.cosmic-ui .advisor-monogram {
+  position: relative;
+  border: 1px solid var(--accent-line);
+  background:
+    radial-gradient(circle, rgba(255, 255, 255, 0.18), transparent 42%),
+    rgba(101, 243, 173, 0.08);
+  box-shadow:
+    0 0 48px var(--accent-soft),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+}
+
+.cosmic-ui .advisor-monogram::after {
+  content: "";
+  position: absolute;
+  inset: -12px;
+  border: 1px solid var(--accent-line);
+  border-radius: inherit;
+  opacity: 0.34;
+  animation: privateDeskPulse 4.8s ease-in-out infinite;
+}
+
+.cosmic-ui .network-grid {
+  gap: clamp(18px, 2vw, 28px);
+}
+
+.cosmic-ui .network-card {
+  --accent: #65f3ad;
+  --accent-rgb: 101, 243, 173;
+  --accent-soft: rgba(var(--accent-rgb), 0.14);
+  --accent-line: rgba(var(--accent-rgb), 0.42);
+  position: relative;
+  min-height: 390px;
+  overflow: hidden;
+  border: 1px solid rgba(199, 255, 228, 0.1);
+  border-radius: 28px;
+  color: var(--lux-text);
+  background:
+    radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 18%), var(--accent-soft), transparent 34%),
+    linear-gradient(160deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.014) 44%, rgba(255, 255, 255, 0.035)),
+    rgba(5, 15, 12, 0.88);
+  box-shadow:
+    0 28px 86px rgba(0, 0, 0, 0.36),
+    inset 0 1px 0 rgba(255, 255, 255, 0.055);
+  transform:
+    translate3d(var(--tilt-x, 0), var(--tilt-y, 0), 0)
+    rotateX(var(--tilt-rotate-x, 0deg))
+    rotateY(var(--tilt-rotate-y, 0deg));
+  transition:
+    border-color 0.32s ease,
+    box-shadow 0.32s ease,
+    transform 0.32s ease,
+    background 0.32s ease;
+}
+
+.cosmic-ui .network-card.accent-coral {
+  --accent: #ff6d5f;
+  --accent-rgb: 255, 109, 95;
+}
+
+.cosmic-ui .network-card.accent-blue {
+  --accent: #7fa2ff;
+  --accent-rgb: 127, 162, 255;
+}
+
+.cosmic-ui .network-card.accent-gold {
+  --accent: #f3c94d;
+  --accent-rgb: 243, 201, 77;
+}
+
+.cosmic-ui .network-card.accent-orange {
+  --accent: #ff9f43;
+  --accent-rgb: 255, 159, 67;
+}
+
+.cosmic-ui .network-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.18), transparent),
+    linear-gradient(var(--accent), var(--accent)) top / 100% 3px no-repeat;
+  opacity: 0.58;
+  transform: translateX(-36%);
+  transition: transform 0.58s ease, opacity 0.32s ease;
+}
+
+.cosmic-ui .network-card::after {
+  content: "";
+  position: absolute;
+  inset: auto -20% -34% 16%;
+  height: 58%;
+  pointer-events: none;
+  background:
+    radial-gradient(circle, rgba(var(--accent-rgb), 0.24), transparent 62%);
+  opacity: 0.42;
+  filter: blur(8px);
+}
+
+.cosmic-ui .network-card:hover,
+.cosmic-ui .network-card:focus-within,
+.cosmic-ui .network-card.is-selected {
+  border-color: var(--accent-line);
+  box-shadow:
+    0 34px 110px rgba(0, 0, 0, 0.48),
+    0 0 48px rgba(var(--accent-rgb), 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.cosmic-ui .network-card:hover::before,
+.cosmic-ui .network-card:focus-within::before {
+  opacity: 0.9;
+  transform: translateX(36%);
+}
+
+.cosmic-ui .network-icon {
+  position: relative;
+  border-color: var(--accent-line);
+  color: var(--accent);
+  background:
+    radial-gradient(circle at 50% 35%, rgba(255, 255, 255, 0.16), transparent 35%),
+    rgba(var(--accent-rgb), 0.11);
+  box-shadow:
+    0 0 42px rgba(var(--accent-rgb), 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.cosmic-ui .network-card-code,
+.cosmic-ui .network-card-cta {
+  color: var(--accent);
+}
+
+.cosmic-ui .network-specs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.cosmic-ui .network-specs div {
+  border: 1px solid rgba(199, 255, 228, 0.08);
+  border-radius: 14px;
+  padding: 11px;
+  background: rgba(1, 7, 5, 0.34);
+}
+
+.cosmic-ui .network-button {
+  border-radius: inherit;
+}
+
+.cosmic-ui .packages-section {
+  background:
+    radial-gradient(circle at 14% 10%, rgba(127, 162, 255, 0.08), transparent 26%),
+    linear-gradient(180deg, #020604, #010302);
+}
+
+.cosmic-ui .packages-heading {
+  border: 1px solid rgba(199, 255, 228, 0.1);
+  border-radius: 28px;
+  padding: clamp(22px, 3vw, 36px);
+  background:
+    radial-gradient(circle at 10% 0%, rgba(101, 243, 173, 0.1), transparent 34%),
+    rgba(4, 14, 10, 0.72);
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.28);
+}
+
+.cosmic-ui .network-tabs {
+  padding: 6px;
+  border: 1px solid rgba(199, 255, 228, 0.1);
+  border-radius: 18px;
+  background: rgba(1, 6, 4, 0.56);
+}
+
+.cosmic-ui .package-grid {
+  gap: clamp(18px, 2.2vw, 30px);
+}
+
+.cosmic-ui .package-card {
+  position: relative;
+  min-height: 510px;
+  overflow: hidden;
+  border: 1px solid rgba(199, 255, 228, 0.1);
+  border-radius: 30px;
+  background:
+    radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 10%), var(--package-accent-soft, rgba(101, 243, 173, 0.13)), transparent 34%),
+    linear-gradient(154deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.012) 44%, rgba(255, 255, 255, 0.035)),
+    rgba(5, 14, 11, 0.88);
+  box-shadow:
+    0 30px 92px rgba(0, 0, 0, 0.36),
+    inset 0 1px 0 rgba(255, 255, 255, 0.055);
+}
+
+.cosmic-ui .package-card[data-network="TRC20"] {
+  --package-accent: #ff6d5f;
+  --package-accent-rgb: 255, 109, 95;
+  --package-accent-soft: rgba(255, 109, 95, 0.14);
+}
+
+.cosmic-ui .package-card[data-network="ERC20"] {
+  --package-accent: #7fa2ff;
+  --package-accent-rgb: 127, 162, 255;
+  --package-accent-soft: rgba(127, 162, 255, 0.14);
+}
+
+.cosmic-ui .package-card[data-network="BEP20"] {
+  --package-accent: #f3c94d;
+  --package-accent-rgb: 243, 201, 77;
+  --package-accent-soft: rgba(243, 201, 77, 0.14);
+}
+
+.cosmic-ui .package-card[data-network="BTC"] {
+  --package-accent: #ff9f43;
+  --package-accent-rgb: 255, 159, 67;
+  --package-accent-soft: rgba(255, 159, 67, 0.14);
+}
+
+.cosmic-ui .package-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(var(--package-accent, #65f3ad), var(--package-accent, #65f3ad)) top / 100% 3px no-repeat,
+    linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
+  opacity: 0.62;
+  transform: translateX(-42%);
+  transition: transform 0.58s ease, opacity 0.28s ease;
+}
+
+.cosmic-ui .package-card:hover::before,
+.cosmic-ui .package-card:focus-within::before {
+  opacity: 0.95;
+  transform: translateX(42%);
+}
+
+.cosmic-ui .package-card:hover,
+.cosmic-ui .package-card:focus-within {
+  border-color: rgba(var(--package-accent-rgb, 101, 243, 173), 0.45);
+  box-shadow:
+    0 38px 126px rgba(0, 0, 0, 0.48),
+    0 0 56px rgba(var(--package-accent-rgb, 101, 243, 173), 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.cosmic-ui .package-orbital {
+  position: absolute;
+  top: 68px;
+  right: 28px;
+  width: 76px;
+  height: 76px;
+  border: 1px solid rgba(var(--package-accent-rgb, 101, 243, 173), 0.28);
+  border-radius: 50%;
+  opacity: 0.84;
+  pointer-events: none;
+  animation: privateOrbit 12s linear infinite;
+}
+
+.cosmic-ui .package-orbital span,
+.cosmic-ui .package-orbital i {
+  position: absolute;
+  border-radius: 50%;
+}
+
+.cosmic-ui .package-orbital span {
+  inset: 22px;
+  background:
+    radial-gradient(circle, rgba(var(--package-accent-rgb, 101, 243, 173), 0.34), transparent 62%);
+}
+
+.cosmic-ui .package-orbital i {
+  width: 7px;
+  height: 7px;
+  top: 7px;
+  left: 50%;
+  background: var(--package-accent, #65f3ad);
+  box-shadow: 0 0 18px rgba(var(--package-accent-rgb, 101, 243, 173), 0.56);
+}
+
+.cosmic-ui .package-topline,
+.cosmic-ui .package-meta {
+  position: relative;
+  z-index: 1;
+}
+
+.cosmic-ui .package-network,
+.cosmic-ui .popular-pill {
+  border-color: rgba(var(--package-accent-rgb, 101, 243, 173), 0.42);
+  color: var(--package-accent, #65f3ad);
+  background: rgba(var(--package-accent-rgb, 101, 243, 173), 0.09);
+}
+
+.cosmic-ui .package-value {
+  color: #f5fff8;
+  font-size: clamp(2.2rem, 4vw, 3.6rem);
+  letter-spacing: 0;
+  text-shadow: 0 0 32px rgba(var(--package-accent-rgb, 101, 243, 173), 0.16);
+}
+
+.cosmic-ui .package-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 20px 0 8px;
+}
+
+.cosmic-ui .package-meta span {
+  padding: 7px 10px;
+  border: 1px solid rgba(199, 255, 228, 0.1);
+  border-radius: 999px;
+  color: rgba(236, 255, 244, 0.78);
+  background: rgba(1, 7, 5, 0.36);
+  font-size: 0.74rem;
+  font-weight: 760;
+}
+
+.cosmic-ui .package-card li::before {
+  color: var(--package-accent, #65f3ad);
+}
+
+.cosmic-ui .package-button {
+  color: #04140c;
+  background:
+    linear-gradient(135deg, #ffffff, var(--package-accent, #65f3ad) 52%, #dffff0);
+  box-shadow:
+    0 18px 44px rgba(0, 0, 0, 0.3),
+    0 0 34px rgba(var(--package-accent-rgb, 101, 243, 173), 0.13),
+    inset 0 1px 0 rgba(255, 255, 255, 0.46);
+}
+
+.cosmic-ui .checkout-section {
+  background:
+    radial-gradient(circle at 82% 14%, rgba(101, 243, 173, 0.11), transparent 28%),
+    linear-gradient(180deg, #020604, #010302);
+}
+
+.cosmic-ui .checkout-layout {
+  gap: clamp(20px, 3vw, 38px);
+}
+
+.cosmic-ui .checkout-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(199, 255, 228, 0.12);
+  border-radius: 32px;
+  background:
+    radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 10%), rgba(101, 243, 173, 0.12), transparent 32%),
+    linear-gradient(150deg, rgba(255, 255, 255, 0.068), rgba(255, 255, 255, 0.012)),
+    rgba(5, 14, 11, 0.9);
+  box-shadow:
+    0 34px 112px rgba(0, 0, 0, 0.44),
+    inset 0 1px 0 rgba(255, 255, 255, 0.055);
+}
+
+.cosmic-ui .checkout-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.13), transparent);
+  opacity: 0.32;
+  transform: translateX(-42%);
+  transition: transform 0.7s ease;
+}
+
+.cosmic-ui .checkout-card:hover::before,
+.cosmic-ui .checkout-card:focus-within::before {
+  transform: translateX(42%);
+}
+
+.cosmic-ui .order-ticket,
+.cosmic-ui .payment-address-box,
+.cosmic-ui .payment-proof,
+.cosmic-ui .receipt-upload,
+.cosmic-ui .wallet-field input,
+.cosmic-ui .payment-proof input {
+  border-color: rgba(199, 255, 228, 0.13);
+  background:
+    radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(101, 243, 173, 0.08), transparent 36%),
+    rgba(1, 7, 5, 0.48);
+}
+
+.cosmic-ui .order-ticket {
+  box-shadow:
+    0 18px 52px rgba(0, 0, 0, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.cosmic-ui .order-status,
+.cosmic-ui .checkout-network-pill {
+  color: #04140c;
+  background: linear-gradient(135deg, #eafff4, #65f3ad);
+}
+
+.cosmic-ui .order-product {
+  border: 1px solid rgba(199, 255, 228, 0.1);
+  border-radius: 24px;
+  padding: 18px;
+  background:
+    linear-gradient(135deg, rgba(101, 243, 173, 0.075), rgba(127, 162, 255, 0.04)),
+    rgba(1, 7, 5, 0.34);
+}
+
+.cosmic-ui .order-icon {
+  box-shadow:
+    0 0 0 7px rgba(101, 243, 173, 0.075),
+    0 0 34px rgba(101, 243, 173, 0.24);
+}
+
+.cosmic-ui .order-progress span {
+  position: relative;
+  border-color: rgba(199, 255, 228, 0.12);
+  background: rgba(1, 7, 5, 0.48);
+}
+
+.cosmic-ui .order-progress span.is-active {
+  color: #04140c;
+  background: linear-gradient(135deg, #ffffff, #65f3ad);
+}
+
+.cosmic-ui .payment-panel:not([hidden]) {
+  border: 1px solid rgba(101, 243, 173, 0.18);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 16% 4%, rgba(101, 243, 173, 0.13), transparent 35%),
+    rgba(1, 7, 5, 0.48);
+  box-shadow:
+    0 22px 70px rgba(0, 0, 0, 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.cosmic-ui .payment-address-box code {
+  color: #f4fff8;
+  text-shadow: 0 0 24px rgba(101, 243, 173, 0.14);
+}
+
+.cosmic-ui .payment-live-dot {
+  box-shadow:
+    0 0 0 6px rgba(101, 243, 173, 0.12),
+    0 0 24px rgba(101, 243, 173, 0.38);
+}
+
+.cosmic-ui .checkout-submit,
+.cosmic-ui .proof-submit,
+.cosmic-ui .copy-wallet:not(:disabled) {
+  color: #04140c;
+  background:
+    linear-gradient(135deg, #ffffff, #65f3ad 55%, #dffff0);
+  box-shadow:
+    0 18px 44px rgba(0, 0, 0, 0.32),
+    0 0 36px rgba(101, 243, 173, 0.13),
+    inset 0 1px 0 rgba(255, 255, 255, 0.48);
+}
+
+.cosmic-ui .wallet-compat-card {
+  border-color: rgba(199, 255, 228, 0.12);
+  background:
+    radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 10%), rgba(101, 243, 173, 0.09), transparent 32%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.052), rgba(255, 255, 255, 0.012)),
+    rgba(4, 14, 10, 0.82);
+}
+
+.cosmic-ui .mobile-dock {
+  border-color: rgba(199, 255, 228, 0.14);
+  background:
+    linear-gradient(180deg, rgba(8, 18, 13, 0.92), rgba(2, 7, 5, 0.92));
+  box-shadow:
+    0 24px 70px rgba(0, 0, 0, 0.48),
+    0 0 0 1px rgba(255, 255, 255, 0.035) inset;
+}
+
+.cosmic-ui .mobile-dock a {
+  border-radius: 20px;
+}
+
+.cosmic-ui .mobile-dock a.is-active {
+  color: #04140c;
+  background:
+    linear-gradient(135deg, #ffffff, #65f3ad);
+  box-shadow:
+    0 14px 34px rgba(101, 243, 173, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.48);
+}
+
+.cosmic-ui .button,
+.cosmic-ui .package-button,
+.cosmic-ui .checkout-submit,
+.cosmic-ui .proof-submit,
+.cosmic-ui .copy-wallet,
+.cosmic-ui .advisor-action,
+.cosmic-ui .network-advisor-tab,
+.cosmic-ui .network-tab,
+.cosmic-ui .mobile-dock a {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.cosmic-ui .button::after,
+.cosmic-ui .package-button::after,
+.cosmic-ui .checkout-submit::after,
+.cosmic-ui .proof-submit::after,
+.cosmic-ui .copy-wallet::after,
+.cosmic-ui .advisor-action::after,
+.cosmic-ui .network-advisor-tab::after,
+.cosmic-ui .network-tab::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background:
+    radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.28), transparent 34%);
+  opacity: 0;
+  transition: opacity 0.22s ease;
+}
+
+.cosmic-ui .button:hover::after,
+.cosmic-ui .package-button:hover::after,
+.cosmic-ui .checkout-submit:hover::after,
+.cosmic-ui .proof-submit:hover::after,
+.cosmic-ui .copy-wallet:hover::after,
+.cosmic-ui .advisor-action:hover::after,
+.cosmic-ui .network-advisor-tab:hover::after,
+.cosmic-ui .network-tab:hover::after {
+  opacity: 1;
+}
+
+.interactive-click {
+  position: relative;
+  overflow: hidden;
+}
+
+.interactive-click.is-click-animating {
+  animation: privateDeskPress 0.36s cubic-bezier(0.18, 0.82, 0.24, 1);
+}
+
+.click-burst {
+  position: absolute;
+  left: var(--click-x, 50%);
+  top: var(--click-y, 50%);
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  pointer-events: none;
+  background:
+    radial-gradient(circle, rgba(255, 255, 255, 0.72), rgba(101, 243, 173, 0.26) 38%, transparent 70%);
+  transform: translate(-50%, -50%) scale(0.2);
+  animation: privateDeskRipple 0.72s ease-out forwards;
+}
+
+@media (max-width: 980px) {
+  .cosmic-ui .checkout-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .cosmic-ui .network-advisor-display {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .cosmic-ui {
+    --lux-soft: rgba(101, 243, 173, 0.08);
+  }
+
+  .cosmic-ui .hero-copy::before {
+    inset: -24px -14px -22px;
+    border-radius: 26px;
+    opacity: 0.46;
+  }
+
+  .cosmic-ui .hero-ledger {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .cosmic-ui .network-advisor,
+  .cosmic-ui .network-card,
+  .cosmic-ui .package-card,
+  .cosmic-ui .checkout-card {
+    border-radius: 24px;
+    box-shadow:
+      0 20px 58px rgba(0, 0, 0, 0.34),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  .cosmic-ui .network-card {
+    min-height: 320px;
+  }
+
+  .cosmic-ui .package-card {
+    min-height: auto;
+  }
+
+  .cosmic-ui .package-orbital {
+    top: 56px;
+    right: 20px;
+    width: 58px;
+    height: 58px;
+    opacity: 0.58;
+  }
+
+  .cosmic-ui .package-value {
+    font-size: clamp(2rem, 11vw, 3rem);
+  }
+
+  .cosmic-ui .network-specs {
+    grid-template-columns: 1fr;
+  }
+
+  .cosmic-ui .checkout-card {
+    padding-inline: clamp(18px, 5vw, 24px);
+  }
+
+  .cosmic-ui .payment-address-box code {
+    font-size: 0.78rem;
+    overflow-wrap: anywhere;
+  }
+
+  .cosmic-ui .mobile-dock {
+    left: 14px;
+    right: 14px;
+    bottom: 12px;
+    padding: 7px;
+  }
+
+  .cosmic-ui .mobile-dock a {
+    min-height: 58px;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .cosmic-ui .network-advisor.is-updating .advisor-monogram,
+  .cosmic-ui .network-advisor.is-updating .advisor-copy,
+  .cosmic-ui .network-advisor.is-updating .advisor-specs {
+    animation: privateDeskSwap 0.58s cubic-bezier(0.18, 0.82, 0.24, 1);
+  }
+}
+
+@keyframes privateDeskPulse {
+  0%,
+  100% {
+    opacity: 0.24;
+    transform: scale(0.96);
+  }
+  50% {
+    opacity: 0.56;
+    transform: scale(1.06);
+  }
+}
+
+@keyframes privateOrbit {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes privateDeskSwap {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes privateDeskPress {
+  0%,
+  100% {
+    transform: translateZ(0) scale(1);
+  }
+  42% {
+    transform: translateZ(0) scale(0.982);
+  }
+}
+
+@keyframes privateDeskRipple {
+  to {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(18);
+  }
+}
+
+/* Ultra smooth appearance pass */
+.cosmic-ui {
+  --smooth-appear: cubic-bezier(0.16, 1, 0.3, 1);
+  --smooth-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.cosmic-ui .site-header,
+.cosmic-ui .mobile-dock {
+  animation: smoothChromeIn 0.9s var(--smooth-appear) both;
+}
+
+.cosmic-ui .reveal {
+  opacity: 0;
+  filter: blur(10px);
+  transform: translate3d(0, 34px, 0) scale(0.982);
+  transition:
+    opacity 1.14s var(--smooth-appear),
+    filter 1.14s var(--smooth-appear),
+    transform 1.28s var(--smooth-appear);
+  transition-delay: var(--network-reveal-delay, var(--reveal-delay, 0ms));
+  will-change: opacity, transform, filter;
+}
+
+.cosmic-ui .hero-signal.reveal,
+.cosmic-ui .hero .eyebrow.reveal,
+.cosmic-ui .hero h1.reveal,
+.cosmic-ui .hero-lead.reveal,
+.cosmic-ui .hero-actions.reveal,
+.cosmic-ui .hero-ledger.reveal,
+.cosmic-ui .hero-premium-panel.reveal {
+  transform: translate3d(0, 24px, 0) scale(0.99);
+  transition-duration: 1.22s, 1.22s, 1.36s;
+}
+
+.cosmic-ui .section-heading.reveal,
+.cosmic-ui .packages-heading.reveal,
+.cosmic-ui .page-hero-inner.reveal,
+.cosmic-ui .guide-hero-inner.reveal {
+  clip-path: inset(0 0 18% 0);
+  transform: translate3d(0, 28px, 0) scale(0.988);
+  transition:
+    opacity 1.14s var(--smooth-appear),
+    filter 1.14s var(--smooth-appear),
+    transform 1.28s var(--smooth-appear),
+    clip-path 1.36s var(--smooth-appear);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.cosmic-ui .network-card.reveal,
+.cosmic-ui .package-card.reveal,
+.cosmic-ui .wallet-compat-card.reveal,
+.cosmic-ui .checkout-card.reveal,
+.cosmic-ui .guide-card.reveal,
+.cosmic-ui .guide-step.reveal,
+.cosmic-ui .guide-video-shell.reveal,
+.cosmic-ui .guide-visual-card.reveal,
+.cosmic-ui .faq-list details.reveal {
+  filter: blur(8px);
+  transform: translate3d(0, 46px, 0) scale(0.974);
+  transition-duration: 1.16s, 1.16s, 1.34s;
+}
+
+.cosmic-ui .reveal.is-visible {
+  opacity: 1;
+  filter: blur(0);
+  transform: translate3d(0, 0, 0) scale(1);
+  will-change: auto;
+}
+
+.cosmic-ui .section-heading.reveal.is-visible,
+.cosmic-ui .packages-heading.reveal.is-visible,
+.cosmic-ui .page-hero-inner.reveal.is-visible,
+.cosmic-ui .guide-hero-inner.reveal.is-visible {
+  clip-path: inset(0 0 0 0);
+}
+
+.cosmic-ui .payment-panel:not([hidden]),
+.cosmic-ui .checkout-message:not(:empty),
+.cosmic-ui .proof-message:not(:empty),
+.cosmic-ui .faq-list details[open],
+.cosmic-ui .network-advisor.is-updating .advisor-monogram,
+.cosmic-ui .network-advisor.is-updating .advisor-copy,
+.cosmic-ui .network-advisor.is-updating .advisor-specs {
+  animation: smoothPanelIn 0.86s var(--smooth-appear) both;
+}
+
+.cosmic-ui .receipt-upload,
+.cosmic-ui .payment-proof,
+.cosmic-ui .payment-address-box,
+.cosmic-ui .order-ticket {
+  transition:
+    border-color 0.42s ease,
+    box-shadow 0.42s ease,
+    background 0.42s ease,
+    transform 0.42s var(--smooth-soft);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .cosmic-ui .network-advisor.reveal.is-visible:hover,
+  .cosmic-ui .network-advisor.reveal.is-visible:focus-within {
+    transform:
+      perspective(1000px)
+      translate3d(var(--tilt-glide-x, 0px), var(--tilt-glide-y, 0px), 0)
+      rotateX(var(--tilt-rotate-x, 0deg))
+      rotateY(var(--tilt-rotate-y, 0deg));
+    transition-delay: 0ms;
+    transition-duration: 0.38s;
+  }
+
+  .cosmic-ui .network-card.reveal.is-visible:hover,
+  .cosmic-ui .network-card.reveal.is-visible:focus-within,
+  .cosmic-ui .package-card.reveal.is-visible:hover,
+  .cosmic-ui .package-card.reveal.is-visible:focus-within {
+    transform:
+      translate3d(var(--tilt-glide-x, 0px), calc(var(--tilt-glide-y, 0px) - 9px), 0)
+      rotateX(var(--tilt-rotate-x, 0deg))
+      rotateY(var(--tilt-rotate-y, 0deg))
+      scale(1.008);
+    transition-delay: 0ms;
+    transition-duration: 0.38s;
+  }
+
+  .cosmic-ui .checkout-card.reveal.is-visible:hover,
+  .cosmic-ui .checkout-card.reveal.is-visible:focus-within,
+  .cosmic-ui .wallet-compat-card.reveal.is-visible:hover,
+  .cosmic-ui .guide-card.reveal.is-visible:hover,
+  .cosmic-ui .guide-step.reveal.is-visible:hover,
+  .cosmic-ui .guide-visual-card.reveal.is-visible:hover,
+  .cosmic-ui .faq-list details.reveal.is-visible:hover {
+    transform:
+      translate3d(var(--tilt-glide-x, 0px), calc(var(--tilt-glide-y, 0px) - 6px), 0)
+      rotateX(var(--tilt-rotate-x, 0deg))
+      rotateY(var(--tilt-rotate-y, 0deg));
+    transition-delay: 0ms;
+    transition-duration: 0.36s;
+  }
+}
+
+@media (max-width: 980px) {
+  .cosmic-ui .nav-menu {
+    opacity: 0;
+    transform: translate3d(0, -12px, 0) scale(0.975);
+    transition:
+      opacity 0.58s var(--smooth-appear),
+      transform 0.66s var(--smooth-appear),
+      border-color 0.32s ease,
+      background 0.32s ease;
+  }
+
+  .cosmic-ui .nav-menu.is-open {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  .cosmic-ui .nav-menu.is-open a {
+    animation: smoothMenuItemIn 0.68s var(--smooth-appear) both;
+  }
+
+  .cosmic-ui .nav-menu.is-open a:nth-child(2) {
+    animation-delay: 55ms;
+  }
+
+  .cosmic-ui .nav-menu.is-open a:nth-child(3) {
+    animation-delay: 110ms;
+  }
+
+  .cosmic-ui .nav-menu.is-open a:nth-child(4) {
+    animation-delay: 165ms;
+  }
+
+  .cosmic-ui .nav-menu.is-open a:nth-child(5) {
+    animation-delay: 220ms;
+  }
+}
+
+@media (max-width: 760px) {
+  .cosmic-ui .reveal {
+    filter: blur(5px);
+    transform: translate3d(0, 24px, 0) scale(0.986);
+    transition-duration: 0.84s, 0.84s, 0.96s;
+  }
+
+  .cosmic-ui .network-card.reveal,
+  .cosmic-ui .package-card.reveal,
+  .cosmic-ui .wallet-compat-card.reveal,
+  .cosmic-ui .checkout-card.reveal,
+  .cosmic-ui .guide-card.reveal,
+  .cosmic-ui .guide-step.reveal,
+  .cosmic-ui .guide-video-shell.reveal,
+  .cosmic-ui .guide-visual-card.reveal,
+  .cosmic-ui .faq-list details.reveal {
+    filter: blur(4px);
+    transform: translate3d(0, 30px, 0) scale(0.982);
+    transition-duration: 0.82s, 0.82s, 0.98s;
+  }
+
+  .cosmic-ui .mobile-dock a,
+  .cosmic-ui .button,
+  .cosmic-ui .package-button,
+  .cosmic-ui .checkout-submit,
+  .cosmic-ui .proof-submit,
+  .cosmic-ui .copy-wallet,
+  .cosmic-ui .advisor-action {
+    transition:
+      transform 0.24s var(--smooth-soft),
+      box-shadow 0.32s ease,
+      background 0.32s ease,
+      color 0.24s ease;
+  }
+}
+
+.performance-lite .cosmic-ui .reveal {
+  filter: none;
+  transform: translate3d(0, 22px, 0) scale(0.988);
+  transition-duration: 0.72s, 0.72s, 0.84s;
+}
+
+.performance-lite .cosmic-ui .reveal.is-visible {
+  transform: translate3d(0, 0, 0) scale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cosmic-ui .site-header,
+  .cosmic-ui .mobile-dock,
+  .cosmic-ui .reveal,
+  .cosmic-ui .reveal.is-visible,
+  .cosmic-ui .payment-panel:not([hidden]),
+  .cosmic-ui .checkout-message:not(:empty),
+  .cosmic-ui .proof-message:not(:empty),
+  .cosmic-ui .faq-list details[open] {
+    opacity: 1 !important;
+    filter: none !important;
+    transform: none !important;
+    clip-path: none !important;
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+@keyframes smoothChromeIn {
+  from {
+    opacity: 0;
+    filter: blur(8px);
+    transform: translate3d(0, -16px, 0) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes smoothPanelIn {
+  from {
+    opacity: 0;
+    filter: blur(10px);
+    transform: translate3d(0, 22px, 0) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes smoothMenuItemIn {
+  from {
+    opacity: 0;
+    filter: blur(6px);
+    transform: translate3d(0, -8px, 0) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}

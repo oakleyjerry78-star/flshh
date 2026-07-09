@@ -663,9 +663,14 @@ function renderPackages(networkName) {
             <span class="package-network">${currentNetwork}</span>
             ${card.popular ? '<span class="popular-pill">★ Популярно</span>' : ""}
           </div>
+          <div class="package-orbital" aria-hidden="true"><span></span><i></i></div>
           <h3>${card.name}</h3>
           <p class="package-value">${card.price}</p>
           <p class="package-copy">${card.copy}</p>
+          <div class="package-meta" aria-label="Особенности пакета">
+            <span>Проверка сети</span>
+            <span>TXID</span>
+          </div>
           <ul>
             ${packageFeatures.map((feature) => `<li>${feature}</li>`).join("")}
           </ul>
@@ -889,11 +894,11 @@ function initRevealEffects() {
 
   revealItems.forEach((item, index) => {
     item.classList.add("reveal");
-    item.style.setProperty("--reveal-delay", `${Math.min(index % 6, 5) * 70}ms`);
+    item.style.setProperty("--reveal-delay", `${Math.min(index % 8, 7) * 82}ms`);
   });
 
   document.querySelectorAll(".network-grid .network-card").forEach((item, index) => {
-    item.style.setProperty("--network-reveal-delay", `${index * 95}ms`);
+    item.style.setProperty("--network-reveal-delay", `${index * 118}ms`);
   });
 
   if (!("IntersectionObserver" in window)) {
@@ -913,8 +918,8 @@ function initRevealEffects() {
       });
     },
     {
-      rootMargin: "0px 0px -56px 0px",
-      threshold: 0.14,
+      rootMargin: "0px 0px -28px 0px",
+      threshold: 0.08,
     }
   );
 
@@ -930,7 +935,7 @@ function initCardTilt() {
   }
 
   const tiltCards = document.querySelectorAll(
-    ".network-card, .package-card, .checkout-card, .guide-video-shell, .guide-card, .guide-step, .guide-visual-card"
+    ".network-advisor, .network-card, .package-card, .checkout-card, .order-ticket, .payment-address-box, .guide-video-shell, .guide-card, .guide-step, .guide-visual-card"
   );
 
   tiltCards.forEach((card) => {
@@ -946,9 +951,15 @@ function initCardTilt() {
         const rect = card.getBoundingClientRect();
         const x = (event.clientX - rect.left) / rect.width - 0.5;
         const y = (event.clientY - rect.top) / rect.height - 0.5;
+        const rotateX = (-y * 5.5).toFixed(2);
+        const rotateY = (x * 6.5).toFixed(2);
 
-        card.style.setProperty("--tilt-x", `${(-y * 7).toFixed(2)}deg`);
-        card.style.setProperty("--tilt-y", `${(x * 8).toFixed(2)}deg`);
+        card.style.setProperty("--tilt-x", `${rotateX}deg`);
+        card.style.setProperty("--tilt-y", `${rotateY}deg`);
+        card.style.setProperty("--tilt-rotate-x", `${rotateX}deg`);
+        card.style.setProperty("--tilt-rotate-y", `${rotateY}deg`);
+        card.style.setProperty("--tilt-glide-x", `${(x * 4).toFixed(2)}px`);
+        card.style.setProperty("--tilt-glide-y", `${(y * 4).toFixed(2)}px`);
       },
       { passive: true }
     );
@@ -958,6 +969,10 @@ function initCardTilt() {
       () => {
         card.style.setProperty("--tilt-x", "0deg");
         card.style.setProperty("--tilt-y", "0deg");
+        card.style.setProperty("--tilt-rotate-x", "0deg");
+        card.style.setProperty("--tilt-rotate-y", "0deg");
+        card.style.setProperty("--tilt-glide-x", "0px");
+        card.style.setProperty("--tilt-glide-y", "0px");
       },
       { passive: true }
     );
@@ -972,7 +987,7 @@ function initLuxurySpotlight() {
   }
 
   const spotlightItems = document.querySelectorAll(
-    ".hero-premium-panel, .network-advisor, .network-card, .package-card, .checkout-card, .guide-video-shell, .guide-card, .guide-step, .guide-visual-card, .guide-warning, .guide-checklist"
+    ".hero-premium-panel, .network-advisor, .network-advisor-tab, .network-tab, .network-card, .package-card, .checkout-card, .order-ticket, .payment-address-box, .receipt-upload, .wallet-field, .guide-video-shell, .guide-card, .guide-step, .guide-visual-card, .guide-warning, .guide-checklist"
   );
 
   spotlightItems.forEach((item) => {
@@ -1697,8 +1712,12 @@ const clickAnimationSelector = [
   "button:not(:disabled)",
   "a[href]",
   "summary",
+  ".network-advisor-tab",
+  ".network-tab",
   ".network-card[data-network]",
   ".package-card[data-network]",
+  ".order-ticket",
+  ".payment-address-box",
   ".receipt-upload",
   ".advisor-action",
   ".mobile-dock a",

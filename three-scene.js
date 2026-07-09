@@ -32,12 +32,13 @@ function initHeroScene() {
   const camera = new THREE.PerspectiveCamera(36, 1, 0.1, 80);
   const clock = new THREE.Clock();
   const pointer = { x: 0, y: 0 };
+  const smoothPointer = { x: 0, y: 0 };
 
   renderer.setClearColor(0x000000, 0);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.setPixelRatio(getPixelRatio());
 
-  camera.position.set(0, 0, 8.2);
+  camera.position.set(0, 0, 8.7);
 
   scene.add(new THREE.AmbientLight(0x94ffd0, 0.82));
 
@@ -48,6 +49,10 @@ function initHeroScene() {
   const mintLight = new THREE.PointLight(0x58e6a4, 4.8, 10);
   mintLight.position.set(-2.5, 1.2, 2.2);
   scene.add(mintLight);
+
+  const violetLight = new THREE.PointLight(0x7fa2ff, 1.9, 9);
+  violetLight.position.set(2.8, -1.4, 2.8);
+  scene.add(violetLight);
 
   const group = new THREE.Group();
   const orbitGroup = new THREE.Group();
@@ -70,6 +75,8 @@ function initHeroScene() {
     emissiveIntensity: 0.24,
     metalness: 0.9,
     roughness: 0.2,
+    transparent: true,
+    opacity: 0.96,
     side: THREE.DoubleSide,
   });
 
@@ -82,15 +89,47 @@ function initHeroScene() {
   coin.rotation.x = Math.PI / 2;
   group.add(coin);
 
+  const glowTexture = createRadialGlowTexture();
+  const premiumHalo = new THREE.Sprite(
+    new THREE.SpriteMaterial({
+      map: glowTexture,
+      color: 0x9fffd0,
+      transparent: true,
+      opacity: 0.38,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+    })
+  );
+  premiumHalo.position.set(0, 0, -0.82);
+  premiumHalo.scale.set(5.8, 5.8, 1);
+  orbitGroup.add(premiumHalo);
+
+  const deepHalo = new THREE.Sprite(
+    new THREE.SpriteMaterial({
+      map: glowTexture,
+      color: 0x7fa2ff,
+      transparent: true,
+      opacity: 0.16,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+    })
+  );
+  deepHalo.position.set(0.18, -0.04, -1.05);
+  deepHalo.scale.set(8.2, 4.6, 1);
+  orbitGroup.add(deepHalo);
+
   const tokenTexture = createTokenTexture();
-  const faceMaterial = new THREE.MeshBasicMaterial({
+  const faceMaterial = new THREE.MeshStandardMaterial({
     map: tokenTexture,
     transparent: true,
     opacity: 0.98,
+    metalness: 0.22,
+    roughness: 0.38,
+    alphaTest: 0.02,
     side: THREE.DoubleSide,
   });
 
-  const frontFace = new THREE.Mesh(new THREE.PlaneGeometry(1.72, 1.72), faceMaterial);
+  const frontFace = new THREE.Mesh(new THREE.PlaneGeometry(2.14, 2.14), faceMaterial);
   frontFace.position.z = 0.158;
   group.add(frontFace);
 
@@ -107,6 +146,31 @@ function initHeroScene() {
   backRim.position.z = -0.17;
   backRim.rotation.y = Math.PI;
   group.add(backRim);
+
+  const innerRim = new THREE.Mesh(new THREE.TorusGeometry(0.98, 0.006, 8, rimSegments), rimMaterial.clone());
+  innerRim.material.opacity = 0.76;
+  innerRim.position.z = 0.181;
+  group.add(innerRim);
+
+  const outerGroove = new THREE.Mesh(new THREE.TorusGeometry(1.06, 0.004, 8, rimSegments), rimMaterial.clone());
+  outerGroove.material.opacity = 0.54;
+  outerGroove.position.z = -0.181;
+  outerGroove.rotation.y = Math.PI;
+  group.add(outerGroove);
+
+  const sweepPlane = new THREE.Mesh(
+    new THREE.PlaneGeometry(2.34, 2.34),
+    new THREE.MeshBasicMaterial({
+      map: createSweepTexture(),
+      transparent: true,
+      opacity: 0.18,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+      side: THREE.DoubleSide,
+    })
+  );
+  sweepPlane.position.z = 0.196;
+  group.add(sweepPlane);
 
   const crystal = new THREE.Mesh(
     new THREE.IcosahedronGeometry(1.64, 1),
@@ -138,6 +202,13 @@ function initHeroScene() {
   tiltedRingB.rotation.x = Math.PI * 0.28;
   tiltedRingB.rotation.y = -Math.PI * 0.22;
   orbitGroup.add(tiltedRingB);
+
+  const premiumArcs = [
+    createArcLine(2.78, Math.PI * 0.08, Math.PI * 0.84, 0xbfffe0, 0.22),
+    createArcLine(3.05, Math.PI * 1.08, Math.PI * 1.72, 0x7fa2ff, 0.16),
+    createArcLine(3.34, Math.PI * 1.84, Math.PI * 2.42, 0xf3c94d, 0.14),
+  ];
+  premiumArcs.forEach((arc) => orbitGroup.add(arc));
 
   const nodeMaterial = new THREE.MeshStandardMaterial({
     color: 0x58e6a4,
@@ -310,6 +381,31 @@ function initHeroScene() {
     };
   }
 
+  function createArcLine(radius, startAngle, endAngle, color, opacity) {
+    const segments = isSceneLite() ? 48 : 78;
+    const positions = [];
+
+    for (let index = 0; index <= segments; index += 1) {
+      const progress = index / segments;
+      const angle = startAngle + (endAngle - startAngle) * progress;
+      positions.push(Math.cos(angle) * radius, Math.sin(angle) * radius * 0.34, Math.sin(angle) * radius * 0.32);
+    }
+
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+
+    return new THREE.Line(
+      geometry,
+      new THREE.LineBasicMaterial({
+        color,
+        transparent: true,
+        opacity,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false,
+      })
+    );
+  }
+
   nodes.forEach((node) => {
     node.mesh.material.color.setHex(node.color);
     node.mesh.material.emissive.setHex(node.color);
@@ -325,26 +421,26 @@ function initHeroScene() {
     camera.updateProjectionMatrix();
 
     if (width < 720) {
-      group.position.set(0.55, -0.78, 0);
-      group.userData.baseY = -0.78;
+      group.position.set(0.16, -0.58, 0);
+      group.userData.baseY = -0.58;
       orbitGroup.position.copy(group.position);
-      group.scale.setScalar(0.68);
-      group.userData.baseScale = 0.68;
-      orbitGroup.scale.setScalar(0.68);
+      group.scale.setScalar(0.66);
+      group.userData.baseScale = 0.66;
+      orbitGroup.scale.setScalar(0.66);
     } else if (width < 1040) {
-      group.position.set(1.62, -0.08, 0);
-      group.userData.baseY = -0.08;
+      group.position.set(1.18, -0.04, 0);
+      group.userData.baseY = -0.04;
       orbitGroup.position.copy(group.position);
-      group.scale.setScalar(0.86);
-      group.userData.baseScale = 0.86;
-      orbitGroup.scale.setScalar(0.86);
+      group.scale.setScalar(0.78);
+      group.userData.baseScale = 0.78;
+      orbitGroup.scale.setScalar(0.78);
     } else {
-      group.position.set(2.25, -0.05, 0);
-      group.userData.baseY = -0.05;
+      group.position.set(1.86, -0.04, 0);
+      group.userData.baseY = -0.04;
       orbitGroup.position.copy(group.position);
-      group.scale.setScalar(1);
-      group.userData.baseScale = 1;
-      orbitGroup.scale.setScalar(1);
+      group.scale.setScalar(0.92);
+      group.userData.baseScale = 0.92;
+      orbitGroup.scale.setScalar(0.92);
     }
   }
 
@@ -390,28 +486,46 @@ function initHeroScene() {
 
     lastRenderFrame = timestamp;
     const time = clock.getElapsedTime();
+    smoothPointer.x += (pointer.x - smoothPointer.x) * 0.08;
+    smoothPointer.y += (pointer.y - smoothPointer.y) * 0.08;
+    const premiumPulse = 0.5 + Math.sin(time * 0.72) * 0.5;
 
     // Keep the branded faces visible while preserving a convincing 3D turn.
     // A full, slow Y rotation left the coin edge-on long enough to look absent.
-    group.rotation.y = Math.sin(time * 0.48) * 0.66 + pointer.x * 0.16;
-    group.rotation.x = 0.11 + Math.sin(time * 0.32) * 0.07 + pointer.y * 0.1;
-    group.rotation.z = time * 0.075 + Math.sin(time * 0.28) * 0.035;
-    group.position.y = group.userData.baseY + Math.sin(time * 0.72) * 0.07;
-    group.scale.setScalar(group.userData.baseScale * (1 + Math.sin(time * 0.9) * 0.012));
+    group.rotation.y = Math.sin(time * 0.38) * 0.5 + smoothPointer.x * 0.12;
+    group.rotation.x = 0.08 + Math.sin(time * 0.28) * 0.055 + smoothPointer.y * 0.075;
+    group.rotation.z = time * 0.052 + Math.sin(time * 0.22) * 0.03;
+    group.position.y = group.userData.baseY + Math.sin(time * 0.62) * 0.06;
+    group.scale.setScalar(group.userData.baseScale * (1 + Math.sin(time * 0.82) * 0.01));
     crystal.rotation.y = -time * 0.16;
     crystal.rotation.x = time * 0.08;
 
-    orbitGroup.rotation.y = -time * 0.18;
+    orbitGroup.rotation.y = -time * 0.13;
     orbitGroup.rotation.x = Math.sin(time * 0.18) * 0.08;
 
-    tiltedRingA.rotation.z = time * 0.18;
-    tiltedRingB.rotation.z = -time * 0.14;
-    scannerRing.rotation.z = time * 0.34;
-    haloRing.rotation.z = -time * 0.2;
-    glassPlate.material.opacity = 0.045 + Math.sin(time * 1.35) * 0.014;
+    tiltedRingA.rotation.z = time * 0.16;
+    tiltedRingB.rotation.z = -time * 0.12;
+    scannerRing.rotation.z = time * 0.26;
+    haloRing.rotation.z = -time * 0.16;
+    premiumArcs.forEach((arc, index) => {
+      arc.rotation.z = time * (index % 2 ? -0.18 : 0.16) + index * 0.7;
+      arc.material.opacity = (index === 0 ? 0.16 : 0.1) + premiumPulse * (index === 0 ? 0.08 : 0.045);
+    });
+    premiumHalo.material.opacity = 0.22 + premiumPulse * 0.2;
+    deepHalo.material.opacity = 0.08 + (1 - premiumPulse) * 0.11;
+    premiumHalo.scale.setScalar(5.55 + premiumPulse * 0.5);
+    deepHalo.scale.set(7.6 + premiumPulse * 0.8, 4.2 + premiumPulse * 0.5, 1);
+    sweepPlane.rotation.z = -0.52 + Math.sin(time * 0.45) * 0.34;
+    sweepPlane.material.opacity = 0.1 + premiumPulse * 0.12;
+    innerRim.rotation.z = -time * 0.12;
+    outerGroove.rotation.z = time * 0.1;
+    glassPlate.material.opacity = 0.035 + Math.sin(time * 1.12) * 0.012;
     particles.rotation.y = time * 0.05;
-    mintLight.intensity = 4.7 + Math.sin(time * 1.1) * 0.42;
-    keyLight.position.x = 3.2 + Math.sin(time * 0.44) * 0.7;
+    particles.rotation.z = Math.sin(time * 0.12) * 0.035;
+    mintLight.intensity = 4.35 + premiumPulse * 0.62;
+    violetLight.intensity = 1.25 + (1 - premiumPulse) * 0.85;
+    violetLight.position.x = 2.6 + Math.sin(time * 0.34) * 0.58;
+    keyLight.position.x = 3.2 + Math.sin(time * 0.36) * 0.55;
     field.rotation.y = time * 0.008;
     field.rotation.x = Math.sin(time * 0.08) * 0.016;
     fieldLinks.rotation.y = -time * 0.006;
@@ -492,16 +606,16 @@ function createTokenTexture() {
 
   context.save();
   context.shadowColor = "rgba(0, 0, 0, 0.34)";
-  context.shadowBlur = 22;
-  context.shadowOffsetY = 16;
+  context.shadowBlur = 16;
+  context.shadowOffsetY = 10;
   context.beginPath();
-  context.arc(256, 256, 226, 0, Math.PI * 2);
+  context.arc(256, 256, 238, 0, Math.PI * 2);
   context.fillStyle = "#062d20";
   context.fill();
   context.restore();
 
   context.beginPath();
-  context.arc(256, 256, 222, 0, Math.PI * 2);
+  context.arc(256, 256, 234, 0, Math.PI * 2);
   context.fillStyle = coinGradient;
   context.fill();
 
@@ -518,8 +632,8 @@ function createTokenTexture() {
   for (let index = 0; index < 96; index += 1) {
     context.rotate((Math.PI * 2) / 96);
     context.beginPath();
-    context.moveTo(0, -215);
-    context.lineTo(0, -205);
+    context.moveTo(0, -228);
+    context.lineTo(0, -216);
     context.lineWidth = index % 2 === 0 ? 2.2 : 1.2;
     context.strokeStyle = index % 2 === 0 ? "rgba(244,255,248,0.18)" : "rgba(3,18,12,0.22)";
     context.stroke();
@@ -533,7 +647,7 @@ function createTokenTexture() {
   shineGradient.addColorStop(0.22, "rgba(255,255,255,0.18)");
   shineGradient.addColorStop(0.5, "rgba(255,255,255,0)");
   context.beginPath();
-  context.arc(256, 256, 206, 0, Math.PI * 2);
+  context.arc(256, 256, 218, 0, Math.PI * 2);
   context.fillStyle = shineGradient;
   context.fill();
   context.restore();
@@ -572,6 +686,64 @@ function createTokenTexture() {
   context.arc(190, 138, 68, 0, Math.PI * 2);
   context.fill();
   context.restore();
+
+  const texture = new THREE.CanvasTexture(textureCanvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.needsUpdate = true;
+  return texture;
+}
+
+function createRadialGlowTexture() {
+  const textureCanvas = document.createElement("canvas");
+  const size = 384;
+  const context = textureCanvas.getContext("2d");
+  textureCanvas.width = size;
+  textureCanvas.height = size;
+
+  const gradient = context.createRadialGradient(size / 2, size / 2, 4, size / 2, size / 2, size / 2);
+  gradient.addColorStop(0, "rgba(255, 255, 255, 0.9)");
+  gradient.addColorStop(0.18, "rgba(170, 255, 214, 0.36)");
+  gradient.addColorStop(0.44, "rgba(101, 243, 173, 0.13)");
+  gradient.addColorStop(0.72, "rgba(127, 162, 255, 0.06)");
+  gradient.addColorStop(1, "rgba(101, 243, 173, 0)");
+
+  context.fillStyle = gradient;
+  context.fillRect(0, 0, size, size);
+
+  const texture = new THREE.CanvasTexture(textureCanvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.needsUpdate = true;
+  return texture;
+}
+
+function createSweepTexture() {
+  const textureCanvas = document.createElement("canvas");
+  const size = 384;
+  const context = textureCanvas.getContext("2d");
+  textureCanvas.width = size;
+  textureCanvas.height = size;
+
+  const mask = context.createRadialGradient(size / 2, size / 2, 72, size / 2, size / 2, size / 2);
+  mask.addColorStop(0, "rgba(255, 255, 255, 1)");
+  mask.addColorStop(0.78, "rgba(255, 255, 255, 0.8)");
+  mask.addColorStop(1, "rgba(255, 255, 255, 0)");
+
+  context.fillStyle = mask;
+  context.beginPath();
+  context.arc(size / 2, size / 2, size * 0.48, 0, Math.PI * 2);
+  context.fill();
+  context.globalCompositeOperation = "source-in";
+
+  const sweep = context.createLinearGradient(40, 48, 324, 336);
+  sweep.addColorStop(0, "rgba(255, 255, 255, 0)");
+  sweep.addColorStop(0.34, "rgba(255, 255, 255, 0)");
+  sweep.addColorStop(0.48, "rgba(255, 255, 255, 0.44)");
+  sweep.addColorStop(0.54, "rgba(255, 255, 255, 0.2)");
+  sweep.addColorStop(0.7, "rgba(255, 255, 255, 0)");
+  sweep.addColorStop(1, "rgba(255, 255, 255, 0)");
+
+  context.fillStyle = sweep;
+  context.fillRect(0, 0, size, size);
 
   const texture = new THREE.CanvasTexture(textureCanvas);
   texture.colorSpace = THREE.SRGBColorSpace;

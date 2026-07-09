@@ -13495,6 +13495,80 @@ html,
   transition-duration: 1.16s, 1.16s, 1.34s;
 }
 
+.cosmic-ui .brand.reveal,
+.cosmic-ui .brand-status.reveal,
+.cosmic-ui .nav-toggle.reveal,
+.cosmic-ui .nav-menu a.reveal,
+.cosmic-ui .mobile-dock a.reveal,
+.cosmic-ui .breadcrumbs.reveal,
+.cosmic-ui .back-link.reveal,
+.cosmic-ui .network-advisor-head.reveal,
+.cosmic-ui .network-advisor-tabs.reveal,
+.cosmic-ui .network-advisor-tab.reveal,
+.cosmic-ui .network-advisor-display.reveal,
+.cosmic-ui .advisor-monogram.reveal,
+.cosmic-ui .advisor-copy.reveal,
+.cosmic-ui .advisor-specs dt.reveal,
+.cosmic-ui .advisor-specs dd.reveal,
+.cosmic-ui .advisor-action.reveal,
+.cosmic-ui .advisor-note.reveal,
+.cosmic-ui .network-card-head.reveal,
+.cosmic-ui .network-specs div.reveal,
+.cosmic-ui .network-card-cta.reveal,
+.cosmic-ui .feature-points span.reveal,
+.cosmic-ui .step span.reveal,
+.cosmic-ui .wallet-compat-card .compat-tags span.reveal,
+.cosmic-ui .faq-list summary.reveal,
+.cosmic-ui .network-tabs.reveal,
+.cosmic-ui .network-tab.reveal,
+.cosmic-ui .package-topline.reveal,
+.cosmic-ui .package-meta span.reveal,
+.cosmic-ui .package-card li.reveal,
+.cosmic-ui .package-button.reveal,
+.cosmic-ui .checkout-form.reveal,
+.cosmic-ui .checkout-summary.reveal,
+.cosmic-ui .order-ticket.reveal,
+.cosmic-ui .order-product.reveal,
+.cosmic-ui .order-row.reveal,
+.cosmic-ui .order-progress span.reveal,
+.cosmic-ui .wallet-field.reveal,
+.cosmic-ui .wallet-field input.reveal,
+.cosmic-ui .checkout-submit.reveal,
+.cosmic-ui .checkout-message.reveal,
+.cosmic-ui .payment-panel-head.reveal,
+.cosmic-ui .payment-address-box.reveal,
+.cosmic-ui .payment-amount.reveal,
+.cosmic-ui .payment-proof.reveal,
+.cosmic-ui .receipt-upload.reveal,
+.cosmic-ui .proof-submit.reveal,
+.cosmic-ui .proof-message.reveal,
+.cosmic-ui .guide-hero-copy.reveal,
+.cosmic-ui .guide-video-head.reveal,
+.cosmic-ui .guide-video-frame.reveal,
+.cosmic-ui .guide-video-footer.reveal,
+.cosmic-ui .guide-visual-top.reveal,
+.cosmic-ui .guide-wallet-preview.reveal,
+.cosmic-ui .guide-terminal.reveal,
+.cosmic-ui .guide-list li.reveal,
+.cosmic-ui .guide-step-number.reveal,
+.cosmic-ui .guide-checklist li.reveal,
+.cosmic-ui .footer-inner.reveal,
+.cosmic-ui .footer-links a.reveal {
+  filter: blur(5px);
+  transform: translate3d(0, 16px, 0) scale(0.992);
+  transition-duration: 0.92s, 0.92s, 1.04s;
+}
+
+.cosmic-ui .hero-premium-panel .panel-topline.reveal,
+.cosmic-ui .hero-premium-panel .panel-orbit-mark.reveal,
+.cosmic-ui .hero-premium-panel .panel-route div.reveal,
+.cosmic-ui .hero-premium-panel .panel-bottomline.reveal,
+.cosmic-ui .luxury-ribbon-track span.reveal {
+  filter: blur(5px);
+  transform: translate3d(0, 18px, 0) scale(0.99);
+  transition-duration: 1s, 1s, 1.12s;
+}
+
 .cosmic-ui .reveal.is-visible {
   opacity: 1;
   filter: blur(0);
@@ -13522,11 +13596,19 @@ html,
 .cosmic-ui .receipt-upload,
 .cosmic-ui .payment-proof,
 .cosmic-ui .payment-address-box,
-.cosmic-ui .order-ticket {
+.cosmic-ui .order-ticket,
+.cosmic-ui .wallet-field input,
+.cosmic-ui .payment-proof input,
+.cosmic-ui .network-advisor-tab,
+.cosmic-ui .network-tab,
+.cosmic-ui .nav-menu a,
+.cosmic-ui .footer-links a {
   transition:
     border-color 0.42s ease,
     box-shadow 0.42s ease,
     background 0.42s ease,
+    color 0.32s ease,
+    opacity 0.32s ease,
     transform 0.42s var(--smooth-soft);
 }
 
@@ -13588,6 +13670,9 @@ html,
   }
 
   .cosmic-ui .nav-menu.is-open a {
+    opacity: 1;
+    filter: blur(0);
+    transform: translate3d(0, 0, 0) scale(1);
     animation: smoothMenuItemIn 0.68s var(--smooth-appear) both;
   }
 
@@ -13635,11 +13720,16 @@ html,
   .cosmic-ui .checkout-submit,
   .cosmic-ui .proof-submit,
   .cosmic-ui .copy-wallet,
-  .cosmic-ui .advisor-action {
+  .cosmic-ui .advisor-action,
+  .cosmic-ui .network-advisor-tab,
+  .cosmic-ui .network-tab,
+  .cosmic-ui .wallet-field,
+  .cosmic-ui .receipt-upload {
     transition:
       transform 0.24s var(--smooth-soft),
       box-shadow 0.32s ease,
       background 0.32s ease,
+      border-color 0.32s ease,
       color 0.24s ease;
   }
 }
@@ -13707,6 +13797,98 @@ html,
   to {
     opacity: 1;
     filter: blur(0);
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+/* Sharp clarity pass: smooth movement without blurry details */
+.cosmic-ui .reveal,
+.cosmic-ui .hero-signal.reveal,
+.cosmic-ui .hero .eyebrow.reveal,
+.cosmic-ui .hero h1.reveal,
+.cosmic-ui .hero-lead.reveal,
+.cosmic-ui .hero-actions.reveal,
+.cosmic-ui .hero-ledger.reveal,
+.cosmic-ui .hero-premium-panel.reveal,
+.cosmic-ui .section-heading.reveal,
+.cosmic-ui .packages-heading.reveal,
+.cosmic-ui .page-hero-inner.reveal,
+.cosmic-ui .guide-hero-inner.reveal,
+.cosmic-ui .network-card.reveal,
+.cosmic-ui .package-card.reveal,
+.cosmic-ui .wallet-compat-card.reveal,
+.cosmic-ui .checkout-card.reveal,
+.cosmic-ui .guide-card.reveal,
+.cosmic-ui .guide-step.reveal,
+.cosmic-ui .guide-video-shell.reveal,
+.cosmic-ui .guide-visual-card.reveal,
+.cosmic-ui .faq-list details.reveal {
+  filter: none !important;
+  transition:
+    opacity 1.06s var(--smooth-appear),
+    transform 1.18s var(--smooth-appear),
+    clip-path 1.18s var(--smooth-appear);
+}
+
+.cosmic-ui .reveal.is-visible {
+  filter: none !important;
+}
+
+.cosmic-ui .payment-panel:not([hidden]),
+.cosmic-ui .checkout-message:not(:empty),
+.cosmic-ui .proof-message:not(:empty),
+.cosmic-ui .faq-list details[open] {
+  filter: none !important;
+}
+
+@media (max-width: 760px) {
+  .cosmic-ui .reveal,
+  .cosmic-ui .network-card.reveal,
+  .cosmic-ui .package-card.reveal,
+  .cosmic-ui .wallet-compat-card.reveal,
+  .cosmic-ui .checkout-card.reveal,
+  .cosmic-ui .guide-card.reveal,
+  .cosmic-ui .guide-step.reveal,
+  .cosmic-ui .guide-video-shell.reveal,
+  .cosmic-ui .guide-visual-card.reveal,
+  .cosmic-ui .faq-list details.reveal {
+    filter: none !important;
+    transition:
+      opacity 0.78s var(--smooth-appear),
+      transform 0.9s var(--smooth-appear),
+      clip-path 0.9s var(--smooth-appear);
+  }
+}
+
+@keyframes smoothChromeIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -16px, 0) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes smoothPanelIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 22px, 0) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes smoothMenuItemIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -8px, 0) scale(0.98);
+  }
+  to {
+    opacity: 1;
     transform: translate3d(0, 0, 0) scale(1);
   }
 }

@@ -328,6 +328,8 @@ let selectedOrder = {
   package: networkPackages[initialNetwork].cards[initialPackageIndex],
 };
 let activeOrderKey = "";
+let revealObserver = null;
+let revealRefreshFrame = 0;
 
 function initSiteIntro() {
   if (!siteIntro) {
@@ -640,6 +642,7 @@ function updateOrderStatus(record) {
 
   if (paymentPanel && record.status === "На проверке") {
     paymentPanel.hidden = false;
+    queueRevealRefresh();
   }
 }
 
@@ -693,6 +696,7 @@ function renderPackages(networkName) {
   initCardTilt();
   initLuxurySpotlight();
   window.__refreshKineticItems?.();
+  queueRevealRefresh();
 }
 
 function setCheckoutOrder(networkName, card, options = {}) {
@@ -779,6 +783,7 @@ function setCheckoutOrder(networkName, card, options = {}) {
   }
 
   updateActiveNav();
+  queueRevealRefresh();
 }
 
 function showPaymentStep() {
@@ -794,7 +799,10 @@ function showPaymentStep() {
   if (paymentPanel) {
     paymentPanel.hidden = false;
     paymentPanel.classList.remove("is-open");
-    requestAnimationFrame(() => paymentPanel.classList.add("is-open"));
+    requestAnimationFrame(() => {
+      paymentPanel.classList.add("is-open");
+      queueRevealRefresh();
+    });
   }
 
   if (checkoutSection) {
@@ -854,6 +862,11 @@ function initNetworkAdvisor() {
 
 function initRevealEffects() {
   const revealSelectors = [
+    ".brand",
+    ".brand-status",
+    ".nav-toggle",
+    ".nav-menu a",
+    ".mobile-dock a",
     ".hero .eyebrow",
     ".hero-signal",
     ".hero h1",
@@ -862,29 +875,90 @@ function initRevealEffects() {
     ".hero-ledger",
     ".hero-scroll-cue",
     ".hero-premium-panel",
+    ".hero-premium-panel .panel-topline",
+    ".hero-premium-panel .panel-orbit-mark",
+    ".hero-premium-panel .panel-route div",
+    ".hero-premium-panel .panel-bottomline",
     ".luxury-ribbon",
+    ".luxury-ribbon-track span",
     ".trust-strip",
     ".section-heading",
+    ".section-heading .eyebrow",
     ".network-advisor",
+    ".network-advisor-head",
+    ".network-advisor-tabs",
+    ".network-advisor-tab",
+    ".network-advisor-display",
+    ".advisor-monogram",
+    ".advisor-copy",
+    ".advisor-specs dt",
+    ".advisor-specs dd",
+    ".advisor-action",
+    ".advisor-note",
     ".network-card",
+    ".network-card-head",
+    ".network-specs div",
+    ".network-card-cta",
     ".feature-band",
+    ".feature-points span",
     ".step",
+    ".step span",
     ".wallet-grid span",
     ".wallet-compat-card",
+    ".wallet-compat-card .compat-tags span",
     ".faq-list details",
+    ".faq-list summary",
     ".faq-more",
     ".faq-cta",
     ".page-hero-inner",
+    ".breadcrumbs",
+    ".back-link",
     ".packages-heading",
+    ".network-tabs",
+    ".network-tab",
     ".package-card",
+    ".package-topline",
+    ".package-meta span",
+    ".package-card li",
+    ".package-button",
     ".checkout-card",
+    ".checkout-form",
+    ".checkout-summary",
+    ".order-ticket",
+    ".order-product",
+    ".order-row",
+    ".order-progress span",
+    ".wallet-field",
+    ".wallet-field input",
+    ".checkout-submit",
+    ".checkout-message",
+    ".payment-panel",
+    ".payment-panel-head",
+    ".payment-address-box",
+    ".payment-amount",
+    ".payment-proof",
+    ".receipt-upload",
+    ".proof-submit",
+    ".proof-message",
     ".guide-hero-inner",
+    ".guide-hero-copy",
     ".guide-video-shell",
+    ".guide-video-head",
+    ".guide-video-frame",
+    ".guide-video-footer",
     ".guide-visual-card",
+    ".guide-visual-top",
+    ".guide-wallet-preview",
+    ".guide-terminal",
     ".guide-card",
+    ".guide-list li",
     ".guide-step",
+    ".guide-step-number",
     ".guide-warning",
     ".guide-checklist",
+    ".guide-checklist li",
+    ".footer-inner",
+    ".footer-links a",
   ];
   const revealItems = Array.from(document.querySelectorAll(revealSelectors.join(",")));
 
@@ -892,9 +966,17 @@ function initRevealEffects() {
     return;
   }
 
+  const pendingRevealItems = [];
+
   revealItems.forEach((item, index) => {
-    item.classList.add("reveal");
-    item.style.setProperty("--reveal-delay", `${Math.min(index % 8, 7) * 82}ms`);
+    if (!item.classList.contains("reveal")) {
+      item.classList.add("reveal");
+      item.style.setProperty("--reveal-delay", `${Math.min(index % 10, 9) * 74}ms`);
+    }
+
+    if (!item.classList.contains("is-visible")) {
+      pendingRevealItems.push(item);
+    }
   });
 
   document.querySelectorAll(".network-grid .network-card").forEach((item, index) => {
@@ -906,24 +988,60 @@ function initRevealEffects() {
     return;
   }
 
-  const revealObserver = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) {
-          return;
-        }
+  if (!revealObserver) {
+    revealObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) {
+            return;
+          }
 
-        entry.target.classList.add("is-visible");
-        revealObserver.unobserve(entry.target);
-      });
-    },
-    {
-      rootMargin: "0px 0px -28px 0px",
-      threshold: 0.08,
+          entry.target.classList.add("is-visible");
+          revealObserver.unobserve(entry.target);
+        });
+      },
+      {
+        rootMargin: "0px 0px -18px 0px",
+        threshold: 0.04,
+      }
+    );
+  }
+
+  pendingRevealItems.forEach((item) => revealObserver.observe(item));
+}
+
+function queueRevealRefresh() {
+  if (revealRefreshFrame) {
+    cancelAnimationFrame(revealRefreshFrame);
+  }
+
+  revealRefreshFrame = requestAnimationFrame(() => {
+    revealRefreshFrame = 0;
+    initRevealEffects();
+  });
+}
+
+function initRevealMutationObserver() {
+  if (!("MutationObserver" in window) || document.body.dataset.revealObserverReady === "true") {
+    return;
+  }
+
+  document.body.dataset.revealObserverReady = "true";
+
+  const dynamicRevealObserver = new MutationObserver((mutations) => {
+    const hasNewElements = mutations.some((mutation) =>
+      Array.from(mutation.addedNodes).some((node) => node.nodeType === Node.ELEMENT_NODE)
+    );
+
+    if (hasNewElements) {
+      queueRevealRefresh();
     }
-  );
+  });
 
-  revealItems.forEach((item) => revealObserver.observe(item));
+  dynamicRevealObserver.observe(document.body, {
+    childList: true,
+    subtree: true,
+  });
 }
 
 function initCardTilt() {
@@ -2023,4 +2141,5 @@ networkButtons.forEach((button) => {
   });
 });
 
-requestAnimationFrame(initRevealEffects);
+initRevealMutationObserver();
+queueRevealRefresh();

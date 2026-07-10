@@ -29,22 +29,29 @@ function initHeroScene() {
     powerPreference: isSceneLite() ? "low-power" : "high-performance",
   });
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(36, 1, 0.1, 80);
+  const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 90);
   const clock = new THREE.Clock();
   const pointer = { x: 0, y: 0 };
   const smoothPointer = { x: 0, y: 0 };
 
   renderer.setClearColor(0x000000, 0);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.18;
   renderer.setPixelRatio(getPixelRatio());
 
-  camera.position.set(0, 0, 8.7);
+  camera.position.set(0, 0, 9.35);
 
-  scene.add(new THREE.AmbientLight(0x94ffd0, 0.82));
+  scene.fog = new THREE.FogExp2(0x020604, 0.024);
+  scene.add(new THREE.AmbientLight(0x94ffd0, 0.72));
 
   const keyLight = new THREE.DirectionalLight(0xeafff5, 2.2);
   keyLight.position.set(3.2, 4.2, 4.5);
   scene.add(keyLight);
+
+  const rimLight = new THREE.DirectionalLight(0x78ffd0, 1.35);
+  rimLight.position.set(-4.8, -1.5, 4.2);
+  scene.add(rimLight);
 
   const mintLight = new THREE.PointLight(0x58e6a4, 4.8, 10);
   mintLight.position.set(-2.5, 1.2, 2.2);
@@ -56,25 +63,32 @@ function initHeroScene() {
 
   const group = new THREE.Group();
   const orbitGroup = new THREE.Group();
+  const portalGroup = new THREE.Group();
+  const ribbonGroup = new THREE.Group();
   group.userData.baseY = 0;
   group.userData.baseScale = 1;
-  scene.add(group, orbitGroup);
+  scene.add(portalGroup, ribbonGroup, group, orbitGroup);
 
-  const coinMaterial = new THREE.MeshStandardMaterial({
+  const coinMaterial = new THREE.MeshPhysicalMaterial({
     color: 0x0f8f62,
     emissive: 0x03150f,
-    emissiveIntensity: 0.2,
+    emissiveIntensity: 0.26,
     metalness: 0.94,
-    roughness: 0.18,
+    roughness: 0.12,
+    clearcoat: 0.9,
+    clearcoatRoughness: 0.08,
+    reflectivity: 0.8,
     side: THREE.DoubleSide,
   });
 
-  const rimMaterial = new THREE.MeshStandardMaterial({
+  const rimMaterial = new THREE.MeshPhysicalMaterial({
     color: 0xbfffe0,
     emissive: 0x0b4f37,
-    emissiveIntensity: 0.24,
-    metalness: 0.9,
-    roughness: 0.2,
+    emissiveIntensity: 0.36,
+    metalness: 0.96,
+    roughness: 0.11,
+    clearcoat: 0.82,
+    clearcoatRoughness: 0.06,
     transparent: true,
     opacity: 0.96,
     side: THREE.DoubleSide,
@@ -85,7 +99,7 @@ function initHeroScene() {
   const orbitSegments = isSceneLite() ? 120 : 168;
   const scannerSegments = isSceneLite() ? 140 : 190;
 
-  const coin = new THREE.Mesh(new THREE.CylinderGeometry(1.14, 1.14, 0.3, coinSegments), coinMaterial);
+  const coin = new THREE.Mesh(new THREE.CylinderGeometry(1.22, 1.22, 0.36, coinSegments), coinMaterial);
   coin.rotation.x = Math.PI / 2;
   group.add(coin);
 
@@ -118,6 +132,48 @@ function initHeroScene() {
   deepHalo.scale.set(8.2, 4.6, 1);
   orbitGroup.add(deepHalo);
 
+  const auraShell = new THREE.Mesh(
+    new THREE.SphereGeometry(2.58, isSceneLite() ? 34 : 54, isSceneLite() ? 16 : 26),
+    new THREE.MeshBasicMaterial({
+      color: 0xa9ffd8,
+      wireframe: true,
+      transparent: true,
+      opacity: 0.075,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+    })
+  );
+  auraShell.scale.set(1.18, 0.74, 0.46);
+  portalGroup.add(auraShell);
+
+  const auraGlass = new THREE.Mesh(
+    new THREE.SphereGeometry(2.42, isSceneLite() ? 30 : 46, isSceneLite() ? 14 : 22),
+    new THREE.MeshBasicMaterial({
+      color: 0x65f3ad,
+      transparent: true,
+      opacity: 0.03,
+      side: THREE.DoubleSide,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+    })
+  );
+  auraGlass.scale.copy(auraShell.scale);
+  portalGroup.add(auraGlass);
+
+  const horizonRing = new THREE.Mesh(
+    new THREE.TorusGeometry(2.72, 0.018, 8, orbitSegments),
+    new THREE.MeshBasicMaterial({
+      color: 0xd8ffe9,
+      transparent: true,
+      opacity: 0.22,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+    })
+  );
+  horizonRing.rotation.x = Math.PI * 0.48;
+  horizonRing.rotation.y = -Math.PI * 0.06;
+  portalGroup.add(horizonRing);
+
   const tokenTexture = createTokenTexture();
   const faceMaterial = new THREE.MeshStandardMaterial({
     map: tokenTexture,
@@ -129,34 +185,37 @@ function initHeroScene() {
     side: THREE.DoubleSide,
   });
 
-  const frontFace = new THREE.Mesh(new THREE.PlaneGeometry(2.14, 2.14), faceMaterial);
-  frontFace.position.z = 0.158;
+  const frontFace = new THREE.Mesh(new THREE.PlaneGeometry(2.32, 2.32), faceMaterial);
+  frontFace.position.z = 0.19;
   group.add(frontFace);
 
   const backFace = frontFace.clone();
-  backFace.position.z = -0.158;
+  backFace.position.z = -0.19;
   backFace.rotation.y = Math.PI;
   group.add(backFace);
 
-  const rim = new THREE.Mesh(new THREE.TorusGeometry(1.18, 0.028, 12, rimSegments), rimMaterial);
-  rim.position.z = 0.17;
+  const rim = new THREE.Mesh(new THREE.TorusGeometry(1.28, 0.035, 14, rimSegments), rimMaterial);
+  rim.position.z = 0.206;
   group.add(rim);
 
   const backRim = rim.clone();
-  backRim.position.z = -0.17;
+  backRim.position.z = -0.206;
   backRim.rotation.y = Math.PI;
   group.add(backRim);
 
-  const innerRim = new THREE.Mesh(new THREE.TorusGeometry(0.98, 0.006, 8, rimSegments), rimMaterial.clone());
+  const innerRim = new THREE.Mesh(new THREE.TorusGeometry(1.06, 0.007, 8, rimSegments), rimMaterial.clone());
   innerRim.material.opacity = 0.76;
-  innerRim.position.z = 0.181;
+  innerRim.position.z = 0.22;
   group.add(innerRim);
 
-  const outerGroove = new THREE.Mesh(new THREE.TorusGeometry(1.06, 0.004, 8, rimSegments), rimMaterial.clone());
+  const outerGroove = new THREE.Mesh(new THREE.TorusGeometry(1.16, 0.005, 8, rimSegments), rimMaterial.clone());
   outerGroove.material.opacity = 0.54;
-  outerGroove.position.z = -0.181;
+  outerGroove.position.z = -0.22;
   outerGroove.rotation.y = Math.PI;
   group.add(outerGroove);
+
+  const rimTicks = createRimTicks(1.29, 0.21, isSceneLite() ? 72 : 112);
+  group.add(rimTicks);
 
   const sweepPlane = new THREE.Mesh(
     new THREE.PlaneGeometry(2.34, 2.34),
@@ -173,17 +232,24 @@ function initHeroScene() {
   group.add(sweepPlane);
 
   const crystal = new THREE.Mesh(
-    new THREE.IcosahedronGeometry(1.64, 1),
+    new THREE.IcosahedronGeometry(1.92, 2),
     new THREE.MeshBasicMaterial({
       color: 0xbfffe0,
       wireframe: true,
       transparent: true,
-      opacity: 0.085,
+      opacity: 0.07,
       blending: THREE.AdditiveBlending,
     })
   );
-  crystal.scale.set(1.28, 1.28, 0.72);
+  crystal.scale.set(1.34, 1.34, 0.68);
   group.add(crystal);
+
+  const energyRibbons = [
+    createEnergyRibbon(1.78, 0.16, 2.1, 0x65f3ad, 0.36, 0),
+    createEnergyRibbon(2.18, 0.24, 1.62, 0xc9ffe2, 0.22, Math.PI * 0.72),
+    createEnergyRibbon(2.58, 0.18, 1.38, 0x8aa7ff, 0.18, Math.PI * 1.34),
+  ];
+  energyRibbons.forEach((ribbon) => ribbonGroup.add(ribbon));
 
   const ringMaterial = new THREE.MeshBasicMaterial({
     color: 0x84ffd0,
@@ -226,6 +292,28 @@ function initHeroScene() {
   ];
   nodes.forEach((node) => orbitGroup.add(node.mesh));
 
+  const sparkSprites = Array.from({ length: isSceneLite() ? 7 : 12 }, (_, index) => {
+    const sprite = new THREE.Sprite(
+      new THREE.SpriteMaterial({
+        map: glowTexture,
+        color: index % 3 === 0 ? 0xffffff : index % 3 === 1 ? 0x65f3ad : 0x8aa7ff,
+        transparent: true,
+        opacity: 0.62,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false,
+      })
+    );
+    sprite.scale.setScalar(index % 4 === 0 ? 0.26 : 0.16);
+    sprite.userData = {
+      radius: 2.2 + Math.random() * 2.25,
+      speed: 0.18 + Math.random() * 0.34,
+      offset: Math.random() * Math.PI * 2,
+      y: (Math.random() - 0.5) * 1.7,
+    };
+    orbitGroup.add(sprite);
+    return sprite;
+  });
+
   const connectionPositions = new Float32Array((nodes.length + 1) * 3);
   const connectionGeometry = new THREE.BufferGeometry();
   connectionGeometry.setAttribute("position", new THREE.BufferAttribute(connectionPositions, 3));
@@ -248,7 +336,7 @@ function initHeroScene() {
     blending: THREE.AdditiveBlending,
   });
 
-  const glassPlate = new THREE.Mesh(new THREE.PlaneGeometry(4.7, 2.7, 1, 1), glassMaterial);
+  const glassPlate = new THREE.Mesh(new THREE.PlaneGeometry(5.5, 3.1, 1, 1), glassMaterial);
   glassPlate.position.set(0, 0, -0.48);
   glassPlate.rotation.z = -0.08;
   orbitGroup.add(glassPlate);
@@ -364,6 +452,62 @@ function initHeroScene() {
   );
   scene.add(fieldLinks);
 
+  function createRimTicks(radius, z, count) {
+    const positions = [];
+
+    for (let index = 0; index < count; index += 1) {
+      const angle = (Math.PI * 2 * index) / count;
+      const inner = radius - (index % 4 === 0 ? 0.055 : 0.034);
+      const outer = radius + (index % 4 === 0 ? 0.052 : 0.024);
+      positions.push(Math.cos(angle) * inner, Math.sin(angle) * inner, z);
+      positions.push(Math.cos(angle) * outer, Math.sin(angle) * outer, z);
+    }
+
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+
+    return new THREE.LineSegments(
+      geometry,
+      new THREE.LineBasicMaterial({
+        color: 0xe9fff2,
+        transparent: true,
+        opacity: 0.26,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false,
+      })
+    );
+  }
+
+  function createEnergyRibbon(radius, verticalScale, turns, color, opacity, offset) {
+    const points = [];
+    const segments = isSceneLite() ? 74 : 132;
+
+    for (let index = 0; index <= segments; index += 1) {
+      const progress = index / segments;
+      const angle = offset + progress * turns * Math.PI * 2;
+      points.push(
+        new THREE.Vector3(
+          Math.cos(angle) * radius,
+          Math.sin(angle * 0.74 + offset) * verticalScale + (progress - 0.5) * 0.34,
+          Math.sin(angle) * radius * 0.34
+        )
+      );
+    }
+
+    const curve = new THREE.CatmullRomCurve3(points);
+    const geometry = new THREE.TubeGeometry(curve, segments, isSceneLite() ? 0.009 : 0.012, 6, false);
+    return new THREE.Mesh(
+      geometry,
+      new THREE.MeshBasicMaterial({
+        color,
+        transparent: true,
+        opacity,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false,
+      })
+    );
+  }
+
   function createNode(color, radius, speed, offset) {
     const widthSegments = mobileScene.matches ? 12 : lowCoreScene ? 16 : 20;
     const heightSegments = mobileScene.matches ? 8 : lowCoreScene ? 12 : 16;
@@ -424,24 +568,29 @@ function initHeroScene() {
       group.position.set(0.16, -0.58, 0);
       group.userData.baseY = -0.58;
       orbitGroup.position.copy(group.position);
-      group.scale.setScalar(0.66);
-      group.userData.baseScale = 0.66;
-      orbitGroup.scale.setScalar(0.66);
+      group.scale.setScalar(0.7);
+      group.userData.baseScale = 0.7;
+      orbitGroup.scale.setScalar(0.7);
     } else if (width < 1040) {
-      group.position.set(1.18, -0.04, 0);
+      group.position.set(0.92, -0.04, 0);
       group.userData.baseY = -0.04;
       orbitGroup.position.copy(group.position);
-      group.scale.setScalar(0.78);
-      group.userData.baseScale = 0.78;
-      orbitGroup.scale.setScalar(0.78);
+      group.scale.setScalar(0.86);
+      group.userData.baseScale = 0.86;
+      orbitGroup.scale.setScalar(0.86);
     } else {
-      group.position.set(1.86, -0.04, 0);
-      group.userData.baseY = -0.04;
+      group.position.set(1.32, -0.02, 0);
+      group.userData.baseY = -0.02;
       orbitGroup.position.copy(group.position);
-      group.scale.setScalar(0.92);
-      group.userData.baseScale = 0.92;
-      orbitGroup.scale.setScalar(0.92);
+      group.scale.setScalar(1.02);
+      group.userData.baseScale = 1.02;
+      orbitGroup.scale.setScalar(1.02);
     }
+
+    portalGroup.position.copy(group.position);
+    ribbonGroup.position.copy(group.position);
+    portalGroup.scale.copy(orbitGroup.scale);
+    ribbonGroup.scale.copy(orbitGroup.scale);
   }
 
   let heroSceneVisible = true;
@@ -502,6 +651,26 @@ function initHeroScene() {
 
     orbitGroup.rotation.y = -time * 0.13;
     orbitGroup.rotation.x = Math.sin(time * 0.18) * 0.08;
+    portalGroup.position.y = group.position.y * 0.82;
+    ribbonGroup.position.y = group.position.y;
+    portalGroup.rotation.y = -time * 0.054 + smoothPointer.x * 0.045;
+    portalGroup.rotation.x = Math.sin(time * 0.16) * 0.055 + smoothPointer.y * 0.035;
+    ribbonGroup.rotation.y = time * 0.18 + smoothPointer.x * 0.08;
+    ribbonGroup.rotation.x = Math.sin(time * 0.2) * 0.09;
+    auraShell.rotation.y = time * 0.06;
+    auraShell.rotation.z = -time * 0.038;
+    auraShell.material.opacity = 0.052 + premiumPulse * 0.052;
+    auraGlass.rotation.y = -time * 0.032;
+    auraGlass.material.opacity = 0.018 + (1 - premiumPulse) * 0.028;
+    horizonRing.rotation.z = time * 0.2;
+    horizonRing.material.opacity = 0.14 + premiumPulse * 0.12;
+    rimTicks.rotation.z = -time * 0.18;
+    rimTicks.material.opacity = 0.16 + premiumPulse * 0.18;
+    energyRibbons.forEach((ribbon, index) => {
+      ribbon.rotation.z = time * (index % 2 ? -0.2 : 0.24) + index * 0.72;
+      ribbon.rotation.y = Math.sin(time * 0.17 + index) * 0.18;
+      ribbon.material.opacity = (index === 0 ? 0.22 : 0.12) + premiumPulse * (index === 0 ? 0.18 : 0.1);
+    });
 
     tiltedRingA.rotation.z = time * 0.16;
     tiltedRingB.rotation.z = -time * 0.12;
@@ -538,6 +707,17 @@ function initHeroScene() {
         Math.sin(orbitTime * 1.12) * node.radius * node.yFactor,
         Math.sin(orbitTime) * node.radius * 0.38
       );
+    });
+
+    sparkSprites.forEach((spark, index) => {
+      const orbitTime = time * spark.userData.speed + spark.userData.offset;
+      spark.position.set(
+        Math.cos(orbitTime) * spark.userData.radius,
+        spark.userData.y + Math.sin(orbitTime * 1.7) * 0.34,
+        Math.sin(orbitTime) * spark.userData.radius * 0.36
+      );
+      spark.material.opacity = 0.24 + (Math.sin(time * 1.2 + index) * 0.5 + 0.5) * 0.58;
+      spark.scale.setScalar((index % 4 === 0 ? 0.2 : 0.12) + premiumPulse * 0.06);
     });
 
     nodes.forEach((node, index) => {

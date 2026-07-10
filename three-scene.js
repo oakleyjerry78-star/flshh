@@ -33,7 +33,7 @@ function initHeroScene() {
   const clock = new THREE.Clock();
   const pointer = { x: 0, y: 0 };
   const smoothPointer = { x: 0, y: 0 };
-  const cameraHome = { x: 0, y: 0, z: 10.2 };
+  const cameraHome = { x: 0, y: 0, z: 11.6 };
   const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 
   renderer.setClearColor(0x000000, 0);
@@ -569,26 +569,26 @@ function initHeroScene() {
     camera.updateProjectionMatrix();
 
     if (width < 720) {
-      group.position.set(0.12, -0.5, 0);
+      group.position.set(0.06, -0.5, 0);
       group.userData.baseY = -0.5;
+      orbitGroup.position.copy(group.position);
+      group.scale.setScalar(0.52);
+      group.userData.baseScale = 0.52;
+      orbitGroup.scale.setScalar(0.52);
+    } else if (width < 1040) {
+      group.position.set(0.18, -0.03, 0);
+      group.userData.baseY = -0.03;
+      orbitGroup.position.copy(group.position);
+      group.scale.setScalar(0.64);
+      group.userData.baseScale = 0.64;
+      orbitGroup.scale.setScalar(0.64);
+    } else {
+      group.position.set(0.24, -0.04, 0);
+      group.userData.baseY = -0.04;
       orbitGroup.position.copy(group.position);
       group.scale.setScalar(0.66);
       group.userData.baseScale = 0.66;
       orbitGroup.scale.setScalar(0.66);
-    } else if (width < 1040) {
-      group.position.set(0.74, -0.02, 0);
-      group.userData.baseY = -0.02;
-      orbitGroup.position.copy(group.position);
-      group.scale.setScalar(0.82);
-      group.userData.baseScale = 0.82;
-      orbitGroup.scale.setScalar(0.82);
-    } else {
-      group.position.set(0.92, -0.04, 0);
-      group.userData.baseY = -0.04;
-      orbitGroup.position.copy(group.position);
-      group.scale.setScalar(0.94);
-      group.userData.baseScale = 0.94;
-      orbitGroup.scale.setScalar(0.94);
     }
 
     portalGroup.position.copy(group.position);
@@ -645,8 +645,8 @@ function initHeroScene() {
 
     // Keep the branded faces visible while preserving a convincing 3D turn.
     // A full, slow Y rotation left the coin edge-on long enough to look absent.
-    group.rotation.y = Math.sin(time * 0.34) * 0.26 + smoothPointer.x * 0.055;
-    group.rotation.x = 0.07 + Math.sin(time * 0.28) * 0.045 + smoothPointer.y * 0.055;
+    group.rotation.y = Math.sin(time * 0.3) * 0.08 + smoothPointer.x * 0.02;
+    group.rotation.x = 0.055 + Math.sin(time * 0.24) * 0.028 + smoothPointer.y * 0.035;
     group.rotation.z = time * 0.052 + Math.sin(time * 0.22) * 0.03;
     group.position.y = group.userData.baseY + Math.sin(time * 0.62) * 0.06;
     group.scale.setScalar(group.userData.baseScale * (1 + Math.sin(time * 0.82) * 0.01));

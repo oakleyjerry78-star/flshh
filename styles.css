@@ -12496,6 +12496,181 @@ html,
   }
 }
 
+/* Absolute final no-crop hero composition */
+.cosmic-ui .hero {
+  overflow: hidden;
+}
+
+.cosmic-ui .hero-copy::before {
+  content: none !important;
+  display: none !important;
+}
+
+.cosmic-ui .hero-3d {
+  inset: -10% -4% -12% -4%;
+  overflow: visible;
+}
+
+.cosmic-ui .hero-3d::before {
+  background:
+    radial-gradient(circle at 56% 48%, transparent 0 44%, rgba(0, 0, 0, 0.12) 64%, rgba(0, 0, 0, 0.34) 100%),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.46) 20%, rgba(0, 0, 0, 0.04) 43%, rgba(0, 0, 0, 0.08) 67%, rgba(0, 0, 0, 0.28) 100%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.16), transparent 42%, rgba(0, 0, 0, 0.36));
+}
+
+.cosmic-ui .hero-3d::after {
+  inset: -4% -2% -8% 6%;
+  opacity: 0.72;
+}
+
+.cosmic-ui #hero-3d-canvas {
+  transform: translate3d(1.5%, 0, 0) scale(0.9);
+  transform-origin: 50% 50%;
+  filter: saturate(1.18) contrast(1.12) brightness(1.04);
+}
+
+.cosmic-ui.three-ready #hero-3d-canvas,
+.three-ready #hero-3d-canvas {
+  opacity: 0.96;
+}
+
+@media (min-width: 761px) {
+  .cosmic-ui .hero-copy {
+    text-shadow: 0 16px 44px rgba(0, 0, 0, 0.52);
+  }
+}
+
+@media (max-width: 760px) {
+  .cosmic-ui .hero-3d {
+    inset: -5% -18% -10% -18%;
+    height: 70svh;
+  }
+
+  .cosmic-ui #hero-3d-canvas {
+    transform: translate3d(0, -1%, 0) scale(0.92);
+  }
+
+  .cosmic-ui.three-ready #hero-3d-canvas,
+  .three-ready #hero-3d-canvas {
+    opacity: 0.82;
+  }
+}
+
+/* Final no-crop hero composition */
+.cosmic-ui .hero {
+  overflow: hidden;
+}
+
+.cosmic-ui .hero-copy::before {
+  content: none !important;
+  display: none !important;
+}
+
+.cosmic-ui .hero-3d {
+  inset: -10% -4% -12% -4%;
+  overflow: visible;
+}
+
+.cosmic-ui .hero-3d::before {
+  background:
+    radial-gradient(circle at 56% 48%, transparent 0 44%, rgba(0, 0, 0, 0.12) 64%, rgba(0, 0, 0, 0.34) 100%),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.46) 20%, rgba(0, 0, 0, 0.04) 43%, rgba(0, 0, 0, 0.08) 67%, rgba(0, 0, 0, 0.28) 100%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.16), transparent 42%, rgba(0, 0, 0, 0.36));
+}
+
+.cosmic-ui .hero-3d::after {
+  inset: -4% -2% -8% 6%;
+  opacity: 0.72;
+}
+
+.cosmic-ui #hero-3d-canvas {
+  transform: translate3d(1.5%, 0, 0) scale(0.9);
+  transform-origin: 50% 50%;
+  filter: saturate(1.18) contrast(1.12) brightness(1.04);
+}
+
+.cosmic-ui.three-ready #hero-3d-canvas,
+.three-ready #hero-3d-canvas {
+  opacity: 0.96;
+}
+
+@media (min-width: 761px) {
+  .cosmic-ui .hero-copy {
+    text-shadow: 0 16px 44px rgba(0, 0, 0, 0.52);
+  }
+}
+
+@media (max-width: 760px) {
+  .cosmic-ui .hero-3d {
+    inset: -5% -18% -10% -18%;
+    height: 70svh;
+  }
+
+  .cosmic-ui #hero-3d-canvas {
+    transform: translate3d(0, -1%, 0) scale(0.92);
+  }
+
+  .cosmic-ui.three-ready #hero-3d-canvas,
+  .three-ready #hero-3d-canvas {
+    opacity: 0.82;
+  }
+}
+
+/* Uncropped hero coin: no rectangular text mask over the 3D scene */
+.cosmic-ui .hero-copy::before {
+  display: none !important;
+}
+
+.cosmic-ui .hero-3d {
+  inset: -12% -10% -16% -10%;
+}
+
+.cosmic-ui .hero-3d::before {
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.5) 18%, rgba(0, 0, 0, 0.08) 39%, rgba(0, 0, 0, 0.06) 62%, rgba(0, 0, 0, 0.28) 100%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.2), transparent 42%, rgba(0, 0, 0, 0.42));
+}
+
+.cosmic-ui .hero-3d::after {
+  inset: -4% -6% -8% 2%;
+  opacity: 0.72;
+}
+
+.cosmic-ui #hero-3d-canvas {
+  transform: translate3d(0, 0, 0) scale(0.94);
+  transform-origin: 50% 50%;
+}
+
+.cosmic-ui.three-ready #hero-3d-canvas,
+.three-ready #hero-3d-canvas {
+  opacity: 0.94;
+}
+
+.cosmic-ui .hero h1,
+.cosmic-ui .hero-lead,
+.cosmic-ui .hero-signal,
+.cosmic-ui .hero .eyebrow {
+  text-shadow:
+    0 2px 18px rgba(0, 0, 0, 0.78),
+    0 0 38px rgba(0, 0, 0, 0.58);
+}
+
+@media (max-width: 760px) {
+  .cosmic-ui .hero-3d {
+    inset: -6% -20% -10% -20%;
+  }
+
+  .cosmic-ui .hero-3d::before {
+    background:
+      linear-gradient(180deg, rgba(0, 0, 0, 0.34), rgba(0, 0, 0, 0.06) 34%, rgba(0, 0, 0, 0.82) 88%),
+      linear-gradient(90deg, rgba(0, 0, 0, 0.68), rgba(0, 0, 0, 0.06) 48%, rgba(0, 0, 0, 0.52));
+  }
+
+  .cosmic-ui #hero-3d-canvas {
+    transform: translate3d(0, -1%, 0) scale(0.94);
+  }
+}
+
 @keyframes heroAuraBreath {
   0%,
   100% {
@@ -14640,5 +14815,65 @@ html,
   .cosmic-ui.three-ready #hero-3d-canvas,
   .three-ready #hero-3d-canvas {
     opacity: 0.84;
+  }
+}
+
+/* Absolute final no-crop hero composition */
+.cosmic-ui .hero {
+  overflow: hidden;
+}
+
+.cosmic-ui .hero-copy::before {
+  content: none !important;
+  display: none !important;
+}
+
+.cosmic-ui .hero-3d {
+  inset: -10% -4% -12% -4%;
+  overflow: visible;
+}
+
+.cosmic-ui .hero-3d::before {
+  background:
+    radial-gradient(circle at 56% 48%, transparent 0 44%, rgba(0, 0, 0, 0.12) 64%, rgba(0, 0, 0, 0.34) 100%),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.46) 20%, rgba(0, 0, 0, 0.04) 43%, rgba(0, 0, 0, 0.08) 67%, rgba(0, 0, 0, 0.28) 100%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.16), transparent 42%, rgba(0, 0, 0, 0.36));
+}
+
+.cosmic-ui .hero-3d::after {
+  inset: -4% -2% -8% 6%;
+  opacity: 0.72;
+}
+
+.cosmic-ui #hero-3d-canvas {
+  transform: translate3d(1.5%, 0, 0) scale(0.9);
+  transform-origin: 50% 50%;
+  filter: saturate(1.18) contrast(1.12) brightness(1.04);
+}
+
+.cosmic-ui.three-ready #hero-3d-canvas,
+.three-ready #hero-3d-canvas {
+  opacity: 0.96;
+}
+
+@media (min-width: 761px) {
+  .cosmic-ui .hero-copy {
+    text-shadow: 0 16px 44px rgba(0, 0, 0, 0.52);
+  }
+}
+
+@media (max-width: 760px) {
+  .cosmic-ui .hero-3d {
+    inset: -5% -18% -10% -18%;
+    height: 70svh;
+  }
+
+  .cosmic-ui #hero-3d-canvas {
+    transform: translate3d(0, -1%, 0) scale(0.92);
+  }
+
+  .cosmic-ui.three-ready #hero-3d-canvas,
+  .three-ready #hero-3d-canvas {
+    opacity: 0.82;
   }
 }

@@ -29,11 +29,11 @@ function initHeroScene() {
     powerPreference: isSceneLite() ? "low-power" : "high-performance",
   });
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 90);
+  const camera = new THREE.PerspectiveCamera(36, 1, 0.1, 90);
   const clock = new THREE.Clock();
   const pointer = { x: 0, y: 0 };
   const smoothPointer = { x: 0, y: 0 };
-  const cameraHome = { x: 0, y: 0, z: 9.35 };
+  const cameraHome = { x: 0, y: 0, z: 10.2 };
   const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 
   renderer.setClearColor(0x000000, 0);
@@ -569,26 +569,26 @@ function initHeroScene() {
     camera.updateProjectionMatrix();
 
     if (width < 720) {
-      group.position.set(0.16, -0.58, 0);
-      group.userData.baseY = -0.58;
+      group.position.set(0.28, -0.5, 0);
+      group.userData.baseY = -0.5;
       orbitGroup.position.copy(group.position);
-      group.scale.setScalar(0.7);
-      group.userData.baseScale = 0.7;
-      orbitGroup.scale.setScalar(0.7);
+      group.scale.setScalar(0.64);
+      group.userData.baseScale = 0.64;
+      orbitGroup.scale.setScalar(0.64);
     } else if (width < 1040) {
-      group.position.set(0.92, -0.04, 0);
-      group.userData.baseY = -0.04;
-      orbitGroup.position.copy(group.position);
-      group.scale.setScalar(0.86);
-      group.userData.baseScale = 0.86;
-      orbitGroup.scale.setScalar(0.86);
-    } else {
-      group.position.set(1.32, -0.02, 0);
+      group.position.set(1.18, -0.02, 0);
       group.userData.baseY = -0.02;
       orbitGroup.position.copy(group.position);
-      group.scale.setScalar(1.02);
-      group.userData.baseScale = 1.02;
-      orbitGroup.scale.setScalar(1.02);
+      group.scale.setScalar(0.78);
+      group.userData.baseScale = 0.78;
+      orbitGroup.scale.setScalar(0.78);
+    } else {
+      group.position.set(1.78, -0.04, 0);
+      group.userData.baseY = -0.04;
+      orbitGroup.position.copy(group.position);
+      group.scale.setScalar(0.9);
+      group.userData.baseScale = 0.9;
+      orbitGroup.scale.setScalar(0.9);
     }
 
     portalGroup.position.copy(group.position);

@@ -378,17 +378,9 @@ function initSiteIntro() {
       <span>TRON · ETHEREUM · BNB CHAIN · BITCOIN</span><span>CRYPTOFLASHUSDT / 2026</span>
     </div>`;
 
-  const introStorageKey = "cryptoflashusdt-intro-v8";
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  let introWasShown = false;
 
-  try {
-    introWasShown = sessionStorage.getItem(introStorageKey) === "shown";
-  } catch (error) {
-    introWasShown = false;
-  }
-
-  if (introWasShown || reducedMotion) {
+  if (reducedMotion) {
     siteIntro.replaceChildren();
     siteIntro.classList.add("is-skip");
     document.body.classList.add("intro-skip");
@@ -532,12 +524,6 @@ function initSiteIntro() {
     document.body.classList.add("intro-exiting");
     document.body.classList.remove("intro-playing");
     requestAnimationFrame(() => siteIntro.classList.add("is-complete"));
-
-    try {
-      sessionStorage.setItem(introStorageKey, "shown");
-    } catch (error) {
-      // Local file previews may not expose session storage.
-    }
 
     window.setTimeout(() => {
       window.removeEventListener("resize", resizeIntroStars);
@@ -928,9 +914,22 @@ function initRevealEffects() {
     item.style.setProperty("--section-reveal-delay", `${index * 92}ms`);
   });
 
-  document.querySelectorAll("#faq .faq-list details").forEach((item, index) => {
+  const faqRows = document.querySelectorAll("#faq .faq-list details");
+
+  document.querySelectorAll("#process .section-heading, #wallets .section-heading, #faq .section-heading").forEach(
+    (item) => {
+      item.style.setProperty("--section-reveal-delay", "0ms");
+    }
+  );
+
+  faqRows.forEach((item, index) => {
     item.style.setProperty("--section-reveal-delay", `${index * 118}ms`);
   });
+
+  const faqMore = document.querySelector("#faq .faq-more");
+  if (faqMore) {
+    faqMore.style.setProperty("--section-reveal-delay", `${faqRows.length * 118 + 80}ms`);
+  }
 
   if (!("IntersectionObserver" in window)) {
     revealItems.forEach((item) => item.classList.add("is-visible"));

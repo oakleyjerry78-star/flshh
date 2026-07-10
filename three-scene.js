@@ -33,6 +33,8 @@ function initHeroScene() {
   const clock = new THREE.Clock();
   const pointer = { x: 0, y: 0 };
   const smoothPointer = { x: 0, y: 0 };
+  const cameraHome = { x: 0, y: 0, z: 9.35 };
+  const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 
   renderer.setClearColor(0x000000, 0);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -40,7 +42,7 @@ function initHeroScene() {
   renderer.toneMappingExposure = 1.18;
   renderer.setPixelRatio(getPixelRatio());
 
-  camera.position.set(0, 0, 9.35);
+  camera.position.set(cameraHome.x, cameraHome.y, cameraHome.z);
 
   scene.fog = new THREE.FogExp2(0x020604, 0.024);
   scene.add(new THREE.AmbientLight(0x94ffd0, 0.72));
@@ -300,6 +302,7 @@ function initHeroScene() {
         transparent: true,
         opacity: 0.62,
         blending: THREE.AdditiveBlending,
+        depthTest: false,
         depthWrite: false,
       })
     );
@@ -388,6 +391,7 @@ function initHeroScene() {
       transparent: true,
       opacity: 0.48,
       blending: THREE.AdditiveBlending,
+      depthWrite: false,
     })
   );
   scene.add(particles);
@@ -731,8 +735,14 @@ function initHeroScene() {
     connectionPositions[nodes.length * 3 + 2] = connectionPositions[2];
     connectionGeometry.attributes.position.needsUpdate = true;
 
-    camera.position.x += pointer.x * 0.28 - camera.position.x * 0.06;
-    camera.position.y += -pointer.y * 0.2 - camera.position.y * 0.06;
+    const cameraParallaxX = mobileScene.matches ? 0.12 : 0.24;
+    const cameraParallaxY = mobileScene.matches ? 0.08 : 0.16;
+    const targetCameraX = smoothPointer.x * cameraParallaxX;
+    const targetCameraY = -smoothPointer.y * cameraParallaxY;
+
+    camera.position.x += (targetCameraX - camera.position.x) * 0.075;
+    camera.position.y += (targetCameraY - camera.position.y) * 0.075;
+    camera.position.z += (cameraHome.z - camera.position.z) * 0.055;
     camera.lookAt(0, 0, 0);
 
     renderer.render(scene, camera);
@@ -749,8 +759,8 @@ function initHeroScene() {
     "pointermove",
     (event) => {
       const rect = hero.getBoundingClientRect();
-      pointer.x = ((event.clientX - rect.left) / rect.width - 0.5) * 2;
-      pointer.y = ((event.clientY - rect.top) / rect.height - 0.5) * 2;
+      pointer.x = clamp(((event.clientX - rect.left) / rect.width - 0.5) * 2, -0.86, 0.86);
+      pointer.y = clamp(((event.clientY - rect.top) / rect.height - 0.5) * 2, -0.76, 0.76);
     },
     { passive: true }
   );

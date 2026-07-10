@@ -14168,3 +14168,347 @@ html,
     opacity: 0.86;
   }
 }
+
+/* Background-born reveal for process, wallets, and FAQ */
+.cosmic-ui #process .section-heading.reveal,
+.cosmic-ui #wallets .section-heading.reveal,
+.cosmic-ui #faq .section-heading.reveal {
+  opacity: 0;
+  transform: translate3d(0, 30px, 0) scale(0.982);
+  transition:
+    opacity 1.25s var(--smooth-appear),
+    transform 1.38s var(--smooth-appear),
+    text-shadow 1.25s ease;
+  transition-delay: var(--section-reveal-delay, 0ms);
+}
+
+.cosmic-ui #process .section-heading.reveal.is-visible,
+.cosmic-ui #wallets .section-heading.reveal.is-visible,
+.cosmic-ui #faq .section-heading.reveal.is-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+  text-shadow: 0 0 34px rgba(101, 243, 173, 0.12);
+}
+
+.cosmic-ui #process .step,
+.cosmic-ui #wallets .wallet-compat-card,
+.cosmic-ui #faq .faq-list details,
+.cosmic-ui #faq .faq-more {
+  position: relative;
+  isolation: isolate;
+}
+
+.cosmic-ui #process .step > *,
+.cosmic-ui #wallets .wallet-compat-card > *,
+.cosmic-ui #faq .faq-list details > *,
+.cosmic-ui #faq .faq-more > * {
+  position: relative;
+  z-index: 1;
+}
+
+.cosmic-ui #process .step::before,
+.cosmic-ui #wallets .wallet-compat-card::before,
+.cosmic-ui #faq .faq-list details::before,
+.cosmic-ui #faq .faq-more::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background:
+    radial-gradient(circle at 48% 16%, rgba(186, 255, 221, 0.2), transparent 25%),
+    radial-gradient(circle at 50% 86%, rgba(101, 243, 173, 0.14), transparent 34%),
+    linear-gradient(115deg, transparent 0%, rgba(101, 243, 173, 0.08) 42%, rgba(255, 255, 255, 0.12) 50%, rgba(101, 243, 173, 0.06) 58%, transparent 100%);
+  opacity: 0;
+  transform: translate3d(0, 18px, 0) scale(0.9);
+  transition:
+    opacity 1.38s var(--smooth-appear),
+    transform 1.48s var(--smooth-appear);
+  transition-delay: inherit;
+}
+
+.cosmic-ui #process .step.reveal,
+.cosmic-ui #wallets .wallet-compat-card.reveal,
+.cosmic-ui #faq .faq-list details.reveal,
+.cosmic-ui #faq .faq-more.reveal {
+  opacity: 0;
+  filter: none !important;
+  transform: translate3d(0, 50px, 0) scale(0.966);
+  box-shadow: 0 0 0 rgba(101, 243, 173, 0);
+  transition:
+    opacity 1.24s var(--smooth-appear),
+    transform 1.42s var(--smooth-appear),
+    border-color 0.52s ease,
+    box-shadow 1.2s ease,
+    background 1.2s ease;
+  transition-delay: var(--section-reveal-delay, var(--reveal-delay, 0ms));
+}
+
+.cosmic-ui #process .step.reveal.is-visible:not(:hover):not(:focus-within),
+.cosmic-ui #wallets .wallet-compat-card.reveal.is-visible:not(:hover):not(:focus-within),
+.cosmic-ui #faq .faq-list details.reveal.is-visible:not(:hover):not(:focus-within),
+.cosmic-ui #faq .faq-more.reveal.is-visible:not(:hover):not(:focus-within) {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+  box-shadow:
+    0 18px 54px rgba(0, 0, 0, 0.22),
+    0 0 44px rgba(101, 243, 173, 0.055);
+}
+
+.cosmic-ui #process .step.reveal.is-visible::before,
+.cosmic-ui #wallets .wallet-compat-card.reveal.is-visible::before,
+.cosmic-ui #faq .faq-list details.reveal.is-visible::before,
+.cosmic-ui #faq .faq-more.reveal.is-visible::before {
+  opacity: 0.78;
+  transform: translate3d(0, 0, 0) scale(1);
+}
+
+.cosmic-ui #process .step.reveal.is-visible::after,
+.cosmic-ui #wallets .wallet-compat-card.reveal.is-visible::after,
+.cosmic-ui #faq .faq-list details.reveal.is-visible::after,
+.cosmic-ui #faq .faq-more.reveal.is-visible::after {
+  animation-delay: var(--section-reveal-delay, var(--reveal-delay, 0ms));
+}
+
+.cosmic-ui #process .step.reveal.is-visible,
+.cosmic-ui #wallets .wallet-compat-card.reveal.is-visible,
+.cosmic-ui #faq .faq-list details.reveal.is-visible,
+.cosmic-ui #faq .faq-more.reveal.is-visible {
+  opacity: 1;
+}
+
+@media (max-width: 760px) {
+  .cosmic-ui #process .section-heading.reveal,
+  .cosmic-ui #wallets .section-heading.reveal,
+  .cosmic-ui #faq .section-heading.reveal {
+    transform: translate3d(0, 22px, 0) scale(0.99);
+    transition:
+      opacity 0.82s var(--smooth-appear),
+      transform 0.94s var(--smooth-appear);
+  }
+
+  .cosmic-ui #process .step.reveal,
+  .cosmic-ui #wallets .wallet-compat-card.reveal,
+  .cosmic-ui #faq .faq-list details.reveal,
+  .cosmic-ui #faq .faq-more.reveal {
+    transform: translate3d(0, 28px, 0) scale(0.982);
+    transition:
+      opacity 0.84s var(--smooth-appear),
+      transform 0.96s var(--smooth-appear),
+      border-color 0.36s ease,
+      box-shadow 0.7s ease,
+      background 0.7s ease;
+    transition-delay: var(--section-reveal-delay, var(--reveal-delay, 0ms));
+  }
+
+  .cosmic-ui #process .step::before,
+  .cosmic-ui #wallets .wallet-compat-card::before,
+  .cosmic-ui #faq .faq-list details::before,
+  .cosmic-ui #faq .faq-more::before {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0) scale(0.94);
+    transition:
+      opacity 0.86s var(--smooth-appear),
+      transform 0.94s var(--smooth-appear);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cosmic-ui #process .step::before,
+  .cosmic-ui #wallets .wallet-compat-card::before,
+  .cosmic-ui #faq .faq-list details::before,
+  .cosmic-ui #faq .faq-more::before {
+    opacity: 0 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+/* Strong materialization pass: visible change while scrolling */
+@keyframes sectionLightSweep {
+  0% {
+    opacity: 0;
+    transform: translate3d(-125%, 0, 0) skewX(-12deg);
+  }
+  18% {
+    opacity: 0.9;
+  }
+  62% {
+    opacity: 0.45;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(125%, 0, 0) skewX(-12deg);
+  }
+}
+
+@keyframes sectionBorderPulse {
+  0% {
+    box-shadow:
+      0 0 0 rgba(101, 243, 173, 0),
+      inset 0 0 0 rgba(255, 255, 255, 0);
+  }
+  42% {
+    box-shadow:
+      0 0 64px rgba(101, 243, 173, 0.22),
+      inset 0 0 34px rgba(186, 255, 221, 0.08);
+  }
+  100% {
+    box-shadow:
+      0 18px 54px rgba(0, 0, 0, 0.24),
+      0 0 42px rgba(101, 243, 173, 0.08);
+  }
+}
+
+.cosmic-ui #process .section-heading.reveal,
+.cosmic-ui #wallets .section-heading.reveal,
+.cosmic-ui #faq .section-heading.reveal {
+  opacity: 1;
+  transform: translate3d(0, 34px, 0) scale(0.975);
+}
+
+.cosmic-ui #process .section-heading.reveal > *,
+.cosmic-ui #wallets .section-heading.reveal > *,
+.cosmic-ui #faq .section-heading.reveal > * {
+  opacity: 0;
+  transform: translate3d(0, 20px, 0);
+  transition:
+    opacity 0.96s var(--smooth-appear),
+    transform 1.08s var(--smooth-appear),
+    color 0.7s ease;
+  transition-delay: calc(var(--section-reveal-delay, var(--reveal-delay, 0ms)) + 120ms);
+}
+
+.cosmic-ui #process .section-heading.reveal.is-visible,
+.cosmic-ui #wallets .section-heading.reveal.is-visible,
+.cosmic-ui #faq .section-heading.reveal.is-visible {
+  transform: translate3d(0, 0, 0) scale(1);
+}
+
+.cosmic-ui #process .section-heading.reveal.is-visible > *,
+.cosmic-ui #wallets .section-heading.reveal.is-visible > *,
+.cosmic-ui #faq .section-heading.reveal.is-visible > * {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+.cosmic-ui #process .step.reveal,
+.cosmic-ui #wallets .wallet-compat-card.reveal,
+.cosmic-ui #faq .faq-list details.reveal,
+.cosmic-ui #faq .faq-more.reveal {
+  opacity: 1;
+  overflow: hidden;
+  clip-path: inset(22% 13% 22% 13% round 8px);
+  transform: translate3d(0, 62px, 0) scale(0.952);
+  border-color: rgba(101, 243, 173, 0.04);
+  background:
+    radial-gradient(circle at 50% 50%, rgba(101, 243, 173, 0.035), transparent 54%),
+    rgba(1, 5, 3, 0.18);
+  transition:
+    clip-path 1.28s var(--smooth-appear),
+    transform 1.28s var(--smooth-appear),
+    border-color 1.08s ease,
+    background 1.12s ease,
+    box-shadow 1.2s ease;
+  transition-delay: var(--section-reveal-delay, var(--reveal-delay, 0ms));
+}
+
+.cosmic-ui #process .step.reveal > *,
+.cosmic-ui #wallets .wallet-compat-card.reveal > *,
+.cosmic-ui #faq .faq-list details.reveal > *,
+.cosmic-ui #faq .faq-more.reveal > * {
+  opacity: 0;
+  transform: translate3d(0, 18px, 0);
+  transition:
+    opacity 0.86s var(--smooth-appear),
+    transform 0.96s var(--smooth-appear);
+  transition-delay: calc(var(--section-reveal-delay, var(--reveal-delay, 0ms)) + 220ms);
+}
+
+.cosmic-ui #process .step.reveal::before,
+.cosmic-ui #wallets .wallet-compat-card.reveal::before,
+.cosmic-ui #faq .faq-list details.reveal::before,
+.cosmic-ui #faq .faq-more.reveal::before {
+  inset: 0;
+  border-radius: inherit;
+  background:
+    linear-gradient(105deg, transparent 0%, rgba(186, 255, 221, 0.18) 40%, rgba(255, 255, 255, 0.34) 50%, rgba(101, 243, 173, 0.16) 60%, transparent 100%);
+  opacity: 0;
+  transform: translate3d(-125%, 0, 0) skewX(-12deg);
+  transition: none;
+}
+
+.cosmic-ui #process .step.reveal.is-visible,
+.cosmic-ui #wallets .wallet-compat-card.reveal.is-visible,
+.cosmic-ui #faq .faq-list details.reveal.is-visible,
+.cosmic-ui #faq .faq-more.reveal.is-visible {
+  clip-path: inset(0 0 0 0 round 8px);
+  transform: translate3d(0, 0, 0) scale(1);
+  border-color: rgba(101, 243, 173, 0.2);
+  background:
+    radial-gradient(circle at 24% 12%, rgba(101, 243, 173, 0.14), transparent 28%),
+    radial-gradient(circle at 80% 80%, rgba(186, 255, 221, 0.055), transparent 34%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.052), rgba(255, 255, 255, 0.012)),
+    rgba(4, 14, 10, 0.86);
+  animation: sectionBorderPulse 1.5s var(--smooth-appear) both;
+  animation-delay: var(--section-reveal-delay, var(--reveal-delay, 0ms));
+}
+
+.cosmic-ui #process .step.reveal.is-visible > *,
+.cosmic-ui #wallets .wallet-compat-card.reveal.is-visible > *,
+.cosmic-ui #faq .faq-list details.reveal.is-visible > *,
+.cosmic-ui #faq .faq-more.reveal.is-visible > * {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+.cosmic-ui #process .step.reveal.is-visible::before,
+.cosmic-ui #wallets .wallet-compat-card.reveal.is-visible::before,
+.cosmic-ui #faq .faq-list details.reveal.is-visible::before,
+.cosmic-ui #faq .faq-more.reveal.is-visible::before {
+  animation: sectionLightSweep 1.35s ease-out both;
+  animation-delay: calc(var(--section-reveal-delay, var(--reveal-delay, 0ms)) + 120ms);
+}
+
+@media (max-width: 760px) {
+  .cosmic-ui #process .step.reveal,
+  .cosmic-ui #wallets .wallet-compat-card.reveal,
+  .cosmic-ui #faq .faq-list details.reveal,
+  .cosmic-ui #faq .faq-more.reveal {
+    clip-path: inset(18% 10% 18% 10% round 8px);
+    transform: translate3d(0, 34px, 0) scale(0.974);
+    transition:
+      clip-path 0.9s var(--smooth-appear),
+      transform 0.92s var(--smooth-appear),
+      border-color 0.72s ease,
+      background 0.78s ease,
+      box-shadow 0.82s ease;
+  }
+
+  .cosmic-ui #process .step.reveal > *,
+  .cosmic-ui #wallets .wallet-compat-card.reveal > *,
+  .cosmic-ui #faq .faq-list details.reveal > *,
+  .cosmic-ui #faq .faq-more.reveal > * {
+    transform: translate3d(0, 12px, 0);
+    transition:
+      opacity 0.64s var(--smooth-appear),
+      transform 0.72s var(--smooth-appear);
+    transition-delay: calc(var(--section-reveal-delay, var(--reveal-delay, 0ms)) + 120ms);
+  }
+
+  .cosmic-ui #process .step.reveal.is-visible,
+  .cosmic-ui #wallets .wallet-compat-card.reveal.is-visible,
+  .cosmic-ui #faq .faq-list details.reveal.is-visible,
+  .cosmic-ui #faq .faq-more.reveal.is-visible {
+    clip-path: inset(0 0 0 0 round 8px);
+    animation-duration: 1.02s;
+  }
+
+  .cosmic-ui #process .step.reveal.is-visible::before,
+  .cosmic-ui #wallets .wallet-compat-card.reveal.is-visible::before,
+  .cosmic-ui #faq .faq-list details.reveal.is-visible::before,
+  .cosmic-ui #faq .faq-more.reveal.is-visible::before {
+    animation-duration: 1.02s;
+  }
+}

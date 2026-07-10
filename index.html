@@ -8,7 +8,10 @@
       name="description"
       content="CryptoFlashUSDT помогает с USDT-платежами, выбором сети, консультациями и безопасной организацией крипто-операций."
     />
-    <link rel="stylesheet" href="styles.css?v=20260710-1500" />
+    <link rel="stylesheet" href="styles.css?v=20260710-1800" />
+    <link rel="stylesheet" href="hero-vault.css?v=20260710-1800" />
+    <link rel="stylesheet" href="mobile-premium.css?v=20260710-1900" />
+    <link rel="stylesheet" href="orbital-route.css?v=20260710-2100" />
   </head>
   <body class="cosmic-ui" data-page="home">
     <div class="site-intro" aria-hidden="true">
@@ -142,6 +145,27 @@
               Премиальное сопровождение USDT-операций: выбор сети, проверка реквизитов,
               понятные пакеты и аккуратный маршрут покупки.
             </p>
+            <div class="mobile-quick-pass" aria-label="Быстрый выбор сети">
+              <div class="mobile-pass-head">
+                <span>Быстрый доступ</span>
+                <span><i></i> Сети доступны</span>
+              </div>
+              <div class="mobile-network-rail">
+                <a class="mobile-network-option option-trc" href="products.html?network=TRC20" data-index="01">
+                  <strong>TRC20</strong><small>TRON</small>
+                </a>
+                <a class="mobile-network-option option-erc" href="products.html?network=ERC20" data-index="02">
+                  <strong>ERC20</strong><small>ETHEREUM</small>
+                </a>
+                <a class="mobile-network-option option-bep" href="products.html?network=BEP20" data-index="03">
+                  <strong>BEP20</strong><small>BNB CHAIN</small>
+                </a>
+                <a class="mobile-network-option option-btc" href="products.html?network=BTC" data-index="04">
+                  <strong>BTC</strong><small>BITCOIN</small>
+                </a>
+              </div>
+              <div class="mobile-pass-foot"><span>4 сети · единая точка входа</span><b aria-hidden="true">↗</b></div>
+            </div>
             <div class="hero-actions">
               <a class="button button-primary" href="#networks">Выбрать сеть</a>
               <a class="button button-secondary" href="products.html?network=TRC20">Смотреть пакеты</a>
@@ -451,9 +475,9 @@
       </div>
     </footer>
 
-    <script src="script.js?v=20260710-1500"></script>
+    <script src="script.js?v=20260710-2100"></script>
     <script type="module">
-      import("./three-scene.js?v=20260710-1500").catch(() => {
+      import("./three-scene.js?v=20260710-1800").catch(() => {
         document.body.classList.add("three-fallback");
       });
     </script>

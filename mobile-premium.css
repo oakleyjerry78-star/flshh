@@ -1,0 +1,667 @@
+/* Mobile application layer shared by every page. */
+.mobile-quick-pass {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  html {
+    scroll-padding-top: 84px;
+  }
+
+  .cosmic-ui {
+    padding-bottom: calc(92px + env(safe-area-inset-bottom));
+  }
+
+  .cosmic-ui .site-header {
+    top: 8px;
+    left: 8px;
+    right: 8px;
+    width: auto !important;
+    min-height: 64px;
+    border: 1px solid rgba(196, 255, 226, 0.16);
+    border-radius: 22px;
+    background:
+      radial-gradient(circle at 22% 0%, rgba(112, 255, 190, 0.1), transparent 42%),
+      rgba(2, 10, 7, 0.94);
+    box-shadow:
+      0 18px 48px rgba(0, 0, 0, 0.46),
+      inset 0 1px 0 rgba(255, 255, 255, 0.055);
+    transform: none !important;
+    -webkit-backdrop-filter: blur(16px) saturate(1.1);
+    backdrop-filter: blur(16px) saturate(1.1);
+  }
+
+  .cosmic-ui .nav-shell {
+    width: 100%;
+    min-height: 62px;
+    padding: 0 9px 0 10px;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px;
+  }
+
+  .cosmic-ui .brand {
+    min-width: 0;
+    gap: 9px;
+  }
+
+  .cosmic-ui .brand-mark {
+    width: 40px;
+    height: 40px;
+    border-radius: 14px;
+    background:
+      radial-gradient(circle at 30% 22%, #ffffff 0 8%, transparent 22%),
+      linear-gradient(145deg, #a7ffd1 0%, #4de99f 52%, #11865a 100%);
+    box-shadow:
+      0 0 0 5px rgba(101, 243, 173, 0.055),
+      0 0 24px rgba(101, 243, 173, 0.18),
+      inset 0 1px 0 rgba(255, 255, 255, 0.42);
+  }
+
+  .cosmic-ui .brand-text {
+    max-width: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: clamp(0.84rem, 4vw, 0.96rem);
+  }
+
+  .cosmic-ui .brand-status {
+    display: none;
+  }
+
+  .cosmic-ui .nav-toggle {
+    justify-self: end;
+    width: 44px;
+    height: 44px;
+    border: 1px solid rgba(150, 255, 207, 0.2);
+    border-radius: 15px;
+    background:
+      linear-gradient(145deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.012)),
+      rgba(4, 17, 11, 0.92);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.07),
+      0 10px 24px rgba(0, 0, 0, 0.25);
+  }
+
+  .cosmic-ui .nav-toggle::before {
+    inset: 6px;
+    border-radius: 10px;
+  }
+
+  .cosmic-ui .nav-menu {
+    top: 72px;
+    left: 0;
+    right: 0;
+    gap: 4px;
+    padding: 9px;
+    border: 1px solid rgba(196, 255, 226, 0.14);
+    border-radius: 22px;
+    background:
+      radial-gradient(circle at 82% 8%, rgba(101, 243, 173, 0.1), transparent 32%),
+      rgba(2, 9, 6, 0.98);
+    box-shadow: 0 26px 70px rgba(0, 0, 0, 0.58);
+  }
+
+  .cosmic-ui .nav-menu a {
+    min-height: 48px;
+    padding: 0 15px;
+    border: 0;
+    border-radius: 14px;
+    color: rgba(226, 246, 236, 0.72);
+  }
+
+  .cosmic-ui .nav-menu a:hover,
+  .cosmic-ui .nav-menu a.is-active {
+    color: #effff6;
+    background: rgba(101, 243, 173, 0.1);
+    box-shadow: inset 3px 0 0 #65f3ad;
+  }
+
+  .cosmic-ui .mobile-dock {
+    left: 8px;
+    right: 8px;
+    bottom: max(8px, env(safe-area-inset-bottom));
+    width: auto;
+    min-height: 70px;
+    padding: 6px;
+    gap: 3px;
+    border: 1px solid rgba(196, 255, 226, 0.15);
+    border-radius: 24px;
+    background:
+      linear-gradient(180deg, rgba(8, 20, 14, 0.96), rgba(1, 7, 4, 0.97));
+    box-shadow:
+      0 22px 64px rgba(0, 0, 0, 0.58),
+      inset 0 1px 0 rgba(255, 255, 255, 0.055);
+    transform: none;
+    -webkit-backdrop-filter: blur(18px) saturate(1.08);
+    backdrop-filter: blur(18px) saturate(1.08);
+  }
+
+  .cosmic-ui .mobile-dock a {
+    min-height: 58px;
+    gap: 3px;
+    border-radius: 18px;
+    color: rgba(205, 230, 216, 0.46);
+    font-size: 0.59rem;
+    transition:
+      color 0.28s ease,
+      background 0.28s ease,
+      transform 0.18s ease;
+  }
+
+  .cosmic-ui .mobile-dock a::before {
+    opacity: 0;
+    border-radius: inherit;
+    background:
+      radial-gradient(circle at 50% 8%, rgba(180, 255, 220, 0.16), transparent 48%),
+      rgba(101, 243, 173, 0.07);
+  }
+
+  .cosmic-ui .mobile-dock a.is-active {
+    color: #f0fff6;
+    background: rgba(101, 243, 173, 0.07);
+    box-shadow:
+      inset 0 0 0 1px rgba(101, 243, 173, 0.12),
+      0 8px 22px rgba(0, 0, 0, 0.22);
+  }
+
+  .cosmic-ui .mobile-dock a.is-active::before {
+    opacity: 1;
+  }
+
+  .cosmic-ui .mobile-dock a:active {
+    transform: scale(0.96);
+  }
+
+  .cosmic-ui .dock-icon {
+    width: 24px;
+    height: 24px;
+    color: rgba(159, 209, 182, 0.68);
+    transform: scale(0.9);
+  }
+
+  .cosmic-ui .mobile-dock a.is-active .dock-icon {
+    color: #72f7b8;
+    filter: drop-shadow(0 0 8px rgba(101, 243, 173, 0.34));
+  }
+
+  .cosmic-ui .hero {
+    min-height: auto;
+  }
+
+  .cosmic-ui .hero-3d {
+    top: 0 !important;
+    right: 0 !important;
+    bottom: auto !important;
+    left: 0 !important;
+    height: 54svh !important;
+    min-height: 410px;
+    max-height: 520px;
+  }
+
+  .cosmic-ui .hero-3d::before {
+    background:
+      linear-gradient(180deg, rgba(1, 4, 3, 0.6) 0%, rgba(1, 4, 3, 0.06) 25%, rgba(1, 4, 3, 0.08) 58%, #010403 100%),
+      radial-gradient(ellipse at 50% 45%, transparent 0 30%, rgba(1, 4, 3, 0.28) 70%, rgba(1, 4, 3, 0.62) 100%);
+  }
+
+  .cosmic-ui .hero-3d::after {
+    inset: 10% -18% 6% -18% !important;
+  }
+
+  .cosmic-ui.three-ready #hero-3d-canvas,
+  .three-ready #hero-3d-canvas {
+    opacity: 0.92 !important;
+  }
+
+  .cosmic-ui .hero-inner {
+    width: min(calc(100% - 28px), 520px);
+    min-height: auto;
+    padding: calc(clamp(410px, 54svh, 520px) + 20px) 0 52px;
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .cosmic-ui .hero-copy {
+    grid-row: 1;
+    width: 100%;
+    padding: 0;
+  }
+
+  .cosmic-ui .hero-premium-panel {
+    display: none !important;
+  }
+
+  .cosmic-ui .hero-signal {
+    min-height: 28px;
+    margin-bottom: 18px;
+    font-size: 0.62rem;
+  }
+
+  .cosmic-ui .hero .eyebrow {
+    margin-bottom: 10px;
+    font-size: 0.64rem;
+  }
+
+  .cosmic-ui .hero h1 {
+    max-width: 9.5ch;
+    font-size: clamp(2.65rem, 13.5vw, 3.45rem);
+    line-height: 0.91;
+  }
+
+  .cosmic-ui .hero-lead {
+    max-width: 34ch;
+    margin-top: 18px;
+    color: rgba(221, 242, 231, 0.75);
+    font-size: 0.96rem;
+    line-height: 1.62;
+  }
+
+  .mobile-quick-pass {
+    position: relative;
+    display: block;
+    margin-top: 24px;
+    padding: 14px;
+    overflow: hidden;
+    border: 1px solid rgba(173, 255, 216, 0.13);
+    border-radius: 22px;
+    background:
+      radial-gradient(circle at 16% 0%, rgba(101, 243, 173, 0.12), transparent 36%),
+      linear-gradient(145deg, rgba(255, 255, 255, 0.052), rgba(255, 255, 255, 0.012)),
+      rgba(3, 13, 9, 0.86);
+    box-shadow:
+      0 22px 56px rgba(0, 0, 0, 0.34),
+      inset 0 1px 0 rgba(255, 255, 255, 0.045);
+  }
+
+  .mobile-quick-pass::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 14%;
+    width: 46%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #8dffca, transparent);
+    box-shadow: 0 0 16px rgba(101, 243, 173, 0.32);
+  }
+
+  .mobile-pass-head,
+  .mobile-pass-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .mobile-pass-head {
+    margin-bottom: 12px;
+    color: #dffff0;
+    font-size: 0.7rem;
+    font-weight: 850;
+    text-transform: uppercase;
+  }
+
+  .mobile-pass-head span:last-child {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: rgba(201, 232, 216, 0.56);
+    font-size: 0.58rem;
+  }
+
+  .mobile-pass-head i {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #65f3ad;
+    box-shadow: 0 0 12px rgba(101, 243, 173, 0.74);
+    animation: mobileLivePulse 2.2s ease-in-out infinite;
+  }
+
+  .mobile-network-rail {
+    display: flex;
+    gap: 9px;
+    margin: 0 -4px;
+    padding: 4px 4px 10px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    overscroll-behavior-inline: contain;
+  }
+
+  .mobile-network-rail::-webkit-scrollbar {
+    display: none;
+  }
+
+  .mobile-network-option {
+    --mobile-accent: #65f3ad;
+    position: relative;
+    flex: 0 0 108px;
+    min-height: 76px;
+    display: grid;
+    align-content: center;
+    gap: 3px;
+    padding: 12px;
+    overflow: hidden;
+    scroll-snap-align: start;
+    border: 1px solid color-mix(in srgb, var(--mobile-accent) 24%, transparent);
+    border-radius: 16px;
+    color: #f1fff7;
+    background:
+      radial-gradient(circle at 80% 0%, color-mix(in srgb, var(--mobile-accent) 16%, transparent), transparent 46%),
+      rgba(255, 255, 255, 0.025);
+    transition:
+      transform 0.2s ease,
+      border-color 0.25s ease,
+      background 0.25s ease;
+  }
+
+  .mobile-network-option::before {
+    content: attr(data-index);
+    position: absolute;
+    top: 9px;
+    right: 10px;
+    color: color-mix(in srgb, var(--mobile-accent) 74%, white);
+    font: 700 0.54rem/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+    opacity: 0.68;
+  }
+
+  .mobile-network-option strong {
+    font-size: 0.9rem;
+  }
+
+  .mobile-network-option small {
+    color: rgba(211, 234, 222, 0.5);
+    font-size: 0.58rem;
+  }
+
+  .mobile-network-option:active {
+    transform: scale(0.96);
+  }
+
+  .mobile-network-option.option-trc {
+    --mobile-accent: #ff6f61;
+  }
+
+  .mobile-network-option.option-erc {
+    --mobile-accent: #7798ff;
+  }
+
+  .mobile-network-option.option-bep {
+    --mobile-accent: #f3c94d;
+  }
+
+  .mobile-network-option.option-btc {
+    --mobile-accent: #ff9f43;
+  }
+
+  .mobile-pass-foot {
+    padding-top: 10px;
+    border-top: 1px solid rgba(196, 255, 226, 0.08);
+    color: rgba(204, 231, 216, 0.48);
+    font-size: 0.62rem;
+  }
+
+  .mobile-pass-foot b {
+    color: #75f7ba;
+    font-size: 0.82rem;
+  }
+
+  .mobile-quick-pass.reveal {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0) scale(0.985);
+    transition:
+      opacity 0.78s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.86s cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+
+  .mobile-quick-pass.reveal.is-visible {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  .cosmic-ui .hero-actions {
+    grid-template-columns: 1fr 1fr;
+    gap: 9px;
+    margin-top: 18px;
+  }
+
+  .cosmic-ui .hero-actions .button {
+    min-width: 0;
+    min-height: 54px;
+    padding: 0 12px;
+    border-radius: 16px;
+    font-size: 0.8rem;
+    white-space: normal;
+    text-align: center;
+  }
+
+  .cosmic-ui .hero-ledger {
+    display: none;
+  }
+
+  .cosmic-ui .luxury-ribbon {
+    height: 38px;
+  }
+
+  .cosmic-ui .luxury-ribbon-track {
+    min-height: 38px;
+  }
+
+  .cosmic-ui .section,
+  .cosmic-ui .network-select-section,
+  .cosmic-ui .wallet-compat-section,
+  .cosmic-ui .faq-section {
+    padding: 70px 0;
+  }
+
+  .cosmic-ui .section-heading,
+  .cosmic-ui .packages-heading {
+    width: min(calc(100% - 28px), 520px);
+    margin-bottom: 28px;
+    text-align: left;
+  }
+
+  .cosmic-ui .section-heading h1,
+  .cosmic-ui .section-heading h2,
+  .cosmic-ui .packages-heading h1,
+  .cosmic-ui .page-hero h1,
+  .cosmic-ui .guide-hero h1 {
+    max-width: 11ch;
+    font-size: clamp(2.05rem, 10.5vw, 2.8rem);
+    line-height: 1;
+  }
+
+  .cosmic-ui .network-advisor {
+    width: min(calc(100% - 28px), 520px);
+    padding: 14px;
+    border-radius: 22px;
+  }
+
+  .cosmic-ui .network-advisor-head {
+    align-items: flex-start;
+  }
+
+  .cosmic-ui .advisor-state {
+    display: none;
+  }
+
+  .cosmic-ui .network-advisor-tabs {
+    display: flex;
+    gap: 7px;
+    padding-bottom: 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .cosmic-ui .network-advisor-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .cosmic-ui .network-advisor-tab {
+    flex: 0 0 auto;
+    min-width: 82px;
+    min-height: 42px;
+    border-radius: 13px;
+  }
+
+  .cosmic-ui .network-advisor-display {
+    grid-template-columns: auto 1fr;
+    gap: 14px;
+    padding: 16px;
+    border-radius: 18px;
+  }
+
+  .cosmic-ui .advisor-monogram {
+    width: 58px;
+    height: 58px;
+    border-radius: 16px;
+  }
+
+  .cosmic-ui .advisor-copy h3 {
+    font-size: 1.08rem;
+  }
+
+  .cosmic-ui .advisor-copy p {
+    font-size: 0.78rem;
+    line-height: 1.5;
+  }
+
+  .cosmic-ui .advisor-specs,
+  .cosmic-ui .advisor-action {
+    grid-column: 1 / -1;
+  }
+
+  .cosmic-ui .advisor-specs {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .cosmic-ui .advisor-specs div {
+    padding: 9px 7px;
+    border-radius: 12px;
+  }
+
+  .cosmic-ui .advisor-specs dt,
+  .cosmic-ui .advisor-specs dd {
+    font-size: 0.58rem;
+  }
+
+  .cosmic-ui .network-grid {
+    width: 100vw;
+    display: flex !important;
+    gap: 12px;
+    margin-left: calc(50% - 50vw);
+    padding: 4px 16px 22px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    overscroll-behavior-inline: contain;
+  }
+
+  .cosmic-ui .network-grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .cosmic-ui .network-card {
+    flex: 0 0 min(84vw, 350px);
+    min-height: 318px;
+    padding: 22px;
+    scroll-snap-align: center;
+    border-radius: 22px;
+  }
+
+  .cosmic-ui .network-card.reveal,
+  .cosmic-ui .network-card:nth-child(even).reveal {
+    transform: translate3d(18px, 0, 0) scale(0.98);
+  }
+
+  .cosmic-ui .network-card.reveal.is-visible,
+  .cosmic-ui .network-card:nth-child(even).reveal.is-visible {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  .cosmic-ui .package-grid,
+  .cosmic-ui .wallet-compat-grid {
+    gap: 12px;
+  }
+
+  .cosmic-ui .network-card,
+  .cosmic-ui .package-card,
+  .cosmic-ui .wallet-compat-card,
+  .cosmic-ui .checkout-card,
+  .cosmic-ui .guide-card,
+  .cosmic-ui .guide-step,
+  .cosmic-ui details {
+    border-radius: 22px;
+  }
+
+  .cosmic-ui .page-hero,
+  .cosmic-ui .guide-hero,
+  .cosmic-ui .packages-section,
+  .cosmic-ui .checkout-section {
+    padding-top: 106px;
+  }
+
+  .cosmic-ui .checkout-card,
+  .cosmic-ui .guide-video-shell,
+  .cosmic-ui .guide-card,
+  .cosmic-ui .guide-step {
+    padding-right: 18px;
+    padding-left: 18px;
+  }
+
+  .cosmic-ui .button,
+  .cosmic-ui .package-button,
+  .cosmic-ui .checkout-submit,
+  .cosmic-ui .proof-submit,
+  .cosmic-ui .copy-wallet,
+  .cosmic-ui .advisor-action {
+    min-height: 54px;
+    border-radius: 16px;
+  }
+
+  .performance-lite .cosmic-ui .site-header,
+  .performance-lite .cosmic-ui .mobile-dock {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+@keyframes mobileLivePulse {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(0.82);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.16);
+  }
+}
+
+@media (max-width: 390px) {
+  .cosmic-ui .brand-text {
+    max-width: 164px;
+  }
+
+  .cosmic-ui .hero h1 {
+    font-size: clamp(2.4rem, 13vw, 2.9rem);
+  }
+
+  .cosmic-ui .hero-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .mobile-network-option {
+    flex-basis: 102px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mobile-pass-head i {
+    animation: none;
+  }
+}

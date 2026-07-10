@@ -1,0 +1,133 @@
+/* Final hero composition, loaded after the shared stylesheet. */
+.cosmic-ui .hero {
+  background:
+    radial-gradient(ellipse at 68% 46%, rgba(38, 216, 143, 0.105), transparent 31%),
+    radial-gradient(ellipse at 82% 42%, rgba(123, 132, 255, 0.065), transparent 32%),
+    linear-gradient(180deg, #010302 0%, #020705 54%, #010403 100%);
+}
+
+.cosmic-ui .hero-3d {
+  inset: 0 !important;
+  height: 100% !important;
+  overflow: hidden !important;
+  transform: translateZ(0);
+}
+
+.cosmic-ui .hero-3d::before {
+  inset: 0 !important;
+  z-index: 2;
+  background:
+    radial-gradient(ellipse at 67% 48%, transparent 0 25%, rgba(0, 0, 0, 0.08) 46%, rgba(0, 0, 0, 0.42) 88%),
+    linear-gradient(90deg, rgba(1, 4, 3, 0.88) 0%, rgba(1, 4, 3, 0.58) 30%, rgba(1, 4, 3, 0.08) 52%, rgba(1, 4, 3, 0.18) 72%, rgba(1, 4, 3, 0.46) 100%),
+    linear-gradient(180deg, rgba(1, 4, 3, 0.24), transparent 32%, transparent 68%, rgba(1, 4, 3, 0.52));
+}
+
+.cosmic-ui .hero-3d::after {
+  inset: 8% 2% 4% 40% !important;
+  z-index: 1;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 46% 42%, rgba(229, 255, 242, 0.13), transparent 8%),
+    radial-gradient(circle at 58% 54%, rgba(80, 255, 178, 0.105), transparent 27%),
+    conic-gradient(from 18deg at 55% 50%, transparent 0 58deg, rgba(91, 255, 183, 0.07) 92deg, transparent 132deg 232deg, rgba(137, 145, 255, 0.07) 268deg, transparent 312deg);
+  opacity: 0.68 !important;
+  filter: blur(0.2px) saturate(1.12);
+  mix-blend-mode: screen;
+  animation: auroraVaultBreath 10s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+
+.cosmic-ui #hero-3d-canvas {
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  opacity: 0;
+  transform: none !important;
+  transform-origin: 50% 50% !important;
+  filter: saturate(1.14) contrast(1.1) brightness(1.04) !important;
+  transition:
+    opacity 1.35s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 1.2s ease;
+}
+
+.cosmic-ui.three-ready #hero-3d-canvas,
+.three-ready #hero-3d-canvas {
+  opacity: 0.98 !important;
+}
+
+.cosmic-ui .hero-copy {
+  text-shadow:
+    0 2px 20px rgba(0, 0, 0, 0.82),
+    0 18px 52px rgba(0, 0, 0, 0.5);
+}
+
+.cosmic-ui .hero-copy::before {
+  content: none !important;
+  display: none !important;
+}
+
+@keyframes auroraVaultBreath {
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: translate3d(-0.8%, 0, 0) scale(0.98) rotate(-1.5deg);
+  }
+
+  50% {
+    opacity: 0.76;
+    transform: translate3d(0.8%, -0.5%, 0) scale(1.025) rotate(1.5deg);
+  }
+}
+
+@media (max-width: 1080px) {
+  .cosmic-ui .hero-3d::before {
+    background:
+      radial-gradient(ellipse at 62% 48%, transparent 0 23%, rgba(0, 0, 0, 0.13) 48%, rgba(0, 0, 0, 0.5) 88%),
+      linear-gradient(90deg, rgba(1, 4, 3, 0.9) 0%, rgba(1, 4, 3, 0.52) 28%, rgba(1, 4, 3, 0.1) 52%, rgba(1, 4, 3, 0.4) 100%),
+      linear-gradient(180deg, rgba(1, 4, 3, 0.28), transparent 34%, rgba(1, 4, 3, 0.54));
+  }
+}
+
+@media (max-width: 760px) {
+  .cosmic-ui .hero-3d {
+    inset: 0 !important;
+    height: 100% !important;
+  }
+
+  .cosmic-ui .hero-3d::before {
+    background:
+      linear-gradient(180deg, rgba(1, 4, 3, 0.74) 0%, rgba(1, 4, 3, 0.18) 29%, rgba(1, 4, 3, 0.18) 50%, rgba(1, 4, 3, 0.9) 82%),
+      radial-gradient(ellipse at 52% 43%, transparent 0 22%, rgba(1, 4, 3, 0.18) 52%, rgba(1, 4, 3, 0.68) 92%),
+      linear-gradient(90deg, rgba(1, 4, 3, 0.66), rgba(1, 4, 3, 0.12) 50%, rgba(1, 4, 3, 0.58));
+  }
+
+  .cosmic-ui .hero-3d::after {
+    inset: 14% -24% 18% -24% !important;
+    opacity: 0.48 !important;
+    animation-duration: 13s;
+  }
+
+  .cosmic-ui #hero-3d-canvas {
+    transform: none !important;
+    filter: saturate(1.08) contrast(1.08) brightness(0.96) !important;
+  }
+
+  .cosmic-ui.three-ready #hero-3d-canvas,
+  .three-ready #hero-3d-canvas {
+    opacity: 0.78 !important;
+  }
+}
+
+.performance-lite .cosmic-ui .hero-3d::after {
+  opacity: 0.38 !important;
+  animation-duration: 16s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cosmic-ui .hero-3d::after {
+    animation: none;
+  }
+
+  .cosmic-ui #hero-3d-canvas {
+    transition: opacity 0.35s ease;
+  }
+}

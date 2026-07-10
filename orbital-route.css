@@ -1,0 +1,938 @@
+/* Scroll-linked orbital route and network passport. */
+:root {
+  --passport-accent: #65f3ad;
+  --passport-soft: rgba(101, 243, 173, 0.16);
+}
+
+.orbital-route-field {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0.36;
+  contain: strict;
+}
+
+.orbital-route-ring {
+  position: absolute;
+  top: var(--journey-progress);
+  left: 56%;
+  width: min(76vw, 980px);
+  aspect-ratio: 1;
+  border: 1px solid rgba(101, 243, 173, 0.09);
+  border-radius: 50%;
+  box-shadow:
+    0 0 70px rgba(101, 243, 173, 0.035),
+    inset 0 0 80px rgba(101, 243, 173, 0.025);
+  transform: translate(-50%, -50%) rotate(calc(var(--journey-rotation) * 0.12)) scale(1);
+  transition: top 0.12s linear;
+}
+
+.orbital-route-ring::before,
+.orbital-route-ring::after {
+  content: "";
+  position: absolute;
+  border-radius: inherit;
+}
+
+.orbital-route-ring::before {
+  inset: 12%;
+  border: 1px solid rgba(169, 148, 255, 0.075);
+  transform: rotate(28deg) scaleY(0.62);
+}
+
+.orbital-route-ring::after {
+  inset: 26%;
+  border: 1px dashed rgba(201, 255, 226, 0.1);
+  transform: rotate(-42deg) scaleY(0.78);
+}
+
+.orbital-route-ring.ring-secondary {
+  left: 42%;
+  width: min(52vw, 680px);
+  border-color: rgba(169, 148, 255, 0.065);
+  transform: translate(-50%, -50%) rotate(calc(var(--journey-rotation) * -0.08)) scaleY(0.5);
+}
+
+.orbital-route-comet {
+  position: absolute;
+  top: var(--journey-progress);
+  left: 50%;
+  width: min(48vw, 620px);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(101, 243, 173, 0.05), rgba(230, 255, 242, 0.3), transparent);
+  box-shadow: 0 0 18px rgba(101, 243, 173, 0.14);
+  transform: translate(-50%, -50%) rotate(-8deg);
+  transition: top 0.12s linear;
+}
+
+.scroll-journey {
+  top: 116px;
+  right: max(14px, calc((100vw - 1480px) / 2));
+  bottom: 90px;
+  width: 174px;
+  opacity: 0.94;
+}
+
+.journey-caption {
+  right: 2px;
+  color: rgba(202, 255, 228, 0.34);
+  letter-spacing: 0.08em;
+}
+
+.journey-rail {
+  right: 24px;
+  width: 2px;
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, transparent, rgba(201, 255, 226, 0.16) 12%, rgba(201, 255, 226, 0.12) 88%, transparent);
+  box-shadow:
+    0 0 18px rgba(101, 243, 173, 0.12),
+    0 0 1px rgba(255, 255, 255, 0.44);
+}
+
+.journey-fill {
+  width: 2px;
+  border-radius: 999px;
+  background: linear-gradient(to bottom, #effff6, #65f3ad 48%, #a994ff);
+  box-shadow:
+    0 0 12px rgba(101, 243, 173, 0.72),
+    0 0 30px rgba(169, 148, 255, 0.22);
+}
+
+.journey-rail > i {
+  width: 9px;
+  height: 9px;
+  border-color: rgba(217, 255, 236, 0.3);
+  background:
+    radial-gradient(circle, #effff6 0 18%, #65f3ad 19% 42%, #020504 43%);
+  box-shadow: 0 0 16px rgba(101, 243, 173, 0.2);
+}
+
+.journey-token {
+  width: 42px;
+  height: 42px;
+  border-color: rgba(235, 255, 245, 0.84);
+  background:
+    radial-gradient(circle at 30% 20%, #ffffff 0 8%, transparent 22%),
+    radial-gradient(circle at 70% 78%, rgba(2, 25, 14, 0.34), transparent 34%),
+    linear-gradient(145deg, #caffdf 0%, #5bf0aa 47%, #12925e 100%);
+  box-shadow:
+    0 0 0 6px rgba(101, 243, 173, 0.07),
+    0 0 34px rgba(101, 243, 173, 0.5),
+    0 16px 28px rgba(0, 0, 0, 0.36),
+    inset 0 1px 0 rgba(255, 255, 255, 0.56);
+  transform: translate(-50%, -50%) rotate(var(--journey-rotation)) scale(var(--scroll-energy-scale));
+  transition: top 0.1s linear;
+}
+
+.journey-token::before {
+  inset: -10px;
+  border-color: rgba(101, 243, 173, 0.24);
+  animation-duration: 3s;
+}
+
+.journey-token::after {
+  inset: -17px;
+  border-color: rgba(169, 148, 255, 0.13);
+  animation-duration: 3s;
+  animation-delay: 1.5s;
+}
+
+.journey-token b {
+  font-size: 1.04rem;
+  font-weight: 950;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.journey-readout {
+  right: 50px;
+  width: 142px;
+  gap: 4px;
+  padding: 10px 12px;
+  border: 1px solid rgba(194, 255, 225, 0.1);
+  border-radius: 14px;
+  background:
+    radial-gradient(circle at 100% 50%, rgba(101, 243, 173, 0.09), transparent 48%),
+    rgba(2, 9, 6, 0.82);
+  box-shadow:
+    0 14px 38px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.035);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+}
+
+.journey-readout small {
+  color: rgba(195, 222, 207, 0.46);
+}
+
+.journey-readout strong {
+  color: #dffff0;
+  font-size: 0.68rem;
+}
+
+.network-passport {
+  --passport-accent: #65f3ad;
+  --passport-soft: rgba(101, 243, 173, 0.16);
+  position: fixed;
+  left: max(18px, calc((100vw - 1480px) / 2));
+  bottom: 24px;
+  z-index: 15;
+  width: 330px;
+  min-height: 76px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  pointer-events: none;
+  visibility: hidden;
+  opacity: 0;
+  border: 1px solid color-mix(in srgb, var(--passport-accent) 24%, transparent);
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at 14% 0%, var(--passport-soft), transparent 42%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.065), rgba(255, 255, 255, 0.012)),
+    rgba(2, 10, 7, 0.92);
+  box-shadow:
+    0 22px 64px rgba(0, 0, 0, 0.48),
+    0 0 36px color-mix(in srgb, var(--passport-accent) 10%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.055);
+  transform: translate3d(0, 20px, 0) scale(0.97);
+  transition:
+    opacity 0.48s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.54s cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0.48s,
+    border-color 0.35s ease,
+    box-shadow 0.35s ease;
+  -webkit-backdrop-filter: blur(18px) saturate(1.1);
+  backdrop-filter: blur(18px) saturate(1.1);
+}
+
+.network-passport.is-visible {
+  pointer-events: auto;
+  visibility: visible;
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+}
+
+.network-passport[data-network="ERC20"] {
+  --passport-accent: #7798ff;
+  --passport-soft: rgba(119, 152, 255, 0.16);
+}
+
+.network-passport[data-network="BEP20"] {
+  --passport-accent: #f3c94d;
+  --passport-soft: rgba(243, 201, 77, 0.14);
+}
+
+.network-passport[data-network="BTC"] {
+  --passport-accent: #ff9f43;
+  --passport-soft: rgba(255, 159, 67, 0.14);
+}
+
+.passport-token {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--passport-accent) 42%, white 20%);
+  border-radius: 16px;
+  color: #effff6;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.3), transparent 24%),
+    color-mix(in srgb, var(--passport-accent) 28%, #03110b);
+  box-shadow:
+    0 0 24px color-mix(in srgb, var(--passport-accent) 22%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  font-size: 1.08rem;
+  font-weight: 950;
+}
+
+.passport-copy {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.passport-copy small {
+  color: color-mix(in srgb, var(--passport-accent) 76%, white);
+  font-size: 0.54rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.passport-copy strong {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  color: #effff6;
+  font-size: 0.88rem;
+}
+
+.passport-copy strong i {
+  overflow: hidden;
+  color: rgba(206, 232, 218, 0.46);
+  font-size: 0.56rem;
+  font-style: normal;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.passport-phase {
+  overflow: hidden;
+  color: rgba(208, 234, 220, 0.56);
+  font-size: 0.62rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.passport-action {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--passport-accent) 28%, transparent);
+  border-radius: 13px;
+  color: color-mix(in srgb, var(--passport-accent) 74%, white);
+  background: rgba(255, 255, 255, 0.035);
+  transition:
+    color 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.passport-action:hover {
+  color: #04120c;
+  background: var(--passport-accent);
+  transform: translateY(-2px);
+}
+
+.passport-progress {
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  bottom: 5px;
+  height: 2px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.passport-progress span {
+  display: block;
+  width: var(--journey-progress);
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--passport-accent), #effff6);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--passport-accent) 48%, transparent);
+  transition: width 0.12s linear;
+}
+
+/* Persistent scroll beacon: a lightweight orbital instrument that stays in view. */
+.scroll-beacon {
+  --beacon-accent: #65f3ad;
+  --beacon-soft: rgba(101, 243, 173, 0.2);
+  --beacon-lean: 0deg;
+  position: fixed;
+  top: 52%;
+  left: max(18px, calc((100vw - 1760px) / 2));
+  z-index: 14;
+  width: 112px;
+  height: 132px;
+  pointer-events: none;
+  opacity: 0.88;
+  isolation: isolate;
+  filter: drop-shadow(0 20px 32px rgba(0, 0, 0, 0.42));
+  transform: translate3d(0, -50%, 0) rotate(var(--beacon-lean)) scale(1);
+  transform-origin: 50% 50%;
+  transition:
+    opacity 0.48s ease,
+    transform 0.38s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.38s ease;
+  contain: layout style;
+  will-change: transform;
+}
+
+.scroll-beacon[data-direction="down"] {
+  --beacon-lean: 3deg;
+}
+
+.scroll-beacon[data-direction="up"] {
+  --beacon-lean: -3deg;
+}
+
+.scroll-beacon.is-scrolling {
+  opacity: 1;
+  filter:
+    drop-shadow(0 20px 34px rgba(0, 0, 0, 0.46))
+    drop-shadow(0 0 18px color-mix(in srgb, var(--beacon-accent) 26%, transparent));
+  transform: translate3d(0, -50%, 0) rotate(var(--beacon-lean)) scale(1.055);
+}
+
+.scroll-beacon[data-network="ERC20"] {
+  --beacon-accent: #7798ff;
+  --beacon-soft: rgba(119, 152, 255, 0.2);
+}
+
+.scroll-beacon[data-network="BEP20"] {
+  --beacon-accent: #f3c94d;
+  --beacon-soft: rgba(243, 201, 77, 0.18);
+}
+
+.scroll-beacon[data-network="BTC"] {
+  --beacon-accent: #ff9f43;
+  --beacon-soft: rgba(255, 159, 67, 0.18);
+}
+
+.beacon-aura {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  width: 96px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, var(--beacon-soft) 0 18%, transparent 62%),
+    radial-gradient(circle, transparent 42%, color-mix(in srgb, var(--beacon-accent) 8%, transparent) 68%, transparent 74%);
+  opacity: 0.82;
+  animation: beaconAuraBreath 3.6s ease-in-out infinite;
+}
+
+.beacon-shell {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 112px;
+  aspect-ratio: 1;
+  display: block;
+  transform: rotate(var(--beacon-spin));
+  transform-style: preserve-3d;
+  transition: transform 0.12s linear;
+  will-change: transform;
+}
+
+.beacon-orbit {
+  position: absolute;
+  border: 1px solid color-mix(in srgb, var(--beacon-accent) 34%, transparent);
+  border-radius: 50%;
+  box-shadow:
+    0 0 14px color-mix(in srgb, var(--beacon-accent) 10%, transparent),
+    inset 0 0 12px color-mix(in srgb, var(--beacon-accent) 5%, transparent);
+}
+
+.beacon-orbit::after {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #f4fff9;
+  box-shadow:
+    0 0 8px #ffffff,
+    0 0 16px var(--beacon-accent);
+}
+
+.beacon-orbit.orbit-a {
+  inset: 10px;
+  animation: beaconOrbitA 8s linear infinite;
+}
+
+.beacon-orbit.orbit-b {
+  inset: 17px 3px;
+  border-color: color-mix(in srgb, var(--beacon-accent) 22%, transparent);
+  animation: beaconOrbitB 11s linear infinite;
+}
+
+.beacon-orbit.orbit-c {
+  inset: 4px 24px;
+  border-style: dashed;
+  border-color: rgba(204, 255, 229, 0.18);
+  animation: beaconOrbitC 13s linear infinite;
+}
+
+.beacon-core {
+  position: absolute;
+  inset: 31px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--beacon-accent) 54%, white 22%);
+  border-radius: 50%;
+  color: #f3fff8;
+  background:
+    radial-gradient(circle at 28% 18%, rgba(255, 255, 255, 0.78) 0 4%, transparent 17%),
+    radial-gradient(circle at 70% 76%, rgba(0, 0, 0, 0.36), transparent 48%),
+    linear-gradient(145deg, color-mix(in srgb, var(--beacon-accent) 82%, white), color-mix(in srgb, var(--beacon-accent) 64%, #03130d));
+  box-shadow:
+    0 0 0 5px color-mix(in srgb, var(--beacon-accent) 8%, transparent),
+    0 0 24px color-mix(in srgb, var(--beacon-accent) 36%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    inset 0 -8px 18px rgba(0, 0, 0, 0.22);
+  transform: rotate(var(--beacon-counter-spin));
+  transition:
+    transform 0.12s linear,
+    box-shadow 0.3s ease;
+}
+
+.beacon-core::before {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.26);
+  border-radius: inherit;
+}
+
+.beacon-core b {
+  position: relative;
+  z-index: 2;
+  font-size: 1.28rem;
+  font-weight: 950;
+  line-height: 1;
+  text-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.38),
+    0 4px 12px rgba(0, 0, 0, 0.26);
+}
+
+.beacon-core > i {
+  position: absolute;
+  top: -36%;
+  bottom: -36%;
+  left: -58%;
+  width: 34%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.58), transparent);
+  transform: rotate(18deg);
+  animation: beaconSheen 4.8s ease-in-out infinite;
+}
+
+.beacon-particle {
+  --particle-radius: 47px;
+  --particle-start: 0deg;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #effff7;
+  box-shadow:
+    0 0 8px #ffffff,
+    0 0 15px var(--beacon-accent);
+  animation: beaconParticleOrbit 5.4s linear infinite;
+}
+
+.beacon-particle.particle-b {
+  --particle-radius: 39px;
+  --particle-start: 128deg;
+  width: 3px;
+  height: 3px;
+  background: color-mix(in srgb, var(--beacon-accent) 72%, white);
+  animation-duration: 7.2s;
+  animation-direction: reverse;
+}
+
+.beacon-particle.particle-c {
+  --particle-radius: 52px;
+  --particle-start: 244deg;
+  width: 2px;
+  height: 2px;
+  animation-duration: 9.2s;
+}
+
+.beacon-readout {
+  position: absolute;
+  right: 4px;
+  bottom: 0;
+  min-width: 66px;
+  min-height: 27px;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 2px;
+  padding: 6px 8px;
+  border: 1px solid color-mix(in srgb, var(--beacon-accent) 20%, transparent);
+  border-radius: 10px;
+  color: #eafff4;
+  background: rgba(2, 10, 7, 0.88);
+  box-shadow:
+    0 10px 26px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+.beacon-readout small {
+  margin-right: 3px;
+  color: color-mix(in srgb, var(--beacon-accent) 74%, white);
+  font: 800 0.45rem/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: 0;
+}
+
+.beacon-readout strong {
+  min-width: 2ch;
+  font: 900 0.67rem/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.beacon-readout i {
+  color: rgba(217, 242, 229, 0.46);
+  font: 700 0.48rem/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.scroll-beacon.is-scrolling .beacon-core {
+  box-shadow:
+    0 0 0 7px color-mix(in srgb, var(--beacon-accent) 10%, transparent),
+    0 0 38px color-mix(in srgb, var(--beacon-accent) 54%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.58),
+    inset 0 -8px 18px rgba(0, 0, 0, 0.2);
+}
+
+.scroll-beacon.is-scrolling .beacon-orbit.orbit-a {
+  animation-duration: 2.4s;
+}
+
+.scroll-beacon.is-scrolling .beacon-orbit.orbit-b {
+  animation-duration: 3.4s;
+}
+
+.scroll-beacon.is-scrolling .beacon-particle {
+  animation-duration: 2.6s;
+}
+
+.intro-playing .scroll-beacon,
+.intro-exiting .scroll-beacon {
+  opacity: 0 !important;
+  transform: translate3d(-16px, -50%, 0) scale(0.72) !important;
+}
+
+.intro-playing .network-passport,
+.intro-exiting .network-passport {
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+@media (max-width: 1320px) {
+  .scroll-journey {
+    width: 48px;
+    right: 2px;
+  }
+
+  .journey-readout,
+  .journey-caption {
+    display: none;
+  }
+
+  .journey-rail {
+    right: 18px;
+  }
+}
+
+@media (max-width: 760px) {
+  .orbital-route-field {
+    opacity: 0.17;
+  }
+
+  .orbital-route-ring {
+    left: 50%;
+    width: 150vw;
+  }
+
+  .orbital-route-ring.ring-secondary {
+    left: 50%;
+    width: 112vw;
+  }
+
+  .orbital-route-comet {
+    width: 82vw;
+  }
+
+  .scroll-journey {
+    top: 94px;
+    right: 1px;
+    bottom: calc(98px + env(safe-area-inset-bottom));
+    width: 24px;
+    opacity: 0.82;
+  }
+
+  .scroll-journey::before {
+    display: none;
+  }
+
+  .journey-rail {
+    top: 10px;
+    right: 7px;
+    bottom: 10px;
+    width: 1px;
+  }
+
+  .journey-fill {
+    width: 1px;
+  }
+
+  .journey-rail > i {
+    width: 6px;
+    height: 6px;
+  }
+
+  .journey-token {
+    width: 26px;
+    height: 26px;
+    box-shadow:
+      0 0 0 4px rgba(101, 243, 173, 0.06),
+      0 0 22px rgba(101, 243, 173, 0.44),
+      0 10px 20px rgba(0, 0, 0, 0.32),
+      inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  }
+
+  .journey-token::before {
+    inset: -6px;
+  }
+
+  .journey-token::after {
+    inset: -10px;
+  }
+
+  .journey-token b {
+    font-size: 0.72rem;
+  }
+
+  .network-passport {
+    left: 10px;
+    right: 10px;
+    bottom: calc(88px + env(safe-area-inset-bottom));
+    width: auto;
+    min-height: 64px;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 10px;
+    padding: 9px 10px;
+    border-radius: 19px;
+    -webkit-backdrop-filter: blur(14px) saturate(1.05);
+    backdrop-filter: blur(14px) saturate(1.05);
+  }
+
+  .passport-token {
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+  }
+
+  .passport-copy small {
+    font-size: 0.5rem;
+  }
+
+  .passport-copy strong {
+    font-size: 0.8rem;
+  }
+
+  .passport-phase {
+    font-size: 0.56rem;
+  }
+
+  .passport-action {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+  }
+
+  .passport-progress {
+    left: 16px;
+    right: 16px;
+    bottom: 4px;
+  }
+
+  .mobile-motion body.mobile-scrolling .network-passport.is-visible {
+    transform: translate3d(0, -3px, 0) scale(0.985);
+  }
+
+  .scroll-beacon {
+    top: max(102px, calc(82px + env(safe-area-inset-top)));
+    left: 9px;
+    width: 66px;
+    height: 78px;
+    opacity: 0.84;
+    filter: drop-shadow(0 12px 20px rgba(0, 0, 0, 0.36));
+    transform: translate3d(0, 0, 0) rotate(var(--beacon-lean)) scale(1);
+  }
+
+  .scroll-beacon.is-scrolling {
+    transform: translate3d(0, 2px, 0) rotate(var(--beacon-lean)) scale(1.04);
+  }
+
+  .beacon-aura {
+    top: 3px;
+    left: 3px;
+    width: 60px;
+  }
+
+  .beacon-shell {
+    width: 66px;
+  }
+
+  .beacon-orbit.orbit-a {
+    inset: 6px;
+  }
+
+  .beacon-orbit.orbit-b {
+    inset: 10px 2px;
+  }
+
+  .beacon-orbit.orbit-c,
+  .beacon-particle.particle-c {
+    display: none;
+  }
+
+  .beacon-core {
+    inset: 18px;
+  }
+
+  .beacon-core b {
+    font-size: 0.9rem;
+  }
+
+  .beacon-particle {
+    --particle-radius: 28px;
+    width: 3px;
+    height: 3px;
+  }
+
+  .beacon-particle.particle-b {
+    --particle-radius: 23px;
+    width: 2px;
+    height: 2px;
+  }
+
+  .beacon-readout {
+    right: -1px;
+    bottom: 0;
+    min-width: 45px;
+    min-height: 21px;
+    padding: 4px 6px;
+    border-radius: 8px;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  .beacon-readout small {
+    display: none;
+  }
+
+  .beacon-readout strong {
+    font-size: 0.58rem;
+  }
+
+  .intro-playing .scroll-beacon,
+  .intro-exiting .scroll-beacon {
+    transform: translate3d(-12px, 0, 0) scale(0.7) !important;
+  }
+}
+
+.performance-lite .orbital-route-field {
+  opacity: 0.12;
+}
+
+.performance-lite .network-passport,
+.performance-lite .journey-readout {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+.performance-lite .scroll-beacon {
+  filter: none;
+}
+
+.performance-lite .beacon-readout {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+@keyframes beaconAuraBreath {
+  0%,
+  100% {
+    opacity: 0.42;
+    transform: scale(0.88);
+  }
+
+  50% {
+    opacity: 0.92;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes beaconOrbitA {
+  from {
+    transform: rotate(18deg) scaleY(0.54);
+  }
+
+  to {
+    transform: rotate(378deg) scaleY(0.54);
+  }
+}
+
+@keyframes beaconOrbitB {
+  from {
+    transform: rotate(-42deg) scaleY(0.76);
+  }
+
+  to {
+    transform: rotate(-402deg) scaleY(0.76);
+  }
+}
+
+@keyframes beaconOrbitC {
+  from {
+    transform: rotate(78deg) scaleY(0.92);
+  }
+
+  to {
+    transform: rotate(438deg) scaleY(0.92);
+  }
+}
+
+@keyframes beaconParticleOrbit {
+  from {
+    transform: translate(-50%, -50%) rotate(var(--particle-start)) translateX(var(--particle-radius));
+  }
+
+  to {
+    transform: translate(-50%, -50%) rotate(calc(var(--particle-start) + 360deg)) translateX(var(--particle-radius));
+  }
+}
+
+@keyframes beaconSheen {
+  0%,
+  48% {
+    left: -58%;
+    opacity: 0;
+  }
+
+  58% {
+    opacity: 0.72;
+  }
+
+  74%,
+  100% {
+    left: 126%;
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orbital-route-ring,
+  .orbital-route-comet,
+  .network-passport,
+  .passport-progress span,
+  .scroll-beacon,
+  .beacon-shell,
+  .beacon-core {
+    transition: none;
+  }
+
+  .beacon-aura,
+  .beacon-orbit,
+  .beacon-particle,
+  .beacon-core > i {
+    animation: none !important;
+  }
+}

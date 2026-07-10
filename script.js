@@ -49,6 +49,17 @@ const advisorAction = document.querySelector("#advisor-action");
 const advisorNote = document.querySelector("#advisor-note");
 let journeyStatus = null;
 let journeyStep = null;
+let networkPassport = null;
+let passportNetwork = null;
+let passportChain = null;
+let passportSymbol = null;
+let passportPhase = null;
+let passportAction = null;
+let scrollBeacon = null;
+let scrollBeaconPercent = null;
+let scrollBeaconSymbol = null;
+let beaconScrollTimer = null;
+let beaconLastScrollY = window.scrollY;
 const trackedSections = Array.from(
   document.querySelectorAll("#top, #networks, #packages, #checkout, #wallets")
 );
@@ -636,6 +647,8 @@ function renderPackages(networkName) {
   const currentNetwork = normalizeNetwork(networkName);
   const selected = networkPackages[currentNetwork];
 
+  updateNetworkPassport(currentNetwork);
+
   if (!packagesSection || !packagesTitle || !packagesDescription || !packageGrid) {
     return;
   }
@@ -691,6 +704,7 @@ function setCheckoutOrder(networkName, card, options = {}) {
   const { shouldScroll = true, shouldUpdateHash = true } = options;
 
   selectedOrder = { network: currentNetwork, package: selectedCard };
+  updateNetworkPassport(currentNetwork);
 
   if (!checkoutSection || !checkoutProduct || !checkoutPackage || !checkoutNetwork || !checkoutPrice) {
     return;
@@ -830,6 +844,8 @@ function updateNetworkAdvisor(networkName) {
     tab.setAttribute("aria-selected", String(isActive));
   });
 
+  updateNetworkPassport(currentNetwork);
+
   networkAdvisor.classList.remove("is-updating");
   requestAnimationFrame(() => networkAdvisor.classList.add("is-updating"));
 }
@@ -846,6 +862,89 @@ function initNetworkAdvisor() {
   updateNetworkAdvisor(networkAdvisor.dataset.activeNetwork || "TRC20");
 }
 
+function initNetworkPassport() {
+  if (document.body.dataset.page !== "home" || document.querySelector(".network-passport")) {
+    return;
+  }
+
+  networkPassport = document.createElement("aside");
+  networkPassport.className = "network-passport";
+  networkPassport.dataset.network = "TRC20";
+  networkPassport.setAttribute("aria-live", "polite");
+  networkPassport.innerHTML = `
+    <span class="passport-token" aria-hidden="true">₮</span>
+    <span class="passport-copy">
+      <small>Network Passport</small>
+      <strong><span>TRC20</span><i>TRON</i></strong>
+      <span class="passport-phase">Этап 01 · Инициализация</span>
+    </span>
+    <a class="passport-action" href="products.html?network=TRC20" aria-label="Открыть пакеты TRC20">↗</a>
+    <span class="passport-progress" aria-hidden="true"><span></span></span>
+  `;
+
+  document.body.append(networkPassport);
+  passportNetwork = networkPassport.querySelector(".passport-copy strong span");
+  passportChain = networkPassport.querySelector(".passport-copy strong i");
+  passportSymbol = networkPassport.querySelector(".passport-token");
+  passportPhase = networkPassport.querySelector(".passport-phase");
+  passportAction = networkPassport.querySelector(".passport-action");
+  updateNetworkPassport(networkAdvisor?.dataset.activeNetwork || "TRC20");
+}
+
+function updateNetworkPassport(networkName) {
+  const normalizedNetwork = networkAdvisorData[networkName] ? networkName : "TRC20";
+  const data = networkAdvisorData[normalizedNetwork];
+
+  if (networkPassport) {
+    networkPassport.dataset.network = normalizedNetwork;
+    if (passportNetwork) passportNetwork.textContent = normalizedNetwork;
+    if (passportChain) passportChain.textContent = data.chain;
+    if (passportSymbol) passportSymbol.textContent = data.symbol;
+    if (passportAction) {
+      passportAction.href = `products.html?network=${normalizedNetwork}`;
+      passportAction.setAttribute("aria-label", `Открыть пакеты ${normalizedNetwork}`);
+    }
+  }
+
+  if (scrollBeacon) {
+    scrollBeacon.dataset.network = normalizedNetwork;
+    if (scrollBeaconSymbol) scrollBeaconSymbol.textContent = data.symbol;
+  }
+}
+
+function initScrollBeacon() {
+  if (document.querySelector(".scroll-beacon")) {
+    return;
+  }
+
+  const initialNetwork = normalizeNetwork(
+    pageParams.get("network") || networkAdvisor?.dataset.activeNetwork || "TRC20"
+  );
+  const initialData = networkAdvisorData[initialNetwork];
+
+  scrollBeacon = document.createElement("div");
+  scrollBeacon.className = "scroll-beacon";
+  scrollBeacon.dataset.network = initialNetwork;
+  scrollBeacon.setAttribute("aria-hidden", "true");
+  scrollBeacon.innerHTML = `
+    <span class="beacon-aura"></span>
+    <span class="beacon-shell">
+      <span class="beacon-orbit orbit-a"></span>
+      <span class="beacon-orbit orbit-b"></span>
+      <span class="beacon-orbit orbit-c"></span>
+      <i class="beacon-particle particle-a"></i>
+      <i class="beacon-particle particle-b"></i>
+      <i class="beacon-particle particle-c"></i>
+      <span class="beacon-core"><b>${initialData.symbol}</b><i></i></span>
+    </span>
+    <span class="beacon-readout"><small>SCROLL</small><strong>00</strong><i>%</i></span>
+  `;
+
+  document.body.append(scrollBeacon);
+  scrollBeaconPercent = scrollBeacon.querySelector(".beacon-readout strong");
+  scrollBeaconSymbol = scrollBeacon.querySelector(".beacon-core b");
+}
+
 function initRevealEffects() {
   const revealSelectors = [
     ".hero .eyebrow",
@@ -853,6 +952,7 @@ function initRevealEffects() {
     ".hero h1",
     ".hero-lead",
     ".hero-actions",
+    ".mobile-quick-pass",
     ".hero-ledger",
     ".hero-scroll-cue",
     ".hero-premium-panel",
@@ -1669,7 +1769,7 @@ function initScrollJourney() {
   journey.className = "scroll-journey";
   journey.setAttribute("aria-hidden", "true");
   journey.innerHTML = `
-    <span class="journey-caption">Маршрут страницы</span>
+    <span class="journey-caption">ORBITAL ROUTE</span>
     <div class="journey-readout">
       <small>Этап <b>01</b></small>
       <strong>Инициализация</strong>
@@ -1686,6 +1786,16 @@ function initScrollJourney() {
   `;
 
   document.body.append(journey);
+
+  const orbitalField = document.createElement("div");
+  orbitalField.className = "orbital-route-field";
+  orbitalField.setAttribute("aria-hidden", "true");
+  orbitalField.innerHTML = `
+    <span class="orbital-route-ring"></span>
+    <span class="orbital-route-ring ring-secondary"></span>
+    <span class="orbital-route-comet"></span>
+  `;
+  document.body.prepend(orbitalField);
   journeyStatus = journey.querySelector(".journey-readout strong");
   journeyStep = journey.querySelector(".journey-readout b");
 }
@@ -1712,18 +1822,51 @@ function updateJourneyStatus(progress) {
   }
 
   journeyStep.textContent = phase.step;
+  if (passportPhase) {
+    passportPhase.textContent = `Этап ${phase.step} · ${phase.label}`;
+  }
 }
 
 function updateScrollProgress() {
-  if (!scrollProgress) {
+  if (!scrollProgress && !journeyStatus && !networkPassport && !scrollBeacon) {
     return;
   }
 
   const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
   const progress = maxScroll > 0 ? Math.min(100, Math.max(0, (window.scrollY / maxScroll) * 100)) : 0;
-  scrollProgress.style.setProperty("--scroll-progress", `${progress.toFixed(2)}%`);
+  if (scrollProgress) {
+    scrollProgress.style.setProperty("--scroll-progress", `${progress.toFixed(2)}%`);
+  }
   document.documentElement.style.setProperty("--journey-progress", `${progress.toFixed(2)}%`);
   document.documentElement.style.setProperty("--journey-rotation", `${(progress * 7.2).toFixed(1)}deg`);
+  if (networkPassport) {
+    networkPassport.classList.toggle("is-visible", progress > 7 && progress < 98.5);
+  }
+  if (scrollBeacon) {
+    const roundedProgress = String(Math.round(progress)).padStart(2, "0");
+    const scrollDelta = window.scrollY - beaconLastScrollY;
+    const energy = Math.min(1, Math.abs(scrollDelta) / 48);
+
+    if (scrollBeaconPercent && scrollBeaconPercent.textContent !== roundedProgress) {
+      scrollBeaconPercent.textContent = roundedProgress;
+    }
+
+    document.documentElement.style.setProperty("--beacon-spin", `${(progress * 10.8).toFixed(1)}deg`);
+    document.documentElement.style.setProperty("--beacon-counter-spin", `${(progress * -10.8).toFixed(1)}deg`);
+    document.documentElement.style.setProperty("--beacon-energy", energy.toFixed(2));
+
+    if (Math.abs(scrollDelta) > 0.5) {
+      scrollBeacon.dataset.direction = scrollDelta > 0 ? "down" : "up";
+      scrollBeacon.classList.add("is-scrolling");
+      window.clearTimeout(beaconScrollTimer);
+      beaconScrollTimer = window.setTimeout(() => {
+        scrollBeacon?.classList.remove("is-scrolling");
+        document.documentElement.style.setProperty("--beacon-energy", "0");
+      }, 180);
+    }
+
+    beaconLastScrollY = window.scrollY;
+  }
   updateJourneyStatus(progress);
 }
 
@@ -1959,6 +2102,8 @@ function updateActiveNav() {
 initSiteIntro();
 initScrollCosmos();
 initScrollJourney();
+initScrollBeacon();
+initNetworkPassport();
 initNetworkAdvisor();
 window.addEventListener("scroll", updateActiveNav, { passive: true });
 window.addEventListener("load", updateActiveNav);

@@ -569,26 +569,26 @@ function initHeroScene() {
     camera.updateProjectionMatrix();
 
     if (width < 720) {
-      group.position.set(0.28, -0.5, 0);
+      group.position.set(0.12, -0.5, 0);
       group.userData.baseY = -0.5;
       orbitGroup.position.copy(group.position);
-      group.scale.setScalar(0.64);
-      group.userData.baseScale = 0.64;
-      orbitGroup.scale.setScalar(0.64);
+      group.scale.setScalar(0.66);
+      group.userData.baseScale = 0.66;
+      orbitGroup.scale.setScalar(0.66);
     } else if (width < 1040) {
-      group.position.set(1.18, -0.02, 0);
+      group.position.set(0.74, -0.02, 0);
       group.userData.baseY = -0.02;
       orbitGroup.position.copy(group.position);
-      group.scale.setScalar(0.78);
-      group.userData.baseScale = 0.78;
-      orbitGroup.scale.setScalar(0.78);
+      group.scale.setScalar(0.82);
+      group.userData.baseScale = 0.82;
+      orbitGroup.scale.setScalar(0.82);
     } else {
-      group.position.set(1.78, -0.04, 0);
+      group.position.set(0.92, -0.04, 0);
       group.userData.baseY = -0.04;
       orbitGroup.position.copy(group.position);
-      group.scale.setScalar(0.9);
-      group.userData.baseScale = 0.9;
-      orbitGroup.scale.setScalar(0.9);
+      group.scale.setScalar(0.94);
+      group.userData.baseScale = 0.94;
+      orbitGroup.scale.setScalar(0.94);
     }
 
     portalGroup.position.copy(group.position);
@@ -645,8 +645,8 @@ function initHeroScene() {
 
     // Keep the branded faces visible while preserving a convincing 3D turn.
     // A full, slow Y rotation left the coin edge-on long enough to look absent.
-    group.rotation.y = Math.sin(time * 0.38) * 0.5 + smoothPointer.x * 0.12;
-    group.rotation.x = 0.08 + Math.sin(time * 0.28) * 0.055 + smoothPointer.y * 0.075;
+    group.rotation.y = Math.sin(time * 0.34) * 0.26 + smoothPointer.x * 0.055;
+    group.rotation.x = 0.07 + Math.sin(time * 0.28) * 0.045 + smoothPointer.y * 0.055;
     group.rotation.z = time * 0.052 + Math.sin(time * 0.22) * 0.03;
     group.position.y = group.userData.baseY + Math.sin(time * 0.62) * 0.06;
     group.scale.setScalar(group.userData.baseScale * (1 + Math.sin(time * 0.82) * 0.01));

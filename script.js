@@ -60,6 +60,7 @@ let scrollBeaconPercent = null;
 let scrollBeaconSymbol = null;
 let beaconScrollTimer = null;
 let beaconLastScrollY = window.scrollY;
+let scrollUiFrame = 0;
 const trackedSections = Array.from(
   document.querySelectorAll("#top, #networks, #packages, #checkout, #wallets")
 );
@@ -416,14 +417,14 @@ function initSiteIntro() {
 
     introStarsWidth = window.innerWidth;
     introStarsHeight = window.innerHeight;
-    const ratio = Math.min(window.devicePixelRatio || 1, compactIntro ? 1.2 : 1.5);
+    const ratio = Math.min(window.devicePixelRatio || 1, compactIntro ? 1 : 1.5);
     introStarsCanvas.width = Math.max(1, Math.floor(introStarsWidth * ratio));
     introStarsCanvas.height = Math.max(1, Math.floor(introStarsHeight * ratio));
     introStarsCanvas.style.width = `${introStarsWidth}px`;
     introStarsCanvas.style.height = `${introStarsHeight}px`;
     introStarsContext.setTransform(ratio, 0, 0, ratio, 0, 0);
 
-    const starCount = compactIntro ? 380 : 540;
+    const starCount = compactIntro ? (lowCoreDevice ? 150 : 210) : 540;
     introStars = Array.from({ length: starCount }, (_, index) => ({
       x: Math.random() * introStarsWidth,
       y: Math.random() * introStarsHeight,
@@ -443,7 +444,7 @@ function initSiteIntro() {
       return;
     }
 
-    if (timestamp - introStarsLastFrame < (compactIntro ? 36 : 24)) {
+    if (timestamp - introStarsLastFrame < (compactIntro ? 34 : 24)) {
       requestAnimationFrame(drawIntroStars);
       return;
     }
@@ -452,7 +453,7 @@ function initSiteIntro() {
     introStarsLastFrame = timestamp;
     introStarsContext.clearRect(0, 0, introStarsWidth, introStarsHeight);
     introStarsContext.save();
-    introStarsContext.globalCompositeOperation = "lighter";
+    introStarsContext.globalCompositeOperation = compactIntro ? "source-over" : "lighter";
 
     introStars.forEach((star, index) => {
       if (introStarsBursting) {
@@ -485,7 +486,7 @@ function initSiteIntro() {
           : `rgba(255, 255, 255, ${alpha.toFixed(3)})`;
       introStarsContext.fill();
 
-      if (index % 41 === 0) {
+      if (index % (compactIntro ? 58 : 41) === 0) {
         introStarsContext.beginPath();
         introStarsContext.moveTo(star.x - 5, star.y);
         introStarsContext.lineTo(star.x + 5, star.y);
@@ -991,10 +992,16 @@ function initRevealEffects() {
 
   const pendingRevealItems = [];
 
+  const revealDelayStep = compactViewport.matches ? 34 : 74;
+  const networkDelayStep = compactViewport.matches ? 52 : 118;
+  const processDelayStep = compactViewport.matches ? 68 : 155;
+  const walletDelayStep = compactViewport.matches ? 42 : 92;
+  const faqDelayStep = compactViewport.matches ? 54 : 118;
+
   revealItems.forEach((item, index) => {
     if (!item.classList.contains("reveal")) {
       item.classList.add("reveal");
-      item.style.setProperty("--reveal-delay", `${Math.min(index % 10, 9) * 74}ms`);
+      item.style.setProperty("--reveal-delay", `${Math.min(index % 10, 9) * revealDelayStep}ms`);
     }
 
     if (!item.classList.contains("is-visible")) {
@@ -1003,15 +1010,15 @@ function initRevealEffects() {
   });
 
   document.querySelectorAll(".network-grid .network-card").forEach((item, index) => {
-    item.style.setProperty("--network-reveal-delay", `${index * 118}ms`);
+    item.style.setProperty("--network-reveal-delay", `${index * networkDelayStep}ms`);
   });
 
   document.querySelectorAll("#process .step").forEach((item, index) => {
-    item.style.setProperty("--section-reveal-delay", `${index * 155}ms`);
+    item.style.setProperty("--section-reveal-delay", `${index * processDelayStep}ms`);
   });
 
   document.querySelectorAll("#wallets .wallet-compat-card").forEach((item, index) => {
-    item.style.setProperty("--section-reveal-delay", `${index * 92}ms`);
+    item.style.setProperty("--section-reveal-delay", `${index * walletDelayStep}ms`);
   });
 
   const faqRows = document.querySelectorAll("#faq .faq-list details");
@@ -1023,12 +1030,12 @@ function initRevealEffects() {
   );
 
   faqRows.forEach((item, index) => {
-    item.style.setProperty("--section-reveal-delay", `${index * 118}ms`);
+    item.style.setProperty("--section-reveal-delay", `${index * faqDelayStep}ms`);
   });
 
   const faqMore = document.querySelector("#faq .faq-more");
   if (faqMore) {
-    faqMore.style.setProperty("--section-reveal-delay", `${faqRows.length * 118 + 80}ms`);
+    faqMore.style.setProperty("--section-reveal-delay", `${faqRows.length * faqDelayStep + 64}ms`);
   }
 
   if (!("IntersectionObserver" in window)) {
@@ -1233,8 +1240,11 @@ function initScrollCosmos() {
   let lastBurstFrame = -1000;
   let lastScatterFrame = -1000;
   let lastDomMotionFrame = 0;
+  let lastEnergyStyleFrame = 0;
   let documentIsHidden = document.hidden;
   let resizeFrame = 0;
+  let resizeTimer = 0;
+  let lastResizeWidth = window.innerWidth;
   let firstScatter = true;
   let bursts = [];
   let shootingStars = [];
@@ -1245,12 +1255,17 @@ function initScrollCosmos() {
   );
   let kineticItems = [];
 
-  scrollLayers.forEach((layer) => layer.classList.add("scroll-layer"));
+  if (!compactScreen.matches) {
+    scrollLayers.forEach((layer) => layer.classList.add("scroll-layer"));
+  }
 
   function refreshKineticItems() {
-    const kineticSelector = compactScreen.matches
-      ? ".package-card, .wallet-compat-card, .step, .faq-list details, .guide-step, .guide-card, .checkout-card"
-      : ".network-card, .package-card, .wallet-compat-card, .step, .faq-list details, .guide-step, .guide-card, .checkout-card";
+    if (compactScreen.matches) {
+      kineticItems = [];
+      return;
+    }
+
+    const kineticSelector = ".network-card, .package-card, .wallet-compat-card, .step, .faq-list details, .guide-step, .guide-card, .checkout-card";
 
     kineticItems = Array.from(
       document.querySelectorAll(kineticSelector)
@@ -1278,7 +1293,7 @@ function initScrollCosmos() {
   }
 
   function buildNodes() {
-    const nodeCount = compactScreen.matches ? 150 : lowPowerCanvas ? 190 : 230;
+    const nodeCount = compactScreen.matches ? (lowCoreDevice ? 72 : 96) : lowPowerCanvas ? 160 : 230;
     nodes = Array.from({ length: nodeCount }, (_, index) => {
       const node = {
         bright: index % 17 === 0,
@@ -1290,7 +1305,7 @@ function initScrollCosmos() {
   }
 
   function buildGalaxyDust() {
-    const dustCount = compactScreen.matches ? 58 : lowPowerCanvas ? 150 : 220;
+    const dustCount = compactScreen.matches ? (lowCoreDevice ? 18 : 28) : lowPowerCanvas ? 110 : 220;
     galaxyDust = Array.from({ length: dustCount }, (_, index) => {
       const x = Math.random();
       const scatter = (Math.random() + Math.random() + Math.random() - 1.5) * 0.22;
@@ -1350,6 +1365,10 @@ function initScrollCosmos() {
   }
 
   function updateScrollLayers() {
+    if (compactScreen.matches) {
+      return;
+    }
+
     const strength = compactScreen.matches ? 8 : 15;
 
     scrollLayers.forEach((layer) => {
@@ -1367,7 +1386,7 @@ function initScrollCosmos() {
   }
 
   function updateKineticItems() {
-    if (reducedMotion) {
+    if (reducedMotion || compactScreen.matches) {
       return;
     }
 
@@ -1432,7 +1451,7 @@ function initScrollCosmos() {
   }
 
   function scatterStars(delta, timestamp) {
-    const scatterGap = compactScreen.matches ? 64 : lowPowerCanvas ? 52 : 42;
+    const scatterGap = compactScreen.matches ? 92 : lowPowerCanvas ? 58 : 42;
 
     if (reducedMotion || Math.abs(delta) < 2 || timestamp - lastScatterFrame < scatterGap) {
       return;
@@ -1445,7 +1464,7 @@ function initScrollCosmos() {
     const burstStrength = (firstScatter ? 2.25 : 0.72) * (0.45 + inputStrength * 0.9);
     firstScatter = false;
 
-    const nodeStep = compactScreen.matches ? 2 : 1;
+    const nodeStep = compactScreen.matches ? 3 : 1;
     for (let index = 0; index < nodes.length; index += nodeStep) {
       const node = nodes[index];
       const dx = node.drawX - centerX;
@@ -1585,7 +1604,7 @@ function initScrollCosmos() {
     }
 
     const mobileIsScrolling = compactScreen.matches && document.body.classList.contains("mobile-scrolling");
-    const frameGap = mobileIsScrolling ? 40 : compactScreen.matches ? 34 : lowPowerCanvas ? 30 : 24;
+    const frameGap = mobileIsScrolling ? 44 : compactScreen.matches ? 34 : lowPowerCanvas ? 30 : 24;
 
     if (timestamp - lastFrame < frameGap) {
       requestAnimationFrame(drawCosmos);
@@ -1599,14 +1618,18 @@ function initScrollCosmos() {
     scrollVelocity = scrollVelocity * 0.86 + scrollDifference * 0.035;
     const targetEnergy = Math.min(1, Math.abs(scrollVelocity) / 17);
     scrollEnergy += (targetEnergy - scrollEnergy) * (targetEnergy > scrollEnergy ? 0.24 : 0.08);
-    document.documentElement.style.setProperty("--scroll-energy", scrollEnergy.toFixed(3));
-    document.documentElement.style.setProperty(
-      "--scroll-energy-scale",
-      (1 + scrollEnergy * 0.24).toFixed(3)
-    );
+    const energyStyleGap = compactScreen.matches ? 96 : 48;
+    if (timestamp - lastEnergyStyleFrame > energyStyleGap) {
+      lastEnergyStyleFrame = timestamp;
+      document.documentElement.style.setProperty("--scroll-energy", scrollEnergy.toFixed(3));
+      document.documentElement.style.setProperty(
+        "--scroll-energy-scale",
+        (1 + scrollEnergy * 0.24).toFixed(3)
+      );
+    }
     context.clearRect(0, 0, width, height);
     context.save();
-    context.globalCompositeOperation = "lighter";
+    context.globalCompositeOperation = compactScreen.matches ? "source-over" : "lighter";
 
     if (renderStarLines) {
       drawSignalPaths(time);
@@ -1714,8 +1737,8 @@ function initScrollCosmos() {
     }
 
     context.restore();
-    const domMotionGap = compactScreen.matches ? 140 : lowPowerCanvas ? 92 : 56;
-    if (timestamp - lastDomMotionFrame > domMotionGap) {
+    const domMotionGap = lowPowerCanvas ? 92 : 56;
+    if (!compactScreen.matches && timestamp - lastDomMotionFrame > domMotionGap) {
       lastDomMotionFrame = timestamp;
       updateScrollLayers();
       updateKineticItems();
@@ -1751,8 +1774,19 @@ function initScrollCosmos() {
   window.addEventListener(
     "resize",
     () => {
-      cancelAnimationFrame(resizeFrame);
-      resizeFrame = requestAnimationFrame(resizeCosmos);
+      const nextWidth = window.innerWidth;
+      const widthChanged = Math.abs(nextWidth - lastResizeWidth) > 2;
+
+      if (compactScreen.matches && !widthChanged) {
+        return;
+      }
+
+      lastResizeWidth = nextWidth;
+      window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(() => {
+        cancelAnimationFrame(resizeFrame);
+        resizeFrame = requestAnimationFrame(resizeCosmos);
+      }, compactScreen.matches ? 160 : 70);
     },
     { passive: true }
   );
@@ -2042,14 +2076,19 @@ function initMobileMotion() {
   document.documentElement.classList.add("mobile-motion");
 
   let scrollTimer = 0;
+  let mobileScrollActive = false;
   window.addEventListener(
     "scroll",
     () => {
-      document.body.classList.add("mobile-scrolling");
+      if (!mobileScrollActive) {
+        mobileScrollActive = true;
+        document.body.classList.add("mobile-scrolling");
+      }
       window.clearTimeout(scrollTimer);
       scrollTimer = window.setTimeout(() => {
+        mobileScrollActive = false;
         document.body.classList.remove("mobile-scrolling");
-      }, 140);
+      }, 120);
     },
     { passive: true }
   );
@@ -2099,16 +2138,26 @@ function updateActiveNav() {
   });
 }
 
+function scheduleScrollUiUpdate() {
+  if (scrollUiFrame) {
+    return;
+  }
+
+  scrollUiFrame = requestAnimationFrame(() => {
+    scrollUiFrame = 0;
+    updateActiveNav();
+    updateScrollProgress();
+  });
+}
+
 initSiteIntro();
 initScrollCosmos();
 initScrollJourney();
 initScrollBeacon();
 initNetworkPassport();
 initNetworkAdvisor();
-window.addEventListener("scroll", updateActiveNav, { passive: true });
-window.addEventListener("load", updateActiveNav);
-window.addEventListener("scroll", updateScrollProgress, { passive: true });
-window.addEventListener("load", updateScrollProgress);
+window.addEventListener("scroll", scheduleScrollUiUpdate, { passive: true });
+window.addEventListener("load", scheduleScrollUiUpdate);
 updateActiveNav();
 updateScrollProgress();
 

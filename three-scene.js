@@ -165,7 +165,7 @@ function initHeroScene() {
     opacity: 0.94,
   });
 
-  const segments = isLite() ? 64 : 112;
+  const segments = isLite() ? 48 : 112;
   const body = new THREE.Mesh(new THREE.CylinderGeometry(1.42, 1.42, 0.36, segments), sideMaterial);
   body.rotation.x = Math.PI / 2;
   coinRig.add(body);
@@ -234,13 +234,13 @@ function initHeroScene() {
   ];
 
   const orbitLines = orbitSpecs.map((spec) => {
-    const line = createOrbitLine(spec);
+    const line = createOrbitLine({ ...spec, segments: isLite() ? 96 : 180 });
     orbitRig.add(line);
     return line;
   });
 
   const gyroA = new THREE.Mesh(
-    new THREE.TorusGeometry(1.82, 0.022, 10, isLite() ? 100 : 170),
+    new THREE.TorusGeometry(1.82, 0.022, 8, isLite() ? 72 : 170),
     new THREE.MeshBasicMaterial({
       color: 0xbfffe0,
       transparent: true,
@@ -254,7 +254,7 @@ function initHeroScene() {
   orbitRig.add(gyroA);
 
   const gyroB = gyroA.clone();
-  gyroB.geometry = new THREE.TorusGeometry(2.18, 0.015, 10, isLite() ? 100 : 170);
+  gyroB.geometry = new THREE.TorusGeometry(2.18, 0.015, 8, isLite() ? 72 : 170);
   gyroB.material = gyroA.material.clone();
   gyroB.material.color.setHex(0x7d86ff);
   gyroB.material.opacity = 0.18;
@@ -262,11 +262,11 @@ function initHeroScene() {
   gyroB.rotation.y = -0.34;
   orbitRig.add(gyroB);
 
-  const scannerArc = createArcLine(2.55, -0.76, 0.62, 0xe9fff4, 0.52);
+  const scannerArc = createArcLine(2.55, -0.76, 0.62, 0xe9fff4, 0.52, isLite() ? 42 : 72);
   scannerArc.rotation.z = 0.18;
   orbitRig.add(scannerArc);
 
-  const secondArc = createArcLine(2.94, 2.28, 3.68, 0x8b92ff, 0.28);
+  const secondArc = createArcLine(2.94, 2.28, 3.68, 0x8b92ff, 0.28, isLite() ? 42 : 72);
   secondArc.rotation.z = -0.32;
   orbitRig.add(secondArc);
 
@@ -282,7 +282,7 @@ function initHeroScene() {
     return { ...spec, ...satellite };
   });
 
-  const orbitSparks = Array.from({ length: isLite() ? 8 : 16 }, (_, index) => {
+  const orbitSparks = Array.from({ length: isLite() ? 5 : 16 }, (_, index) => {
     const sprite = new THREE.Sprite(
       new THREE.SpriteMaterial({
         map: sparkleTexture,
@@ -307,13 +307,13 @@ function initHeroScene() {
     return sprite;
   });
 
-  const nearStars = createStarField(isLite() ? 90 : 190, 7.8, 5.4, 0xdffff0, 0.042, sparkleTexture);
-  const farStars = createStarField(isLite() ? 120 : 280, 11.5, 7.2, 0x8ee7bd, 0.022, sparkleTexture);
+  const nearStars = createStarField(isLite() ? 54 : 190, 7.8, 5.4, 0xdffff0, 0.042, sparkleTexture);
+  const farStars = createStarField(isLite() ? 76 : 280, 11.5, 7.2, 0x8ee7bd, 0.022, sparkleTexture);
   nearStars.position.z = -2.6;
   farStars.position.z = -5.4;
   stage.add(nearStars, farStars);
 
-  const constellation = createConstellation(isLite() ? 22 : 42);
+  const constellation = createConstellation(isLite() ? 14 : 42);
   constellation.position.z = -3.4;
   stage.add(constellation);
 
@@ -322,6 +322,8 @@ function initHeroScene() {
   let baseY = 0;
   let sceneVisible = true;
   let lastFrame = 0;
+  let resizeTimer = 0;
+  let lastViewportWidth = window.innerWidth;
 
   function resize() {
     const viewport = canvas.parentElement || hero;
@@ -363,12 +365,19 @@ function initHeroScene() {
       ([entry]) => {
         sceneVisible = entry.isIntersecting;
       },
-      { rootMargin: "420px 0px" }
+      { rootMargin: mobileQuery.matches ? "120px 0px" : "420px 0px" }
     );
     observer.observe(hero);
   }
 
   function render(timestamp = 0) {
+    if (document.body.classList.contains("intro-playing")) {
+      if (!reducedMotion) {
+        window.setTimeout(() => requestAnimationFrame(render), mobileQuery.matches ? 120 : 80);
+      }
+      return;
+    }
+
     if (document.hidden || !sceneVisible) {
       if (!reducedMotion) {
         window.setTimeout(() => requestAnimationFrame(render), document.hidden ? 320 : 140);
@@ -376,7 +385,8 @@ function initHeroScene() {
       return;
     }
 
-    const frameGap = mobileQuery.matches ? 30 : lowPower ? 28 : 16;
+    const mobileScrolling = mobileQuery.matches && document.body.classList.contains("mobile-scrolling");
+    const frameGap = mobileScrolling ? 48 : mobileQuery.matches ? 34 : lowPower ? 28 : 16;
     if (lastFrame > 0 && timestamp - lastFrame < frameGap) {
       if (!reducedMotion) requestAnimationFrame(render);
       return;
@@ -476,33 +486,49 @@ function initHeroScene() {
     if (!reducedMotion) requestAnimationFrame(render);
   }
 
-  hero.addEventListener(
-    "pointermove",
-    (event) => {
-      const rect = hero.getBoundingClientRect();
-      pointer.x = clamp(((event.clientX - rect.left) / Math.max(rect.width, 1) - 0.5) * 2, -0.82, 0.82);
-      pointer.y = clamp(((event.clientY - rect.top) / Math.max(rect.height, 1) - 0.5) * 2, -0.72, 0.72);
-    },
-    { passive: true }
-  );
+  if (!mobileQuery.matches && window.matchMedia("(pointer: fine)").matches) {
+    hero.addEventListener(
+      "pointermove",
+      (event) => {
+        const rect = hero.getBoundingClientRect();
+        pointer.x = clamp(((event.clientX - rect.left) / Math.max(rect.width, 1) - 0.5) * 2, -0.82, 0.82);
+        pointer.y = clamp(((event.clientY - rect.top) / Math.max(rect.height, 1) - 0.5) * 2, -0.72, 0.72);
+      },
+      { passive: true }
+    );
 
-  hero.addEventListener(
-    "pointerleave",
-    () => pointer.set(0, 0),
-    { passive: true }
-  );
+    hero.addEventListener(
+      "pointerleave",
+      () => pointer.set(0, 0),
+      { passive: true }
+    );
+  }
 
   canvas.addEventListener("webglcontextlost", () => document.body.classList.add("three-fallback"), {
     passive: true,
   });
-  window.addEventListener("resize", resize, { passive: true });
+  window.addEventListener(
+    "resize",
+    () => {
+      const nextWidth = window.innerWidth;
+      const widthChanged = Math.abs(nextWidth - lastViewportWidth) > 2;
+
+      if (mobileQuery.matches && !widthChanged) {
+        return;
+      }
+
+      lastViewportWidth = nextWidth;
+      window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(resize, mobileQuery.matches ? 160 : 70);
+    },
+    { passive: true }
+  );
   resize();
   render();
 }
 
-function createOrbitLine({ radius, y, depth, color, opacity }) {
+function createOrbitLine({ radius, y, depth, color, opacity, segments = 180 }) {
   const points = [];
-  const segments = 180;
   for (let index = 0; index < segments; index += 1) {
     const angle = (index / segments) * Math.PI * 2;
     points.push(
@@ -526,9 +552,8 @@ function createOrbitLine({ radius, y, depth, color, opacity }) {
   );
 }
 
-function createArcLine(radius, startAngle, endAngle, color, opacity) {
+function createArcLine(radius, startAngle, endAngle, color, opacity, segments = 72) {
   const points = [];
-  const segments = 72;
   for (let index = 0; index <= segments; index += 1) {
     const progress = index / segments;
     const angle = startAngle + (endAngle - startAngle) * progress;

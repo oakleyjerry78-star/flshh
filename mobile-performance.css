@@ -1,0 +1,211 @@
+/* Mobile rendering budget: preserve depth while prioritizing native scrolling. */
+@media (max-width: 760px) {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body.cosmic-ui {
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .cosmic-ui a,
+  .cosmic-ui button,
+  .cosmic-ui summary,
+  .cosmic-ui input,
+  .cosmic-ui label {
+    touch-action: manipulation;
+  }
+
+  .cosmic-ui .site-header,
+  .cosmic-ui .nav-menu,
+  .cosmic-ui .mobile-dock,
+  .cosmic-ui .network-advisor,
+  .cosmic-ui .network-card,
+  .cosmic-ui .package-card,
+  .cosmic-ui .checkout-card,
+  .cosmic-ui .payment-panel,
+  .cosmic-ui .wallet-compat-card,
+  .cosmic-ui .guide-card,
+  .cosmic-ui .guide-step,
+  .cosmic-ui .guide-video-shell,
+  .cosmic-ui .faq-list details,
+  .network-passport,
+  .journey-readout,
+  .beacon-readout {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+
+  .cosmic-ui .site-header,
+  .cosmic-ui .mobile-dock,
+  .scroll-journey,
+  .scroll-beacon,
+  .network-passport,
+  .scroll-cosmos {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+
+  .cosmic-ui::before {
+    animation: none !important;
+  }
+
+  .cosmic-ui::after {
+    opacity: 0.08;
+  }
+
+  .scroll-flare,
+  .orbital-route-field {
+    display: none !important;
+  }
+
+  .scroll-cosmos {
+    opacity: 0.52;
+    transition: opacity 0.22s ease;
+  }
+
+  .cosmic-ui.mobile-scrolling .scroll-cosmos {
+    opacity: 0.46;
+  }
+
+  .cosmic-ui .scroll-layer {
+    translate: none !important;
+    transition: none !important;
+    will-change: auto !important;
+  }
+
+  .cosmic-ui .kinetic-item {
+    translate: none !important;
+    rotate: none !important;
+    scale: 1 !important;
+    transition: none !important;
+    will-change: auto !important;
+  }
+
+  .cosmic-ui .reveal,
+  .mobile-motion .cosmic-ui .reveal,
+  .mobile-motion .cosmic-ui .network-card:nth-child(even).reveal,
+  .mobile-motion .cosmic-ui .package-card:nth-child(even).reveal,
+  .mobile-motion .cosmic-ui .wallet-compat-card:nth-child(even).reveal,
+  .mobile-motion .cosmic-ui .step:nth-child(even).reveal,
+  .mobile-motion .cosmic-ui .guide-step:nth-child(even).reveal,
+  .mobile-motion .cosmic-ui .faq-list details:nth-child(even).reveal {
+    opacity: 0;
+    filter: none !important;
+    clip-path: none !important;
+    transform: translate3d(0, 15px, 0) scale(0.992) !important;
+    transition:
+      opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.58s cubic-bezier(0.22, 1, 0.36, 1) !important;
+    transition-delay: var(--network-reveal-delay, var(--section-reveal-delay, var(--reveal-delay, 0ms))) !important;
+    will-change: opacity, transform;
+  }
+
+  .cosmic-ui .reveal.is-visible,
+  .mobile-motion .cosmic-ui .reveal.is-visible,
+  .mobile-motion .cosmic-ui .network-card:nth-child(even).reveal.is-visible,
+  .mobile-motion .cosmic-ui .package-card:nth-child(even).reveal.is-visible,
+  .mobile-motion .cosmic-ui .wallet-compat-card:nth-child(even).reveal.is-visible,
+  .mobile-motion .cosmic-ui .step:nth-child(even).reveal.is-visible,
+  .mobile-motion .cosmic-ui .guide-step:nth-child(even).reveal.is-visible,
+  .mobile-motion .cosmic-ui .faq-list details:nth-child(even).reveal.is-visible {
+    opacity: 1;
+    filter: none !important;
+    transform: translate3d(0, 0, 0) scale(1) !important;
+    will-change: auto;
+  }
+
+  .mobile-motion .cosmic-ui .hero h1.reveal.is-visible,
+  .mobile-motion .cosmic-ui .network-advisor-tab.is-active {
+    animation: none !important;
+  }
+
+  .cosmic-ui .network-card.reveal.is-visible:active,
+  .cosmic-ui .package-card.reveal.is-visible:active,
+  .cosmic-ui .wallet-compat-card.reveal.is-visible:active,
+  .cosmic-ui .guide-step.reveal.is-visible:active {
+    transform: translate3d(0, 1px, 0) scale(0.985) !important;
+    transition-duration: 0.1s !important;
+    transition-delay: 0ms !important;
+  }
+
+  .cosmic-ui .button-primary,
+  .cosmic-ui .checkout-submit,
+  .cosmic-ui .proof-submit,
+  .cosmic-ui .package-button,
+  .cosmic-ui .advisor-action {
+    animation: none !important;
+    background-position: 50% 50%;
+  }
+
+  .cosmic-ui .section,
+  .cosmic-ui .network-select-section,
+  .cosmic-ui .packages-section,
+  .cosmic-ui .checkout-section,
+  .cosmic-ui .wallet-compat-section,
+  .cosmic-ui .faq-section,
+  .cosmic-ui .faq-cta,
+  .cosmic-ui .guide-section {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+
+  .cosmic-ui.three-ready #hero-3d-canvas,
+  .three-ready #hero-3d-canvas {
+    opacity: 0.82 !important;
+    filter: none !important;
+  }
+
+  .performance-lite .scroll-beacon {
+    filter: none !important;
+  }
+
+  .performance-lite .beacon-orbit.orbit-b,
+  .performance-lite .beacon-particle.particle-b,
+  .performance-lite .journey-token::after {
+    display: none;
+  }
+
+  .intro-cosmos-v8 .intro-v8-nebula,
+  .intro-cosmos-v8 .intro-v8-orbit-system,
+  .intro-cosmos-v8 .intro-v8-coin-shadow,
+  .intro-cosmos-v8 .intro-v8-coin-face svg,
+  .site-intro.intro-cosmos-v8.is-complete .intro-v8-stage,
+  .intro-v8-stars-handoff.is-fading {
+    filter: none !important;
+  }
+
+  .intro-cosmos-v8 .ring-inner,
+  .intro-cosmos-v8 .satellite-btc {
+    display: none;
+  }
+
+  .site-intro.intro-cosmos-v8.is-complete .intro-v8-stage {
+    transform: translate(-50%, -50%) scale(1.08) rotateX(0deg) !important;
+    transition:
+      opacity 0.46s ease,
+      transform 0.62s cubic-bezier(0.22, 1, 0.36, 1) !important;
+  }
+
+  .cosmic-ui.mobile-scrolling::before,
+  .cosmic-ui.mobile-scrolling .luxury-ribbon-track,
+  .cosmic-ui.mobile-scrolling .hero-3d::after,
+  .cosmic-ui.mobile-scrolling .mobile-pass-head i,
+  .cosmic-ui.mobile-scrolling .beacon-aura,
+  .cosmic-ui.mobile-scrolling .beacon-orbit,
+  .cosmic-ui.mobile-scrolling .beacon-particle,
+  .cosmic-ui.mobile-scrolling .beacon-core > i {
+    animation-play-state: paused !important;
+  }
+}
+
+@media (max-width: 380px) {
+  .scroll-cosmos {
+    opacity: 0.46;
+  }
+
+  .performance-lite .beacon-aura,
+  .performance-lite .beacon-particle {
+    display: none;
+  }
+}
